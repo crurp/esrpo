@@ -327,91 +327,6 @@
             font-weight: 700;
         }
 
-        /* Roadmap */
-        .kv-roadmap {
-            margin-top: 3rem;
-        }
-        .kv-phase {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            align-items: flex-start;
-        }
-        .kv-phase-marker {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 50px;
-        }
-        .kv-phase-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 2px solid;
-            position: relative;
-        }
-        .kv-phase-dot.active {
-            background: #22d3ee;
-            border-color: #22d3ee;
-            box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
-        }
-        .kv-phase-dot.active::after {
-            content: '';
-            position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
-            border-radius: 50%;
-            border: 2px solid rgba(6, 182, 212, 0.3);
-            animation: kv-pulse 2s infinite;
-        }
-        .kv-phase-dot.future {
-            border-color: rgba(255, 255, 255, 0.15);
-            background: transparent;
-        }
-        .kv-phase-line {
-            width: 2px;
-            flex: 1;
-            min-height: 40px;
-            background: rgba(255, 255, 255, 0.06);
-            margin-top: 4px;
-        }
-        .kv-phase-content {
-            background: var(--bg-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            flex: 1;
-            transition: all 0.3s ease;
-        }
-        .kv-phase-content:hover {
-            border-color: rgba(6, 182, 212, 0.2);
-        }
-        .kv-phase-label {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 0.5rem;
-        }
-        .kv-phase-label.current { color: #22d3ee; }
-        .kv-phase-label.upcoming { color: var(--text-tertiary); }
-        .kv-phase-content h4 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        .kv-phase-content p {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-        @keyframes kv-pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
-        }
-
         /* Metrics */
         .kv-metrics-grid {
             display: grid;
@@ -471,20 +386,6 @@
         }
 
         @media (max-width: 768px) {
-            .kv-phase {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            .kv-phase-marker {
-                flex-direction: row;
-                min-width: unset;
-            }
-            .kv-phase-line {
-                width: auto;
-                height: 2px;
-                min-height: unset;
-                min-width: 20px;
-            }
             .kv-tier-bar {
                 flex-direction: column;
                 align-items: flex-start;
@@ -566,7 +467,7 @@
         </div>
         <h1>KnowledgeVault</h1>
         <p class="kv-hero-tagline" style="font-family:'Space Grotesk',sans-serif; font-size:clamp(1.15rem,3vw,1.6rem); font-weight:600; color:var(--text-primary); margin-bottom:1rem; max-width:700px; margin-left:auto; margin-right:auto; line-height:1.4;">
-            Messy shared drive <span style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">solved.</span><br>Knowledge, made secure, fast, and <span style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">easy.</span>
+            Messy shared drive <span style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">solved.</span><br>Knowledge made secure, fast, and <span style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">easy.</span>
         </p>
         <p class="kv-hero-subtitle">
             Runs on Windows, macOS, and Linux. Built with an AI-first architecture, KnowledgeVault is fully autonomous in organizing, understanding, and surfacing your data, regardless of file format.
@@ -626,14 +527,14 @@
                     <div class="kv-feature-icon" style="background: rgba(34, 197, 94, 0.1); color: #4ade80;">
                         <svg viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h3>Real-Time Monitoring</h3>
+                    <h3>Real Time Monitoring</h3>
                     <p>Prometheus metrics, Grafana dashboards, and a live event stream give operators full visibility into system health, agent activity, and knowledge base growth.</p>
                 </div>
                 <div class="kv-feature-card">
                     <div class="kv-feature-icon" style="background: rgba(234, 179, 8, 0.1); color: #facc15;">
                         <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h3>Self-Improving System</h3>
+                    <h3>Self Improving System</h3>
                     <p>Agents tune their own prompts based on outcomes, shift resources to underperforming areas, and continuously optimize the knowledge base for frequently accessed content.</p>
                 </div>
             </div>
@@ -812,64 +713,6 @@
                         <li>Nginx reverse proxy</li>
                         <li>Grafana dashboards</li>
                     </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Roadmap -->
-    <section class="kv-section">
-        <div class="kv-inner">
-            <div class="kv-text-center">
-                <span class="kv-section-label">Roadmap</span>
-                <h2 class="kv-section-title">Path to Full Autonomy</h2>
-                <p class="kv-section-desc">
-                    A 16-week phased implementation plan building from foundational infrastructure to complete autonomous operation.
-                </p>
-            </div>
-            <div class="kv-roadmap">
-                <div class="kv-phase">
-                    <div class="kv-phase-marker">
-                        <div class="kv-phase-dot active"></div>
-                        <div class="kv-phase-line"></div>
-                    </div>
-                    <div class="kv-phase-content">
-                        <div class="kv-phase-label current">Phase 1 · Weeks 1-4 · Active</div>
-                        <h4>Foundation</h4>
-                        <p>Formalizing the Directive-Task-Result protocol, building the task queue system, deploying the agent registry, and launching the governance dashboard with human approval gates.</p>
-                    </div>
-                </div>
-                <div class="kv-phase">
-                    <div class="kv-phase-marker">
-                        <div class="kv-phase-dot future"></div>
-                        <div class="kv-phase-line"></div>
-                    </div>
-                    <div class="kv-phase-content">
-                        <div class="kv-phase-label upcoming">Phase 2 · Weeks 5-8</div>
-                        <h4>Manager Layer</h4>
-                        <p>Building Backend, QA, and Documentation Manager agents that translate Director tasks into Worker assignments, with end-to-end integration testing.</p>
-                    </div>
-                </div>
-                <div class="kv-phase">
-                    <div class="kv-phase-marker">
-                        <div class="kv-phase-dot future"></div>
-                        <div class="kv-phase-line"></div>
-                    </div>
-                    <div class="kv-phase-content">
-                        <div class="kv-phase-label upcoming">Phase 3 · Weeks 9-12</div>
-                        <h4>Director Layer</h4>
-                        <p>Engineering, Operations, and Product Director agents that coordinate Manager agents, handle incident response, and manage autonomous development.</p>
-                    </div>
-                </div>
-                <div class="kv-phase">
-                    <div class="kv-phase-marker">
-                        <div class="kv-phase-dot future"></div>
-                    </div>
-                    <div class="kv-phase-content">
-                        <div class="kv-phase-label upcoming">Phase 4 · Weeks 13-16</div>
-                        <h4>Governor &amp; Full Autonomy</h4>
-                        <p>Governor Council for strategic planning, self-improvement feedback loops, and the complete autonomous directive-to-result cycle with human oversight at the governance level.</p>
-                    </div>
                 </div>
             </div>
         </div>
