@@ -242,9 +242,11 @@
          - name:        product display name
          - tagline:     short one-liner
          - description: 2-3 sentence description
-         - category:    "quantum" | "ai-ml" | "cybersecurity"
+         - category:    "quantum" | "ai-ml" | "cybersecurity" | ["quantum","ai-ml"] (array for multi-category)
          - status:      "development" | "beta" | "coming-soon"
          - icon:        SVG path string (24x24 viewBox)
+       Optional fields:
+         - link:        custom URL for "Learn More" (defaults to index.html#contact)
        ================================================================ */
 
     const PRODUCTS = [
@@ -285,13 +287,14 @@
             icon: '<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5"/><path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
         },
         {
-            id: 'q-fabric',
-            name: 'Q-Fabric',
-            tagline: 'Quantum Computing Infrastructure Framework',
-            description: 'Unified abstraction layer for hybrid quantum-classical workloads. Q-Fabric provides circuit optimization, error mitigation, and hardware-agnostic execution across major quantum platforms with integrated classical co-processing.',
-            category: 'quantum',
+            id: 'quantumbench',
+            name: 'QuantumBench',
+            tagline: 'Quantum Knowledge Benchmark for AI/LLM Systems',
+            description: 'The definitive benchmark dataset and evaluation framework for assessing language models on quantum physics and quantum information science. Standardized Q&A pairs from foundational through graduate-level topics with automated scoring and visualization.',
+            category: ['quantum', 'ai-ml'],
             status: 'development',
-            icon: '<circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M12 4V2M12 22V20M4 12H2M22 12H20M19.07 19.07L17.66 17.66M6.34 6.34L4.93 4.93M19.07 4.93L17.66 6.34M6.34 17.66L4.93 19.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'
+            icon: '<path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="19" cy="18" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19 16v4M17 18h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+            link: 'qb.html'
         },
         {
             id: 'neural-ops',
@@ -348,26 +351,46 @@
     ---------------------------------------------------------------- */
     const grid = document.getElementById('productGrid');
 
+    /* Helper: normalise category to array */
+    function catArray(c) { return Array.isArray(c) ? c : [c]; }
+    function matchesFilter(p, filter) {
+        if (filter === 'all') return true;
+        return catArray(p.category).includes(filter);
+    }
+
     function renderProducts(filter) {
-        const filtered = filter === 'all'
-            ? PRODUCTS
-            : PRODUCTS.filter(p => p.category === filter);
+        const filtered = PRODUCTS.filter(p => matchesFilter(p, filter));
 
         grid.innerHTML = '';
         filtered.forEach((p, i) => {
-            const st = STATUS_CONFIG[p.status] || STATUS_CONFIG['active'];
-            const catColor = CATEGORY_COLORS[p.category] || '#6366f1';
+            const cats = catArray(p.category);
+            const st = STATUS_CONFIG[p.status] || STATUS_CONFIG['development'];
+            const primaryColor = CATEGORY_COLORS[cats[0]] || '#6366f1';
+            const ctaLink = p.link || 'index.html#contact';
+
+            /* Build category badges for multi-category products */
+            const catBadges = cats.map(c => {
+                const col = CATEGORY_COLORS[c] || '#6366f1';
+                const lbl = CATEGORY_LABELS[c] || c;
+                return `<span class="product-category" style="color: ${col};">${lbl}</span>`;
+            }).join(' ');
+
+            /* Accent gradient uses first two category colors if multi */
+            const accentEnd = cats.length > 1
+                ? CATEGORY_COLORS[cats[1]] || primaryColor
+                : primaryColor + '88';
+
             const card = document.createElement('div');
             card.className = 'product-card';
             card.style.animationDelay = `${i * 0.08}s`;
             card.innerHTML = `
-                <div class="product-card-accent" style="background: linear-gradient(90deg, ${catColor}, ${catColor}88);"></div>
+                <div class="product-card-accent" style="background: linear-gradient(90deg, ${primaryColor}, ${accentEnd});"></div>
                 <div class="product-card-header">
-                    <div class="product-icon" style="color: ${catColor};">
+                    <div class="product-icon" style="color: ${primaryColor};">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">${p.icon}</svg>
                     </div>
                     <div class="product-meta">
-                        <span class="product-category" style="color: ${catColor};">${CATEGORY_LABELS[p.category]}</span>
+                        ${catBadges}
                         <span class="product-status ${st.cls}">${st.label}</span>
                     </div>
                 </div>
@@ -375,7 +398,7 @@
                 <p class="product-tagline">${p.tagline}</p>
                 <p class="product-desc">${p.description}</p>
                 <div class="product-card-footer">
-                    <a href="index.html#contact" class="product-cta">Learn More <span>→</span></a>
+                    <a href="${ctaLink}" class="product-cta">Learn More <span>→</span></a>
                 </div>
             `;
             grid.appendChild(card);
@@ -409,7 +432,8 @@
         canvas.height = 320;
 
         nodes = PRODUCTS.map((p, i) => {
-            const col = CATEGORY_COLORS[p.category] || '#6366f1';
+            const cats = catArray(p.category);
+            const col = CATEGORY_COLORS[cats[0]] || '#6366f1';
             const spacing = canvas.width / (PRODUCTS.length + 1);
             return {
                 x: spacing * (i + 1),

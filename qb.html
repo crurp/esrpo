@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumBench - EchoSpark</title>
+    <meta name="description" content="QuantumBench: The definitive benchmark for evaluating AI language models on quantum physics and quantum information science.">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* QuantumBench page-specific styles */
+        .qb-hero {
+            padding: 10rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-hero-badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .qb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+        .qb-badge-quantum {
+            background: rgba(99, 102, 241, 0.12);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.25);
+        }
+        .qb-badge-ai {
+            background: rgba(6, 182, 212, 0.12);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+        .qb-badge-open {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.25);
+        }
+        .qb-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #6366f1, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .qb-hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            color: var(--text-secondary);
+            max-width: 720px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+        .qb-hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .qb-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .qb-btn-primary {
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+        }
+        .qb-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        }
+        .qb-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .qb-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .qb-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Purpose section */
+        .qb-purpose {
+            padding: 4rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-purpose-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .qb-purpose-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .qb-purpose-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.1);
+        }
+        .qb-purpose-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+        }
+        .qb-purpose-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        .qb-purpose-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .qb-purpose-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Dataset section */
+        .qb-dataset {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-dataset-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .qb-table-wrapper {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 2.5rem;
+        }
+        .qb-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .qb-table thead {
+            background: rgba(99, 102, 241, 0.08);
+        }
+        .qb-table th {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #818cf8;
+            text-align: left;
+            padding: 1rem 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .qb-table td {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .qb-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .qb-table code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: #a5b4fc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        /* Topics section */
+        .qb-topics {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-topics-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .qb-topic-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+        }
+        .qb-chip {
+            padding: 0.6rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .qb-chip:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #818cf8;
+            background: rgba(99, 102, 241, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Code snippet section */
+        .qb-code {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-code-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .qb-code-block {
+            background: #0d0d14;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 2.5rem;
+        }
+        .qb-code-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .qb-code-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .qb-code-dot:nth-child(1) { background: #ff5f57; }
+        .qb-code-dot:nth-child(2) { background: #ffbd2e; }
+        .qb-code-dot:nth-child(3) { background: #28c840; }
+        .qb-code-header span:last-child {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+        .qb-code-body {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        .qb-code-body pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: #c9d1d9;
+        }
+        .qb-code-body .comment { color: #6a737d; }
+        .qb-code-body .keyword { color: #ff7b72; }
+        .qb-code-body .string { color: #a5d6ff; }
+        .qb-code-body .flag { color: #d2a8ff; }
+
+        /* Architecture section */
+        .qb-arch {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-arch-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .qb-arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+            margin-top: 3rem;
+        }
+        .qb-arch-step {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            min-width: 170px;
+            transition: all 0.3s ease;
+        }
+        .qb-arch-step:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-3px);
+        }
+        .qb-arch-step-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6366f1;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        .qb-arch-step h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .qb-arch-step p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+        .qb-arch-arrow {
+            font-size: 1.5rem;
+            color: var(--text-tertiary);
+            padding: 0 0.75rem;
+        }
+
+        /* JSON format */
+        .qb-format {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-format-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .qb-json-block {
+            background: #0d0d14;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+        .qb-json-block pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: #c9d1d9;
+        }
+        .qb-json-block .json-key { color: #a5d6ff; }
+        .qb-json-block .json-str { color: #a5d6ff; }
+        .qb-json-block .json-brace { color: #d2a8ff; }
+
+        /* CTA */
+        .qb-cta {
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .qb-cta h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .qb-cta p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Section headers (reusable) */
+        .qb-section-label {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #818cf8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        .qb-section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .qb-section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        .qb-text-center { text-align: center; }
+
+        @media (max-width: 768px) {
+            .qb-arch-flow {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .qb-arch-arrow {
+                transform: rotate(90deg);
+                padding: 0.25rem 0;
+            }
+            .qb-table th, .qb-table td {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BP724NMT95"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BP724NMT95');
+</script>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#logoGradient)" stroke-width="2" fill="none" class="logo-path"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#logoGradient)" class="logo-center"/>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">EchoSpark<span class="logo-sub">RPO</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="products.html" class="nav-link">Products</a></li>
+                <li><a href="index.html#domains" class="nav-link">Domains</a></li>
+                <li><a href="careers.html" class="nav-link">Careers</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="qb-hero">
+        <div class="qb-hero-badges">
+            <span class="qb-badge qb-badge-quantum">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Quantum
+            </span>
+            <span class="qb-badge qb-badge-ai">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 2a7 7 0 017 7c0 3-2 5.5-4 7l-1 3H10l-1-3c-2-1.5-4-4-4-7a7 7 0 017-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 22h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                AI / ML
+            </span>
+            <span class="qb-badge qb-badge-open">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Open Source
+            </span>
+        </div>
+        <h1>QuantumBench</h1>
+        <p class="qb-hero-subtitle">
+            The definitive benchmark for evaluating AI language models on quantum physics and quantum information science. 
+            Rigorous, standardized, and open source.
+        </p>
+        <div class="qb-hero-actions">
+            <a href="https://github.com/crurp/quantumbench-llm" target="_blank" rel="noopener" class="qb-btn qb-btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                View on GitHub
+            </a>
+            <a href="#quickstart" class="qb-btn qb-btn-secondary">
+                Quick Start
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M7 17l9.2-5L7 7v10z" fill="currentColor"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Purpose -->
+    <section class="qb-purpose">
+        <div class="qb-text-center" style="margin-bottom: 3rem; padding: 0 2rem;">
+            <span class="qb-section-label">Why QuantumBench</span>
+            <h2 class="qb-section-title">Standardized Quantum AI Evaluation</h2>
+            <p class="qb-section-desc">
+                As AI systems advance, measuring their grasp of quantum science demands rigor. 
+                QuantumBench provides the framework to do exactly that.
+            </p>
+        </div>
+        <div class="qb-purpose-grid">
+            <div class="qb-purpose-card">
+                <div class="qb-purpose-icon">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Evaluate LLM Capabilities</h3>
+                <p>Assess how well language models understand quantum information science, from basic concepts through advanced research topics.</p>
+            </div>
+            <div class="qb-purpose-card">
+                <div class="qb-purpose-icon" style="background: rgba(6, 182, 212, 0.1); color: #22d3ee;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3-9 4 18 3-9h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Benchmark Fine-Tuned Models</h3>
+                <p>Compare baseline models against specialized fine-tuned variants trained on quantum computing curricula with standardized scoring.</p>
+            </div>
+            <div class="qb-purpose-card">
+                <div class="qb-purpose-icon" style="background: rgba(139, 92, 246, 0.1); color: #c084fc;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M20 8v6m3-3h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Compare Baseline vs. Specialized</h3>
+                <p>Quantify the improvement that domain-specific training delivers over general-purpose models on quantum reasoning tasks.</p>
+            </div>
+            <div class="qb-purpose-card">
+                <div class="qb-purpose-icon" style="background: rgba(236, 72, 153, 0.1); color: #f472b6;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Track AI Progress</h3>
+                <p>Establish reproducible benchmarks to measure and track how AI systems' understanding of quantum concepts evolves over time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Structure -->
+    <section class="qb-dataset">
+        <div class="qb-dataset-inner">
+            <div class="qb-text-center">
+                <span class="qb-section-label">Datasets</span>
+                <h2 class="qb-section-title">Structured for Rigorous Evaluation</h2>
+                <p class="qb-section-desc">
+                    Two curated datasets: one for instruction fine-tuning, one held out for unbiased benchmark evaluation.
+                </p>
+            </div>
+            <div class="qb-table-wrapper">
+                <table class="qb-table">
+                    <thead>
+                        <tr>
+                            <th>Dataset</th>
+                            <th>Purpose</th>
+                            <th>Examples</th>
+                            <th>Difficulty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>quantumbench.jsonl</code></td>
+                            <td>Training &amp; instruction fine-tuning</td>
+                            <td>~100</td>
+                            <td>Foundational to intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><code>quantumbench_test.jsonl</code></td>
+                            <td>Held-out benchmark evaluation</td>
+                            <td>~50</td>
+                            <td>Graduate-level &amp; cutting-edge</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Topics Covered -->
+    <section class="qb-topics">
+        <div class="qb-topics-inner">
+            <div class="qb-text-center">
+                <span class="qb-section-label">Coverage</span>
+                <h2 class="qb-section-title">Spanning the Quantum Landscape</h2>
+                <p class="qb-section-desc">
+                    From foundational quantum mechanics to cutting-edge research, QuantumBench covers the full spectrum of quantum information science.
+                </p>
+            </div>
+            <div class="qb-topic-chips">
+                <span class="qb-chip">Density Matrices</span>
+                <span class="qb-chip">POVMs</span>
+                <span class="qb-chip">Open Quantum Systems</span>
+                <span class="qb-chip">Entanglement Measures</span>
+                <span class="qb-chip">Channel Capacity</span>
+                <span class="qb-chip">Fault-Tolerant QC</span>
+                <span class="qb-chip">Error Mitigation</span>
+                <span class="qb-chip">Neutral Atom Hardware</span>
+                <span class="qb-chip">Floquet Engineering</span>
+                <span class="qb-chip">Topological QC</span>
+                <span class="qb-chip">Measurement-Based QC</span>
+                <span class="qb-chip">Quantum Simulation</span>
+                <span class="qb-chip">NISQ Algorithms</span>
+                <span class="qb-chip">Quantum Information Theory</span>
+                <span class="qb-chip">Quantum Error Correction</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Workflow -->
+    <section class="qb-arch">
+        <div class="qb-arch-inner">
+            <div class="qb-text-center">
+                <span class="qb-section-label">Workflow</span>
+                <h2 class="qb-section-title">From Data to Evaluation</h2>
+                <p class="qb-section-desc">
+                    A complete pipeline for preparing data, training models, distilling knowledge, and benchmarking results.
+                </p>
+            </div>
+            <div class="qb-arch-flow">
+                <div class="qb-arch-step">
+                    <div class="qb-arch-step-num">Step 1</div>
+                    <h4>Prepare Data</h4>
+                    <p>Generate JSONL datasets</p>
+                </div>
+                <span class="qb-arch-arrow">→</span>
+                <div class="qb-arch-step">
+                    <div class="qb-arch-step-num">Step 2</div>
+                    <h4>Train Teacher</h4>
+                    <p>QLoRA fine-tuning</p>
+                </div>
+                <span class="qb-arch-arrow">→</span>
+                <div class="qb-arch-step">
+                    <div class="qb-arch-step-num">Step 3</div>
+                    <h4>Distill Student</h4>
+                    <p>Knowledge distillation</p>
+                </div>
+                <span class="qb-arch-arrow">→</span>
+                <div class="qb-arch-step">
+                    <div class="qb-arch-step-num">Step 4</div>
+                    <h4>Evaluate</h4>
+                    <p>Benchmark scoring</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmark Format -->
+    <section class="qb-format">
+        <div class="qb-format-inner">
+            <div class="qb-text-center">
+                <span class="qb-section-label">Format</span>
+                <h2 class="qb-section-title">Standardized JSONL Structure</h2>
+                <p class="qb-section-desc">
+                    Each record contains an instruction prompt and an authoritative response for consistent evaluation.
+                </p>
+            </div>
+            <div class="qb-json-block">
+<pre><span class="json-brace">{</span>
+  <span class="json-key">"instruction"</span>: <span class="json-str">"Answer the following quantum computing question:\n\nExplain the role of syndrome measurements in topological quantum error correction."</span>,
+  <span class="json-key">"response"</span>: <span class="json-str">"Syndrome measurements in topological codes identify error chains by measuring stabilizer operators on groups of physical qubits..."</span>
+<span class="json-brace">}</span></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section class="qb-code" id="quickstart">
+        <div class="qb-code-inner">
+            <div class="qb-text-center">
+                <span class="qb-section-label">Quick Start</span>
+                <h2 class="qb-section-title">Up and Running in Minutes</h2>
+                <p class="qb-section-desc">
+                    Clone the repo, generate datasets, and run your first evaluation with a few commands.
+                </p>
+            </div>
+            <div class="qb-code-block">
+                <div class="qb-code-header">
+                    <span class="qb-code-dot"></span>
+                    <span class="qb-code-dot"></span>
+                    <span class="qb-code-dot"></span>
+                    <span>terminal</span>
+                </div>
+                <div class="qb-code-body">
+<pre><span class="comment"># Clone & set up</span>
+<span class="keyword">git clone</span> <span class="string">https://github.com/crurp/quantumbench-llm.git</span>
+<span class="keyword">cd</span> quantumbench-llm
+<span class="keyword">bash</span> setup.sh
+<span class="keyword">source</span> venv/bin/activate
+
+<span class="comment"># Generate datasets</span>
+<span class="keyword">python</span> scripts/generate_quantumbench_data.py      <span class="comment"># Training data</span>
+<span class="keyword">python</span> scripts/generate_quantumbench_test.py      <span class="comment"># Test benchmark</span>
+
+<span class="comment"># Evaluate a model</span>
+<span class="keyword">python</span> scripts/evaluate_quantumbench.py \
+    <span class="flag">--model-path</span> models/teacher-model \
+    <span class="flag">--data-path</span> data/quantumbench_test.jsonl</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="qb-cta">
+        <h2>Contribute to QuantumBench</h2>
+        <p>QuantumBench is open source and welcomes contributions from the quantum and AI research communities.</p>
+        <div class="qb-hero-actions">
+            <a href="https://github.com/crurp/quantumbench-llm" target="_blank" rel="noopener" class="qb-btn qb-btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub Repository
+            </a>
+            <a href="index.html#contact" class="qb-btn qb-btn-secondary">
+                Contact Us
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#footerLogoGradient)" stroke-width="2" fill="none"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#footerLogoGradient)"/>
+                    <defs>
+                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>EchoSpark<span class="logo-sub">RPO</span></span>
+            </div>
+            <p class="footer-text">&copy; <span id="current-year">2026</span> EchoSpark. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-button" id="chatButton" aria-label="Open Chat">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="chat-header-text">
+                        <h3>EchoSpark Support</h3>
+                        <p>We're here to help</p>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose" aria-label="Close Chat">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-content">
+                        <p>Hello! I'm here to help answer questions about EchoSpark's services. How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." autocomplete="off">
+                <button class="chat-send" id="chatSend" aria-label="Send Message">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
