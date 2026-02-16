@@ -359,8 +359,12 @@
         return catArray(p.category).includes(filter);
     }
 
+    const STATUS_ORDER = { 'live': 0, 'beta': 1, 'development': 2, 'coming-soon': 3 };
+
     function renderProducts(filter) {
-        const filtered = PRODUCTS.filter(p => matchesFilter(p, filter));
+        const filtered = PRODUCTS
+            .filter(p => matchesFilter(p, filter))
+            .sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9));
 
         grid.innerHTML = '';
         filtered.forEach((p, i) => {
