@@ -120,15 +120,16 @@ echospark/
 
 ## Version Information
 
-- **Version:** 1.0.0
+- **Version:** 1.1.0
 - **Created:** January 2025
 - **Status:** Active
-- **Last Updated:** January 2025
+- **Last Updated:** February 2026
 
 ## Maintenance
 
 - Design system should be updated when design changes occur
 - Logo files should be regenerated from master if logo changes
+- Logo design: Hexagon with central compass rose cross (4 cardinal + 4 intercardinal points, center circle)
 - All team members should reference these documents
 - Version control all design system changes
 

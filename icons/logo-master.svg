@@ -10,8 +10,19 @@
           fill="none"
           stroke-linejoin="round"/>
     
-    <!-- Central Circle -->
-    <circle cx="20" cy="20" r="8" fill="url(#logoGradientMaster)"/>
+    <!-- Central Compass Rose Cross -->
+    <!-- Cardinal Points (N, S, E, W) - Long narrow triangles from center -->
+    <path d="M20 9L22 20L18 20Z" fill="url(#logoGradientMaster)"/>
+    <path d="M20 31L22 20L18 20Z" fill="url(#logoGradientMaster)"/>
+    <path d="M31 20L20 18L20 22Z" fill="url(#logoGradientMaster)"/>
+    <path d="M9 20L20 18L20 22Z" fill="url(#logoGradientMaster)"/>
+    <!-- Intercardinal Points (NE, SE, SW, NW) - Shorter narrow triangles from center -->
+    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#logoGradientMaster)"/>
+    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#logoGradientMaster)"/>
+    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#logoGradientMaster)"/>
+    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#logoGradientMaster)"/>
+    <!-- Center circle -->
+    <circle cx="20" cy="20" r="1.5" fill="url(#logoGradientMaster)"/>
     
     <!-- Gradient Definition -->
     <defs>

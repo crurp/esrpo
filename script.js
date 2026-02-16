@@ -221,4 +221,156 @@ document.addEventListener('DOMContentLoaded', () => {
             imageObserver.observe(img);
         });
     }
+
+    // Live Chat Widget
+    const chatButton = document.getElementById('chatButton');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+
+    if (chatButton && chatWindow) {
+        // Open/close chat
+        chatButton.addEventListener('click', () => {
+            chatWindow.classList.add('active');
+            chatInput.focus();
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.remove('active');
+        });
+
+        // Generic response patterns
+        const responsePatterns = [
+            {
+                keywords: ['quantum', 'quantum computing', 'quantum information'],
+                responses: [
+                    'Quantum computing represents a paradigm shift in computational power. We specialize in quantum information science, helping organizations leverage quantum algorithms, quantum machine learning, and quantum cryptography.',
+                    'Our quantum services include strategic planning, quantum-enhanced applications, and infrastructure development. We help organizations prepare for the quantum era.',
+                    'Quantum technologies can solve problems intractable for classical computers through superposition and entanglement. We can help you explore quantum solutions for your specific needs.'
+                ]
+            },
+            {
+                keywords: ['ai', 'artificial intelligence', 'machine learning', 'ml', 'agentic', 'agents'],
+                responses: [
+                    'We develop fully agentic AI systems with autonomous reasoning and execution capabilities. Our services include enterprise AI enhancement, agentic infrastructure design, and custom ML development.',
+                    'Our AI/ML expertise spans from strategy to implementation, helping organizations build intelligent systems that transform business operations.',
+                    'We specialize in creating autonomous AI agents that can independently reason and execute tasks, making intelligent systems a reality for your organization.'
+                ]
+            },
+            {
+                keywords: ['cybersecurity', 'security', 'cyber', 'protection', 'threat', 'vulnerability'],
+                responses: [
+                    'Cybersecurity is critical in today\'s digital landscape. We provide comprehensive security solutions including threat assessment, vulnerability analysis, and security infrastructure design.',
+                    'Our cybersecurity services help protect your digital assets and infrastructure from evolving threats. We offer strategic security planning and implementation.',
+                    'We help organizations build robust security postures through advanced threat detection, security architecture, and ongoing security management.'
+                ]
+            },
+            {
+                keywords: ['service', 'services', 'offer', 'offerings', 'what do you do'],
+                responses: [
+                    'EchoSpark specializes in three main domains: Quantum Information Science, AI & Machine Learning, and Cybersecurity. We provide strategic consulting, infrastructure development, and custom solutions.',
+                    'We offer services across quantum computing, agentic AI systems, and cybersecurity. From strategy to implementation, we help organizations leverage cutting-edge technology.',
+                    'Our services span quantum technologies, AI/ML development, and cybersecurity solutions. We work with organizations to build and deploy advanced technology systems.'
+                ]
+            },
+            {
+                keywords: ['contact', 'reach', 'email', 'get in touch', 'how to contact'],
+                responses: [
+                    'You can reach us at info@esrpo.com for inquiries about our services. We\'d be happy to discuss how we can help with your technology needs.',
+                    'For more information or to discuss your project, please contact us at info@esrpo.com. Our team is ready to assist you.',
+                    'Feel free to reach out to info@esrpo.com with any questions. We\'d love to learn more about your requirements and how we can help.'
+                ]
+            },
+            {
+                keywords: ['price', 'pricing', 'cost', 'how much', 'fee'],
+                responses: [
+                    'Pricing varies based on project scope and requirements. We provide customized quotes for each engagement. Please reach out to info@esrpo.com for detailed pricing information.',
+                    'Our pricing is tailored to each project\'s specific needs. Contact us at info@esrpo.com to discuss your requirements and receive a customized proposal.',
+                    'We offer flexible pricing based on your project needs. For detailed pricing information, please contact info@esrpo.com and we\'ll provide a customized quote.'
+                ]
+            },
+            {
+                keywords: ['hello', 'hi', 'hey', 'greetings'],
+                responses: [
+                    'Hello! I\'m here to help answer questions about EchoSpark\'s services. What would you like to know?',
+                    'Hi there! How can I assist you with information about our quantum, AI/ML, or cybersecurity services?',
+                    'Greetings! I\'m ready to help you learn more about EchoSpark. What interests you most?'
+                ]
+            }
+        ];
+
+        // Get generic response based on user input
+        function getResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            // Find matching pattern
+            for (const pattern of responsePatterns) {
+                for (const keyword of pattern.keywords) {
+                    if (lowerMessage.includes(keyword)) {
+                        const randomResponse = pattern.responses[Math.floor(Math.random() * pattern.responses.length)];
+                        return randomResponse;
+                    }
+                }
+            }
+            
+            // Default response if no pattern matches
+            const defaultResponses = [
+                'That\'s an interesting question. Let me help you with that.',
+                'I understand you\'re looking for more information. Let me provide some details.',
+                'Thanks for your inquiry. I\'d be happy to assist you with that.'
+            ];
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // Add message to chat
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const p = document.createElement('p');
+            p.textContent = text;
+            contentDiv.appendChild(p);
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send message
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            // Simulate typing delay
+            chatSend.disabled = true;
+            setTimeout(() => {
+                const response = getResponse(message);
+                addMessage(response + ' Please reach out to info@esrpo.com we\'d love to assist you with this topic.');
+                chatSend.disabled = false;
+                chatInput.focus();
+            }, 800);
+        }
+
+        // Send button click
+        chatSend.addEventListener('click', sendMessage);
+
+        // Enter key to send
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
 });

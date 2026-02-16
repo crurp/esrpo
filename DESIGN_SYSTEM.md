@@ -25,11 +25,11 @@
 
 ### Logo
 
-The EchoSpark logo consists of a geometric hexagon with a central circle, representing precision, structure, and innovation in technology.
+The EchoSpark logo consists of a geometric hexagon with a central compass rose cross, representing precision, direction, and innovation in technology.
 
 **Logo Specifications:**
-- **Primary Logo:** Hexagon with central circle, gradient fill
-- **Logo Mark:** Icon only (hexagon + circle)
+- **Primary Logo:** Hexagon with central compass rose cross, gradient fill
+- **Logo Mark:** Icon only (hexagon + compass rose)
 - **Wordmark:** "EchoSpark" text with gradient
 - **Combined:** Logo mark + wordmark
 
@@ -389,7 +389,7 @@ gap: 1.5rem;
 
 **Structure:**
 - Hexagon outer shape (6-sided polygon)
-- Central circle (radius: 8px)
+- Central compass rose cross (8-pointed: 4 cardinal + 4 intercardinal)
 - Gradient fill/stroke
 - SVG format for scalability
 

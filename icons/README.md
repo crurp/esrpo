@@ -22,7 +22,7 @@ All icons are provided in SVG format (vector, scalable) and maintain the same de
 - **Format:** SVG (Scalable Vector Graphics)
 - **ViewBox:** 0 0 40 40 (maintains aspect ratio)
 - **Colors:** Gradient from #6366f1 (Indigo) to #8b5cf6 (Violet)
-- **Structure:** Hexagon outline with central circle
+- **Structure:** Hexagon outline with central compass rose cross (8-pointed: 4 cardinal + 4 intercardinal, center circle)
 
 ## Usage Guidelines
 
@@ -99,5 +99,5 @@ All logo files are proprietary to EchoSpark and are protected by copyright. Unau
 
 ---
 
-**Last Updated:** January 2025  
+**Last Updated:** February 2026  
 **Maintained By:** EchoSpark Design Team
