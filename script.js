@@ -241,67 +241,134 @@ document.addEventListener('DOMContentLoaded', () => {
             chatWindow.classList.remove('active');
         });
 
-        // Generic response patterns
+        // Response patterns with topic labels and contextual email CTAs
         const responsePatterns = [
             {
                 keywords: ['quantum', 'quantum computing', 'quantum information'],
+                topic: 'quantum computing',
                 responses: [
-                    'Quantum computing represents a paradigm shift in computational power. We specialize in quantum information science, helping organizations leverage quantum algorithms, quantum machine learning, and quantum cryptography.',
-                    'Our quantum services include strategic planning, quantum-enhanced applications, and infrastructure development. We help organizations prepare for the quantum era.',
-                    'Quantum technologies can solve problems intractable for classical computers through superposition and entanglement. We can help you explore quantum solutions for your specific needs.'
+                    'Great question about quantum computing! We specialize in quantum information science, helping organizations leverage quantum algorithms, quantum machine learning, and quantum cryptography.',
+                    'Quantum technologies are a core part of what we do. Our services include strategic planning, quantum-enhanced applications, and infrastructure development for the quantum era.',
+                    'Quantum computing is one of our primary domains. We help organizations explore quantum solutions, from algorithm design to infrastructure readiness.'
+                ],
+                ctas: [
+                    'To discuss how quantum computing can benefit your organization, reach out to us at info@esrpo.com.',
+                    'Our quantum team would love to learn more about your goals. Drop us a line at info@esrpo.com to get the conversation started.',
+                    'For a deeper dive into our quantum consulting services, contact us at info@esrpo.com and we\'ll set up a time to talk.'
                 ]
             },
             {
                 keywords: ['ai', 'artificial intelligence', 'machine learning', 'ml', 'agentic', 'agents'],
+                topic: 'AI and machine learning',
                 responses: [
-                    'We develop fully agentic AI systems with autonomous reasoning and execution capabilities. Our services include enterprise AI enhancement, agentic infrastructure design, and custom ML development.',
-                    'Our AI/ML expertise spans from strategy to implementation, helping organizations build intelligent systems that transform business operations.',
-                    'We specialize in creating autonomous AI agents that can independently reason and execute tasks, making intelligent systems a reality for your organization.'
+                    'AI and machine learning are at the heart of what we build. We develop fully agentic AI systems with autonomous reasoning and execution capabilities, including enterprise AI enhancement and custom ML development.',
+                    'You\'re asking about the right space. Our AI/ML expertise spans from strategy to implementation, helping organizations build intelligent systems that transform operations.',
+                    'Agentic AI is one of our specialties. We create autonomous systems that can independently reason, learn, and execute tasks at enterprise scale.'
+                ],
+                ctas: [
+                    'To explore how AI/ML can transform your operations, contact our team at info@esrpo.com.',
+                    'We\'d love to discuss your AI goals in more detail. Reach out to info@esrpo.com and we\'ll connect you with the right people.',
+                    'For a consultation on AI and machine learning solutions, email us at info@esrpo.com.'
                 ]
             },
             {
                 keywords: ['cybersecurity', 'security', 'cyber', 'protection', 'threat', 'vulnerability'],
+                topic: 'cybersecurity',
                 responses: [
-                    'Cybersecurity is critical in today\'s digital landscape. We provide comprehensive security solutions including threat assessment, vulnerability analysis, and security infrastructure design.',
-                    'Our cybersecurity services help protect your digital assets and infrastructure from evolving threats. We offer strategic security planning and implementation.',
-                    'We help organizations build robust security postures through advanced threat detection, security architecture, and ongoing security management.'
+                    'Cybersecurity is critical, and it\'s one of our core domains. We provide comprehensive security solutions including threat assessment, vulnerability analysis, and Zero Trust Architecture design.',
+                    'You\'re right to prioritize security. Our cybersecurity services help protect digital assets and infrastructure from evolving threats through strategic planning and hands-on implementation.',
+                    'Security is something we take seriously. We help organizations build robust security postures through advanced threat detection, security architecture, and continuous monitoring.'
+                ],
+                ctas: [
+                    'To discuss your security needs and how we can help strengthen your defenses, reach out to info@esrpo.com.',
+                    'Our cybersecurity team can walk you through a tailored approach. Contact us at info@esrpo.com to get started.',
+                    'For a security consultation or assessment, email info@esrpo.com and we\'ll schedule a call.'
                 ]
             },
             {
-                keywords: ['service', 'services', 'offer', 'offerings', 'what do you do'],
+                keywords: ['service', 'services', 'offer', 'offerings', 'what do you do', 'help'],
+                topic: 'our services',
                 responses: [
-                    'EchoSpark specializes in three main domains: Quantum Information Science, AI & Machine Learning, and Cybersecurity. We provide strategic consulting, infrastructure development, and custom solutions.',
-                    'We offer services across quantum computing, agentic AI systems, and cybersecurity. From strategy to implementation, we help organizations leverage cutting-edge technology.',
-                    'Our services span quantum technologies, AI/ML development, and cybersecurity solutions. We work with organizations to build and deploy advanced technology systems.'
+                    'EchoSpark specializes in three domains: Quantum Information Science, AI & Machine Learning, and Cybersecurity. We provide strategic consulting, infrastructure development, and custom solutions across all three.',
+                    'We offer end-to-end services across quantum computing, agentic AI systems, and cybersecurity. From strategy to implementation, we help organizations leverage cutting-edge technology.',
+                    'Our services span quantum technologies, AI/ML development, and cybersecurity solutions. Every engagement is built on our Resilient Performance Operations philosophy.'
+                ],
+                ctas: [
+                    'To learn which of our services best fits your needs, contact us at info@esrpo.com.',
+                    'We\'d be happy to walk you through our full service offerings. Reach out to info@esrpo.com to start the conversation.',
+                    'For a detailed overview tailored to your organization, email info@esrpo.com and we\'ll put together a custom briefing.'
                 ]
             },
             {
-                keywords: ['contact', 'reach', 'email', 'get in touch', 'how to contact'],
+                keywords: ['contact', 'reach', 'email', 'get in touch', 'how to contact', 'talk'],
+                topic: 'getting in touch',
                 responses: [
-                    'You can reach us at info@esrpo.com for inquiries about our services. We\'d be happy to discuss how we can help with your technology needs.',
-                    'For more information or to discuss your project, please contact us at info@esrpo.com. Our team is ready to assist you.',
-                    'Feel free to reach out to info@esrpo.com with any questions. We\'d love to learn more about your requirements and how we can help.'
+                    'The best way to reach us is by email at info@esrpo.com. Our team typically responds within one business day and we\'re happy to set up a call to discuss your needs.',
+                    'You can contact us directly at info@esrpo.com. Whether you have a specific project in mind or just want to explore possibilities, we\'d love to hear from you.',
+                    'Reach out to us at info@esrpo.com. We\'re always open to conversations about how quantum, AI, or cybersecurity can drive value for your organization.'
+                ],
+                ctas: []
+            },
+            {
+                keywords: ['price', 'pricing', 'cost', 'how much', 'fee', 'budget', 'quote'],
+                topic: 'pricing',
+                responses: [
+                    'Pricing is something we tailor to each engagement based on scope, complexity, and timeline. We don\'t believe in one-size-fits-all, so every proposal is customized to your specific requirements.',
+                    'Our pricing depends on the nature and scale of your project. We work with organizations of all sizes and build proposals that align with your budget and objectives.',
+                    'We offer flexible engagement models and pricing structures. Whether it\'s a focused consulting sprint or a long-term partnership, we\'ll find a model that works for you.'
+                ],
+                ctas: [
+                    'For a customized quote, reach out to info@esrpo.com with a brief description of your project and we\'ll get back to you promptly.',
+                    'Email info@esrpo.com with your project details and we\'ll put together a tailored proposal for you.',
+                    'Contact us at info@esrpo.com to discuss your requirements and we\'ll provide a detailed pricing breakdown.'
                 ]
             },
             {
-                keywords: ['price', 'pricing', 'cost', 'how much', 'fee'],
+                keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon'],
+                topic: 'greeting',
                 responses: [
-                    'Pricing varies based on project scope and requirements. We provide customized quotes for each engagement. Please reach out to info@esrpo.com for detailed pricing information.',
-                    'Our pricing is tailored to each project\'s specific needs. Contact us at info@esrpo.com to discuss your requirements and receive a customized proposal.',
-                    'We offer flexible pricing based on your project needs. For detailed pricing information, please contact info@esrpo.com and we\'ll provide a customized quote.'
+                    'Hello! Welcome to EchoSpark. I\'m here to help answer questions about our quantum, AI/ML, and cybersecurity services. What can I help you with?',
+                    'Hi there! Thanks for reaching out. Whether you\'re curious about quantum computing, AI systems, or cybersecurity, I\'m happy to point you in the right direction.',
+                    'Hey! Great to hear from you. What area of our expertise are you most interested in? I can share some details or connect you with our team.'
+                ],
+                ctas: []
+            },
+            {
+                keywords: ['rpo', 'resilient', 'performance', 'operations', 'esrpo'],
+                topic: 'Resilient Performance Operations',
+                responses: [
+                    'ESRPO stands for EchoSpark Resilient Performance Operations. It\'s our core philosophy: every system we build and every engagement we deliver is designed for resilience, performance, and operational excellence.',
+                    'Resilient Performance Operations is the foundation of everything we do. It means building technology systems that maintain peak performance through adversity, whether that\'s a cyberattack, a paradigm shift, or rapid scaling.',
+                    'RPO is what sets us apart. It\'s a discipline focused on designing systems that don\'t just work, but continue to perform at their best even under pressure.'
+                ],
+                ctas: [
+                    'To learn how RPO can strengthen your technology operations, reach out to info@esrpo.com.',
+                    'We\'d love to discuss how our RPO approach applies to your specific challenges. Contact us at info@esrpo.com.',
+                    'For more on how Resilient Performance Operations can transform your infrastructure, email info@esrpo.com.'
                 ]
             },
             {
-                keywords: ['hello', 'hi', 'hey', 'greetings'],
+                keywords: ['about', 'company', 'who are you', 'what is echospark', 'team'],
+                topic: 'EchoSpark',
                 responses: [
-                    'Hello! I\'m here to help answer questions about EchoSpark\'s services. What would you like to know?',
-                    'Hi there! How can I assist you with information about our quantum, AI/ML, or cybersecurity services?',
-                    'Greetings! I\'m ready to help you learn more about EchoSpark. What interests you most?'
+                    'EchoSpark is a technology consulting firm operating under the name ESRPO, which stands for EchoSpark Resilient Performance Operations. We specialize in quantum computing, AI/ML, and cybersecurity.',
+                    'We\'re a team of specialists in quantum science, artificial intelligence, and cybersecurity. Our mission is to help organizations build technology systems that are resilient, high-performing, and operationally excellent.',
+                    'EchoSpark was founded on the belief that the most critical technology systems must be engineered for resilience from day one. We operate across quantum, AI, and security domains.'
+                ],
+                ctas: [
+                    'Want to learn more about our team and approach? Reach out to info@esrpo.com and we\'ll share more details.',
+                    'We\'d love to tell you more about what we do. Contact us at info@esrpo.com to start a conversation.',
+                    'For a deeper look at EchoSpark and how we work, email info@esrpo.com.'
                 ]
             }
         ];
 
-        // Get generic response based on user input
+        // Pick a random item from an array
+        function pickRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // Get contextual response based on user input
         function getResponse(userMessage) {
             const lowerMessage = userMessage.toLowerCase();
             
@@ -309,19 +376,34 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const pattern of responsePatterns) {
                 for (const keyword of pattern.keywords) {
                     if (lowerMessage.includes(keyword)) {
-                        const randomResponse = pattern.responses[Math.floor(Math.random() * pattern.responses.length)];
-                        return randomResponse;
+                        const response = pickRandom(pattern.responses);
+                        // If the pattern has CTAs, append one; otherwise the response is self-contained
+                        if (pattern.ctas && pattern.ctas.length > 0) {
+                            return response + ' ' + pickRandom(pattern.ctas);
+                        }
+                        return response;
                     }
                 }
             }
             
-            // Default response if no pattern matches
+            // Default: echo back what the user asked about and point to email
+            // Extract a meaningful snippet from the user's message to reference
+            const trimmedMessage = userMessage.trim();
+            const topic = trimmedMessage.length > 80 
+                ? trimmedMessage.substring(0, 77) + '...' 
+                : trimmedMessage;
+            
             const defaultResponses = [
-                'That\'s an interesting question. Let me help you with that.',
-                'I understand you\'re looking for more information. Let me provide some details.',
-                'Thanks for your inquiry. I\'d be happy to assist you with that.'
+                'Thanks for asking about "' + topic + '." While I may not have specific details on that here, our team can definitely help.',
+                'That\'s a great question regarding "' + topic + '." I\'d love to connect you with someone who can give you a thorough answer.',
+                'I appreciate your interest in "' + topic + '." Our specialists would be the best people to walk you through the details.'
             ];
-            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+            const defaultCtas = [
+                ' Reach out to info@esrpo.com and we\'ll get back to you promptly.',
+                ' Email info@esrpo.com with your question and our team will follow up.',
+                ' Contact us at info@esrpo.com so we can give you the attention this deserves.'
+            ];
+            return pickRandom(defaultResponses) + pickRandom(defaultCtas);
         }
 
         // Add message to chat
@@ -356,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatSend.disabled = true;
             setTimeout(() => {
                 const response = getResponse(message);
-                addMessage(response + ' Please reach out to info@esrpo.com we\'d love to assist you with this topic.');
+                addMessage(response);
                 chatSend.disabled = false;
                 chatInput.focus();
             }, 800);
