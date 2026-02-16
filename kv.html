@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KnowledgeVault - EchoSpark</title>
+    <meta name="description" content="KnowledgeVault: AI-Agentic Knowledge Management Platform with autonomous agent hierarchy for enterprise intelligence.">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* KnowledgeVault page-specific styles */
+        .kv-hero {
+            padding: 10rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .kv-hero-badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .kv-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+        .kv-badge-ai {
+            background: rgba(6, 182, 212, 0.12);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+        .kv-badge-agents {
+            background: rgba(139, 92, 246, 0.12);
+            color: #c084fc;
+            border: 1px solid rgba(139, 92, 246, 0.25);
+        }
+        .kv-badge-beta {
+            background: rgba(234, 179, 8, 0.12);
+            color: #facc15;
+            border: 1px solid rgba(234, 179, 8, 0.25);
+        }
+        .kv-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .kv-hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            color: var(--text-secondary);
+            max-width: 740px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+        .kv-hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .kv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .kv-btn-primary {
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+        }
+        .kv-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.5);
+        }
+        .kv-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .kv-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .kv-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Section shared styles */
+        .kv-section {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .kv-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .kv-section-label {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #22d3ee;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        .kv-section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .kv-section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        .kv-text-center { text-align: center; }
+
+        /* Feature cards */
+        .kv-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .kv-feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .kv-feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .kv-feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 10px 40px rgba(6, 182, 212, 0.08);
+        }
+        .kv-feature-card:hover::before {
+            opacity: 1;
+        }
+        .kv-feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            background: rgba(6, 182, 212, 0.1);
+            color: #22d3ee;
+        }
+        .kv-feature-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        .kv-feature-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .kv-feature-card p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* SAAH architecture diagram */
+        .kv-saah {
+            margin-top: 3rem;
+        }
+        .kv-tier {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .kv-tier-bar {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .kv-tier-bar:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+            transform: translateX(4px);
+        }
+        .kv-tier-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+            min-width: 60px;
+        }
+        .kv-tier-num.t0 { color: #facc15; }
+        .kv-tier-num.t1 { color: #22d3ee; }
+        .kv-tier-num.t2 { color: #818cf8; }
+        .kv-tier-num.t3 { color: #f472b6; }
+        .kv-tier-content h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .kv-tier-content p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .kv-tier-agents {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .kv-agent-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-tertiary);
+        }
+        .kv-tier-connector {
+            width: 2px;
+            height: 1.5rem;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 0 auto;
+        }
+
+        /* Tech stack */
+        .kv-tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .kv-tech-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+        }
+        .kv-tech-card:hover {
+            border-color: rgba(6, 182, 212, 0.2);
+            transform: translateY(-3px);
+        }
+        .kv-tech-card h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .kv-tech-card h4 span {
+            font-size: 1.1rem;
+        }
+        .kv-tech-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .kv-tech-list li {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .kv-tech-list li::before {
+            content: '›';
+            color: #22d3ee;
+            font-weight: 700;
+        }
+
+        /* Roadmap */
+        .kv-roadmap {
+            margin-top: 3rem;
+        }
+        .kv-phase {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            align-items: flex-start;
+        }
+        .kv-phase-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 50px;
+        }
+        .kv-phase-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid;
+            position: relative;
+        }
+        .kv-phase-dot.active {
+            background: #22d3ee;
+            border-color: #22d3ee;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+        }
+        .kv-phase-dot.active::after {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            animation: kv-pulse 2s infinite;
+        }
+        .kv-phase-dot.future {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: transparent;
+        }
+        .kv-phase-line {
+            width: 2px;
+            flex: 1;
+            min-height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            margin-top: 4px;
+        }
+        .kv-phase-content {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+        .kv-phase-content:hover {
+            border-color: rgba(6, 182, 212, 0.2);
+        }
+        .kv-phase-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+        .kv-phase-label.current { color: #22d3ee; }
+        .kv-phase-label.upcoming { color: var(--text-tertiary); }
+        .kv-phase-content h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .kv-phase-content p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        @keyframes kv-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        /* Metrics */
+        .kv-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .kv-metric {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .kv-metric:hover {
+            border-color: rgba(6, 182, 212, 0.25);
+            transform: translateY(-3px);
+        }
+        .kv-metric-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        .kv-metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* CTA */
+        .kv-cta {
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .kv-cta h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .kv-cta p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .kv-phase {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .kv-phase-marker {
+                flex-direction: row;
+                min-width: unset;
+            }
+            .kv-phase-line {
+                width: auto;
+                height: 2px;
+                min-height: unset;
+                min-width: 20px;
+            }
+            .kv-tier-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BP724NMT95"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BP724NMT95');
+</script>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#logoGradient)" stroke-width="2" fill="none" class="logo-path"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#logoGradient)" class="logo-center"/>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">EchoSpark<span class="logo-sub">RPO</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="products.html" class="nav-link">Products</a></li>
+                <li><a href="index.html#domains" class="nav-link">Domains</a></li>
+                <li><a href="careers.html" class="nav-link">Careers</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="kv-hero">
+        <div class="kv-hero-badges">
+            <span class="kv-badge kv-badge-ai">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 2a7 7 0 017 7c0 3-2 5.5-4 7l-1 3H10l-1-3c-2-1.5-4-4-4-7a7 7 0 017-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 22h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                AI / ML
+            </span>
+            <span class="kv-badge kv-badge-agents">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v4M10 13l-3.5 4.5M14 13l3.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="13" r="2" stroke="currentColor" stroke-width="1.5"/></svg>
+                Agentic AI
+            </span>
+            <span class="kv-badge kv-badge-beta">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Beta
+            </span>
+        </div>
+        <h1>KnowledgeVault</h1>
+        <p class="kv-hero-subtitle">
+            An AI-agentic knowledge management platform where autonomous agents ingest, organize, search, and 
+            understand your enterprise knowledge. Architected as a Stratified Autonomous Agent Hierarchy.
+        </p>
+        <div class="kv-hero-actions">
+            <a href="index.html#contact" class="kv-btn kv-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Request Access
+            </a>
+            <a href="#architecture" class="kv-btn kv-btn-secondary">
+                Explore Architecture
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M7 17l9.2-5L7 7v10z" fill="currentColor"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Key Features -->
+    <section class="kv-section">
+        <div class="kv-inner">
+            <div class="kv-text-center">
+                <span class="kv-section-label">Capabilities</span>
+                <h2 class="kv-section-title">Intelligent Knowledge at Scale</h2>
+                <p class="kv-section-desc">
+                    KnowledgeVault combines multi-agent AI with enterprise-grade infrastructure to transform how organizations manage and leverage knowledge.
+                </p>
+            </div>
+            <div class="kv-features-grid">
+                <div class="kv-feature-card">
+                    <div class="kv-feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Smart Document Ingestion</h3>
+                    <p>Automatic chunking, embedding, and knowledge graph creation from PDF, DOCX, TXT, XLSX, and Markdown. AI-verified documents receive the KV Shield Badge for trusted content.</p>
+                </div>
+                <div class="kv-feature-card">
+                    <div class="kv-feature-icon" style="background: rgba(139, 92, 246, 0.1); color: #c084fc;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3>Semantic Search &amp; RAG</h3>
+                    <p>Multi-agent retrieval augmented generation with citations. Orchestrated agent workflows handle complex queries, extracting entities and mapping relationships across your knowledge base.</p>
+                </div>
+                <div class="kv-feature-card">
+                    <div class="kv-feature-icon" style="background: rgba(99, 102, 241, 0.1); color: #818cf8;">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v4M10 13l-3.5 4.5M14 13l3.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="13" r="2" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </div>
+                    <h3>Autonomous Agent Network</h3>
+                    <p>A four-tier hierarchy of specialized AI agents handles everything from strategic planning to code execution, while humans set priorities and approve key decisions.</p>
+                </div>
+                <div class="kv-feature-card">
+                    <div class="kv-feature-icon" style="background: rgba(236, 72, 153, 0.1); color: #f472b6;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Enterprise Security</h3>
+                    <p>Role-based access control, PII filtering middleware, JWT authentication, and compliance reporting. All agent decisions are fully auditable through the knowledge graph.</p>
+                </div>
+                <div class="kv-feature-card">
+                    <div class="kv-feature-icon" style="background: rgba(34, 197, 94, 0.1); color: #4ade80;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Real-Time Monitoring</h3>
+                    <p>Prometheus metrics, Grafana dashboards, and a live event stream give operators full visibility into system health, agent activity, and knowledge base growth.</p>
+                </div>
+                <div class="kv-feature-card">
+                    <div class="kv-feature-icon" style="background: rgba(234, 179, 8, 0.1); color: #facc15;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Self-Improving System</h3>
+                    <p>Agents tune their own prompts based on outcomes, shift resources to underperforming areas, and continuously optimize the knowledge base for frequently accessed content.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SAAH Architecture -->
+    <section class="kv-section" id="architecture">
+        <div class="kv-inner">
+            <div class="kv-text-center">
+                <span class="kv-section-label">Architecture</span>
+                <h2 class="kv-section-title">Stratified Autonomous Agent Hierarchy</h2>
+                <p class="kv-section-desc">
+                    Four tiers of specialized AI agents with increasing autonomy and narrowing scope, from strategic governance down to atomic task execution.
+                </p>
+            </div>
+            <div class="kv-saah">
+                <div class="kv-tier">
+                    <div class="kv-tier-bar">
+                        <span class="kv-tier-num t0">Tier 0</span>
+                        <div class="kv-tier-content">
+                            <h4>Governor Council</h4>
+                            <p>Strategic planning, policy setting, and cross-domain conflict resolution. Human approval gates ensure alignment with organizational goals.</p>
+                            <div class="kv-tier-agents">
+                                <span class="kv-agent-tag">GovernorCouncilAgent</span>
+                                <span class="kv-agent-tag">Human Approval Gate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kv-tier-connector"></div>
+                <div class="kv-tier">
+                    <div class="kv-tier-bar">
+                        <span class="kv-tier-num t1">Tier 1</span>
+                        <div class="kv-tier-content">
+                            <h4>Domain Directors</h4>
+                            <p>Three specialized directors coordinate their domains: Product (feature specs, backlog), Engineering (technical plans, code quality), and Operations (health, security, incidents).</p>
+                            <div class="kv-tier-agents">
+                                <span class="kv-agent-tag">ProductDirector</span>
+                                <span class="kv-agent-tag">EngineeringDirector</span>
+                                <span class="kv-agent-tag">OperationsDirector</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kv-tier-connector"></div>
+                <div class="kv-tier">
+                    <div class="kv-tier-bar">
+                        <span class="kv-tier-num t2">Tier 2</span>
+                        <div class="kv-tier-content">
+                            <h4>Manager Agents</h4>
+                            <p>Task decomposition specialists that translate Director-level objectives into executable assignments for Worker agents.</p>
+                            <div class="kv-tier-agents">
+                                <span class="kv-agent-tag">PRD Manager</span>
+                                <span class="kv-agent-tag">UX Manager</span>
+                                <span class="kv-agent-tag">QA Manager</span>
+                                <span class="kv-agent-tag">Frontend Manager</span>
+                                <span class="kv-agent-tag">Backend Manager</span>
+                                <span class="kv-agent-tag">Infra Manager</span>
+                                <span class="kv-agent-tag">Security Manager</span>
+                                <span class="kv-agent-tag">Monitoring Manager</span>
+                                <span class="kv-agent-tag">Docs Manager</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kv-tier-connector"></div>
+                <div class="kv-tier">
+                    <div class="kv-tier-bar">
+                        <span class="kv-tier-num t3">Tier 3</span>
+                        <div class="kv-tier-content">
+                            <h4>Worker Agents</h4>
+                            <p>Atomic, single-purpose executors that carry out the actual work: code generation, testing, schema creation, deployment, scanning, and knowledge processing.</p>
+                            <div class="kv-tier-agents">
+                                <span class="kv-agent-tag">CodeGen</span>
+                                <span class="kv-agent-tag">TestGen</span>
+                                <span class="kv-agent-tag">Schema</span>
+                                <span class="kv-agent-tag">Migration</span>
+                                <span class="kv-agent-tag">Component</span>
+                                <span class="kv-agent-tag">Deploy</span>
+                                <span class="kv-agent-tag">Ingestion</span>
+                                <span class="kv-agent-tag">Retrieval</span>
+                                <span class="kv-agent-tag">Optimization</span>
+                                <span class="kv-agent-tag">Expert</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Metrics -->
+    <section class="kv-section">
+        <div class="kv-inner">
+            <div class="kv-text-center">
+                <span class="kv-section-label">Performance Targets</span>
+                <h2 class="kv-section-title">Engineered for Autonomy</h2>
+                <p class="kv-section-desc">
+                    KnowledgeVault targets aggressive benchmarks across autonomy, quality, and operational efficiency.
+                </p>
+            </div>
+            <div class="kv-metrics-grid">
+                <div class="kv-metric">
+                    <div class="kv-metric-value">3x</div>
+                    <div class="kv-metric-label">Faster feature delivery vs. manual development</div>
+                </div>
+                <div class="kv-metric">
+                    <div class="kv-metric-value">99%</div>
+                    <div class="kv-metric-label">Worker code generation passes automated tests</div>
+                </div>
+                <div class="kv-metric">
+                    <div class="kv-metric-value">95%</div>
+                    <div class="kv-metric-label">Knowledge base ingestion accuracy maintained</div>
+                </div>
+                <div class="kv-metric">
+                    <div class="kv-metric-value">80%</div>
+                    <div class="kv-metric-label">Reduction in manual incident response</div>
+                </div>
+                <div class="kv-metric">
+                    <div class="kv-metric-value">&lt;2s</div>
+                    <div class="kv-metric-label">Directive-to-result cycle time (Tiers 1-3)</div>
+                </div>
+                <div class="kv-metric">
+                    <div class="kv-metric-value">90%</div>
+                    <div class="kv-metric-label">Governor directives approved without modification</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="kv-section">
+        <div class="kv-inner">
+            <div class="kv-text-center">
+                <span class="kv-section-label">Technology</span>
+                <h2 class="kv-section-title">Built on Proven Infrastructure</h2>
+                <p class="kv-section-desc">
+                    Enterprise-grade stack combining AI orchestration, vector databases, and containerized deployment.
+                </p>
+            </div>
+            <div class="kv-tech-grid">
+                <div class="kv-tech-card">
+                    <h4><span>⚡</span> Backend</h4>
+                    <ul class="kv-tech-list">
+                        <li>FastAPI (Python)</li>
+                        <li>LangChain / LangGraph</li>
+                        <li>OpenAI GPT-4o</li>
+                        <li>Pydantic validation</li>
+                        <li>Prometheus metrics</li>
+                    </ul>
+                </div>
+                <div class="kv-tech-card">
+                    <h4><span>🎨</span> Frontend</h4>
+                    <ul class="kv-tech-list">
+                        <li>React + TypeScript</li>
+                        <li>Ant Design components</li>
+                        <li>Vite build tooling</li>
+                        <li>Axios HTTP client</li>
+                    </ul>
+                </div>
+                <div class="kv-tech-card">
+                    <h4><span>🧠</span> Knowledge Layer</h4>
+                    <ul class="kv-tech-list">
+                        <li>Pinecone (vector DB)</li>
+                        <li>Neo4j (graph DB)</li>
+                        <li>SQLite (relational fallback)</li>
+                        <li>Redis (cache + state)</li>
+                    </ul>
+                </div>
+                <div class="kv-tech-card">
+                    <h4><span>🚀</span> Infrastructure</h4>
+                    <ul class="kv-tech-list">
+                        <li>Docker + Docker Compose</li>
+                        <li>Kubernetes (planned)</li>
+                        <li>Nginx reverse proxy</li>
+                        <li>Grafana dashboards</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="kv-section">
+        <div class="kv-inner">
+            <div class="kv-text-center">
+                <span class="kv-section-label">Roadmap</span>
+                <h2 class="kv-section-title">Path to Full Autonomy</h2>
+                <p class="kv-section-desc">
+                    A 16-week phased implementation plan building from foundational infrastructure to complete autonomous operation.
+                </p>
+            </div>
+            <div class="kv-roadmap">
+                <div class="kv-phase">
+                    <div class="kv-phase-marker">
+                        <div class="kv-phase-dot active"></div>
+                        <div class="kv-phase-line"></div>
+                    </div>
+                    <div class="kv-phase-content">
+                        <div class="kv-phase-label current">Phase 1 · Weeks 1-4 · Active</div>
+                        <h4>Foundation</h4>
+                        <p>Formalizing the Directive-Task-Result protocol, building the task queue system, deploying the agent registry, and launching the governance dashboard with human approval gates.</p>
+                    </div>
+                </div>
+                <div class="kv-phase">
+                    <div class="kv-phase-marker">
+                        <div class="kv-phase-dot future"></div>
+                        <div class="kv-phase-line"></div>
+                    </div>
+                    <div class="kv-phase-content">
+                        <div class="kv-phase-label upcoming">Phase 2 · Weeks 5-8</div>
+                        <h4>Manager Layer</h4>
+                        <p>Building Backend, QA, and Documentation Manager agents that translate Director tasks into Worker assignments, with end-to-end integration testing.</p>
+                    </div>
+                </div>
+                <div class="kv-phase">
+                    <div class="kv-phase-marker">
+                        <div class="kv-phase-dot future"></div>
+                        <div class="kv-phase-line"></div>
+                    </div>
+                    <div class="kv-phase-content">
+                        <div class="kv-phase-label upcoming">Phase 3 · Weeks 9-12</div>
+                        <h4>Director Layer</h4>
+                        <p>Engineering, Operations, and Product Director agents that coordinate Manager agents, handle incident response, and manage autonomous development.</p>
+                    </div>
+                </div>
+                <div class="kv-phase">
+                    <div class="kv-phase-marker">
+                        <div class="kv-phase-dot future"></div>
+                    </div>
+                    <div class="kv-phase-content">
+                        <div class="kv-phase-label upcoming">Phase 4 · Weeks 13-16</div>
+                        <h4>Governor &amp; Full Autonomy</h4>
+                        <p>Governor Council for strategic planning, self-improvement feedback loops, and the complete autonomous directive-to-result cycle with human oversight at the governance level.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="kv-cta">
+        <h2>Transform Your Knowledge Operations</h2>
+        <p>KnowledgeVault is currently in beta. Contact us to explore how AI-agentic knowledge management can work for your organization.</p>
+        <div class="kv-hero-actions">
+            <a href="index.html#contact" class="kv-btn kv-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Request Beta Access
+            </a>
+            <a href="products.html" class="kv-btn kv-btn-secondary">
+                View All Products
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#footerLogoGradient)" stroke-width="2" fill="none"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#footerLogoGradient)"/>
+                    <defs>
+                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>EchoSpark<span class="logo-sub">RPO</span></span>
+            </div>
+            <p class="footer-text">&copy; <span id="current-year">2026</span> EchoSpark. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-button" id="chatButton" aria-label="Open Chat">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="chat-header-text">
+                        <h3>EchoSpark Support</h3>
+                        <p>We're here to help</p>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose" aria-label="Close Chat">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-content">
+                        <p>Hello! I'm here to help answer questions about EchoSpark's services. How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." autocomplete="off">
+                <button class="chat-send" id="chatSend" aria-label="Send Message">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
