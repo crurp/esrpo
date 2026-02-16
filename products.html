@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - EchoSpark</title>
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BP724NMT95"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BP724NMT95');
+</script>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#logoGradient)" stroke-width="2" fill="none" class="logo-path"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#logoGradient)" class="logo-center"/>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">EchoSpark<span class="logo-sub">RPO</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="products.html" class="nav-link">Products</a></li>
+                <li><a href="index.html#domains" class="nav-link">Domains</a></li>
+                <li><a href="careers.html" class="nav-link">Careers</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Products Hero with RPO Guarantee -->
+    <section class="service-hero" style="padding-bottom: 3rem;">
+        <div class="section-container">
+            <div class="service-hero-content">
+                <div class="service-badge">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="badge-icon">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Product Ecosystem</span>
+                </div>
+                <h1 class="service-title">Built for Resilience. Engineered for Performance.</h1>
+                <p class="service-description">
+                    Every EchoSpark product carries the <strong style="color: var(--text-primary);">ESRPO Guarantee</strong>: 
+                    systems architected for resilience, optimized for performance, and hardened for operational excellence 
+                    across quantum computing, AI/ML, and cybersecurity.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RPO Principles Banner -->
+    <section class="products-principles">
+        <div class="section-container">
+            <div class="principles-strip">
+                <div class="principle-chip">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <div>
+                        <strong>Resilient by Design</strong>
+                        <span>Fault tolerance and graceful degradation built into every layer</span>
+                    </div>
+                </div>
+                <div class="principle-chip">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div>
+                        <strong>Performance First</strong>
+                        <span>Optimized throughput and sub-millisecond response at scale</span>
+                    </div>
+                </div>
+                <div class="principle-chip">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div>
+                        <strong>Operational Excellence</strong>
+                        <span>Continuous monitoring, adaptive learning, and zero-downtime updates</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Network Constellation Visualization -->
+    <section class="products-constellation">
+        <div class="section-container">
+            <canvas id="constellationCanvas"></canvas>
+        </div>
+    </section>
+
+    <!-- Product Filter + Grid -->
+    <section class="products-section">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Our Products</span>
+                <h2 class="section-title">The ESRPO Product Ecosystem</h2>
+                <p class="section-description">Integrated tools and platforms spanning quantum, AI, and cybersecurity</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="product-filters" id="productFilters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="quantum">Quantum</button>
+                <button class="filter-btn" data-filter="ai-ml">AI / ML</button>
+                <button class="filter-btn" data-filter="cybersecurity">Cybersecurity</button>
+                <button class="filter-btn" data-filter="platform">Platform</button>
+            </div>
+
+            <!-- Product Grid (rendered by JS) -->
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="section-container">
+            <div class="cta-content">
+                <h2>Ready to Deploy Resilient Technology?</h2>
+                <p>Contact us to learn how EchoSpark products can strengthen your technology stack.</p>
+                <a href="index.html#contact" class="btn btn-primary">Get in Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#footerLogoGradient)" stroke-width="2" fill="none"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#footerLogoGradient)"/>
+                    <defs>
+                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>EchoSpark<span class="logo-sub">RPO</span></span>
+            </div>
+            <p class="footer-text">&copy; <span id="current-year">2026</span> EchoSpark. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-button" id="chatButton" aria-label="Open Chat">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="chat-header-text">
+                        <h3>EchoSpark Support</h3>
+                        <p>We're here to help</p>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose" aria-label="Close Chat">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-content">
+                        <p>Hello! I'm here to help answer questions about EchoSpark's services. How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." autocomplete="off">
+                <button class="chat-send" id="chatSend" aria-label="Send Message">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+    /* ================================================================
+       ECHOSPARK PRODUCTS — DATA-DRIVEN PRODUCT CATALOG
+       ================================================================
+       To add a new product, simply add an object to the PRODUCTS array.
+       Required fields:
+         - id:          unique string identifier
+         - name:        product display name
+         - tagline:     short one-liner
+         - description: 2-3 sentence description
+         - category:    "quantum" | "ai-ml" | "cybersecurity" | "platform"
+         - status:      "active" | "beta" | "coming-soon"
+         - icon:        SVG path string (24x24 viewBox)
+       ================================================================ */
+
+    const PRODUCTS = [
+        {
+            id: 'rpo-core',
+            name: 'RPO Core',
+            tagline: 'Resilient Performance Operations Framework',
+            description: 'The foundational framework that powers every EchoSpark deployment. RPO Core provides real-time health monitoring, automated failover orchestration, and performance optimization across hybrid infrastructure.',
+            category: 'platform',
+            status: 'active',
+            icon: '<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'
+        },
+        {
+            id: 'quantum-shield',
+            name: 'QuantumShield',
+            tagline: 'Post-Quantum Cryptography Migration Platform',
+            description: 'Automated discovery, risk assessment, and migration tooling for transitioning enterprise cryptographic infrastructure to post-quantum algorithms. Supports NIST PQC standards with zero-downtime deployment.',
+            category: 'quantum',
+            status: 'active',
+            icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/>'
+        },
+        {
+            id: 'agent-forge',
+            name: 'AgentForge',
+            tagline: 'Agentic AI Orchestration Platform',
+            description: 'Design, deploy, and manage autonomous AI agent networks with built-in safety rails, human-in-the-loop controls, and multi-agent coordination. Production-grade agentic infrastructure for the enterprise.',
+            category: 'ai-ml',
+            status: 'active',
+            icon: '<circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="19" cy="19" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v4M10 13l-3.5 4.5M14 13l3.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="13" r="2" stroke="currentColor" stroke-width="1.5"/>'
+        },
+        {
+            id: 'sentinel-mesh',
+            name: 'SentinelMesh',
+            tagline: 'Zero Trust Network Architecture Platform',
+            description: 'End-to-end Zero Trust implementation with microsegmentation, continuous authentication, and real-time policy enforcement. Deploys across cloud, on-prem, and edge environments with a unified control plane.',
+            category: 'cybersecurity',
+            status: 'active',
+            icon: '<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5"/><path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+        },
+        {
+            id: 'q-fabric',
+            name: 'Q-Fabric',
+            tagline: 'Quantum Computing Infrastructure Framework',
+            description: 'Unified abstraction layer for hybrid quantum-classical workloads. Q-Fabric provides circuit optimization, error mitigation, and hardware-agnostic execution across major quantum platforms with integrated classical co-processing.',
+            category: 'quantum',
+            status: 'beta',
+            icon: '<circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M12 4V2M12 22V20M4 12H2M22 12H20M19.07 19.07L17.66 17.66M6.34 6.34L4.93 4.93M19.07 4.93L17.66 6.34M6.34 17.66L4.93 19.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'
+        },
+        {
+            id: 'neural-ops',
+            name: 'NeuralOps',
+            tagline: 'ML Operations & Observability Suite',
+            description: 'Full-lifecycle ML operations platform with model versioning, drift detection, automated retraining pipelines, and real-time inference monitoring. Built for teams shipping models to production at scale.',
+            category: 'ai-ml',
+            status: 'active',
+            icon: '<path d="M3 12h4l3-9 4 18 3-9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+        },
+        {
+            id: 'threat-pulse',
+            name: 'ThreatPulse',
+            tagline: 'AI-Driven Threat Intelligence & Response',
+            description: 'Continuous threat landscape analysis powered by machine learning. ThreatPulse correlates signals across your attack surface, generates actionable intelligence, and orchestrates automated incident response workflows.',
+            category: 'cybersecurity',
+            status: 'active',
+            icon: '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+        },
+        {
+            id: 'echo-vault',
+            name: 'EchoVault',
+            tagline: 'Unified Security & Compliance Platform',
+            description: 'Centralized secrets management, policy-as-code compliance enforcement, and audit trail generation across multi-cloud environments. Integrates with QuantumShield for post-quantum key management.',
+            category: 'platform',
+            status: 'beta',
+            icon: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/>'
+        }
+    ];
+
+    /* ----------------------------------------------------------------
+       STATUS BADGES
+    ---------------------------------------------------------------- */
+    const STATUS_CONFIG = {
+        'active':      { label: 'Active',       cls: 'status-active' },
+        'beta':        { label: 'Beta',          cls: 'status-beta' },
+        'coming-soon': { label: 'Coming Soon',   cls: 'status-coming' }
+    };
+
+    const CATEGORY_LABELS = {
+        'quantum':        'Quantum',
+        'ai-ml':          'AI / ML',
+        'cybersecurity':  'Cybersecurity',
+        'platform':       'Platform'
+    };
+
+    const CATEGORY_COLORS = {
+        'quantum':        '#6366f1',
+        'ai-ml':          '#8b5cf6',
+        'cybersecurity':  '#ec4899',
+        'platform':       '#06b6d4'
+    };
+
+    /* ----------------------------------------------------------------
+       RENDER PRODUCT GRID
+    ---------------------------------------------------------------- */
+    const grid = document.getElementById('productGrid');
+
+    function renderProducts(filter) {
+        const filtered = filter === 'all'
+            ? PRODUCTS
+            : PRODUCTS.filter(p => p.category === filter);
+
+        grid.innerHTML = '';
+        filtered.forEach((p, i) => {
+            const st = STATUS_CONFIG[p.status] || STATUS_CONFIG['active'];
+            const catColor = CATEGORY_COLORS[p.category] || '#6366f1';
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.style.animationDelay = `${i * 0.08}s`;
+            card.innerHTML = `
+                <div class="product-card-accent" style="background: linear-gradient(90deg, ${catColor}, ${catColor}88);"></div>
+                <div class="product-card-header">
+                    <div class="product-icon" style="color: ${catColor};">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">${p.icon}</svg>
+                    </div>
+                    <div class="product-meta">
+                        <span class="product-category" style="color: ${catColor};">${CATEGORY_LABELS[p.category]}</span>
+                        <span class="product-status ${st.cls}">${st.label}</span>
+                    </div>
+                </div>
+                <h3 class="product-name">${p.name}</h3>
+                <p class="product-tagline">${p.tagline}</p>
+                <p class="product-desc">${p.description}</p>
+                <div class="product-card-footer">
+                    <a href="index.html#contact" class="product-cta">Learn More <span>→</span></a>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    renderProducts('all');
+
+    /* ----------------------------------------------------------------
+       FILTER TABS
+    ---------------------------------------------------------------- */
+    document.getElementById('productFilters').addEventListener('click', e => {
+        if (!e.target.classList.contains('filter-btn')) return;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderProducts(e.target.dataset.filter);
+    });
+
+    /* ----------------------------------------------------------------
+       CONSTELLATION CANVAS — interactive network graph
+    ---------------------------------------------------------------- */
+    const canvas = document.getElementById('constellationCanvas');
+    const ctx = canvas.getContext('2d');
+    let nodes = [];
+    let mouse = { x: -999, y: -999 };
+    let raf;
+
+    function initConstellation() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = 320;
+
+        nodes = PRODUCTS.map((p, i) => {
+            const col = CATEGORY_COLORS[p.category] || '#6366f1';
+            const spacing = canvas.width / (PRODUCTS.length + 1);
+            return {
+                x: spacing * (i + 1),
+                y: 100 + Math.sin(i * 1.3) * 60,
+                baseX: spacing * (i + 1),
+                baseY: 100 + Math.sin(i * 1.3) * 60,
+                r: 6,
+                color: col,
+                name: p.name,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+            };
+        });
+    }
+
+    function drawConstellation() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Connections
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[j].x - nodes[i].x;
+                const dy = nodes[j].y - nodes[i].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxDist = 300;
+                if (dist < maxDist) {
+                    const alpha = (1 - dist / maxDist) * 0.25;
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Mouse connections
+        for (const n of nodes) {
+            const dx = mouse.x - n.x;
+            const dy = mouse.y - n.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 200) {
+                const alpha = (1 - dist / 200) * 0.5;
+                ctx.beginPath();
+                ctx.moveTo(n.x, n.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        }
+
+        // Nodes
+        for (const n of nodes) {
+            // Glow
+            const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 28);
+            grad.addColorStop(0, n.color + '33');
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, 28, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Core dot
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+            ctx.fillStyle = n.color;
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = 'rgba(255,255,255,0.6)';
+            ctx.font = '11px "Space Grotesk", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(n.name, n.x, n.y + 22);
+        }
+    }
+
+    function animateConstellation() {
+        for (const n of nodes) {
+            n.x += n.vx;
+            n.y += n.vy;
+
+            // Spring back to base position
+            n.vx += (n.baseX - n.x) * 0.003;
+            n.vy += (n.baseY - n.y) * 0.003;
+
+            // Damping
+            n.vx *= 0.98;
+            n.vy *= 0.98;
+
+            // Mouse repulsion
+            const dx = n.x - mouse.x;
+            const dy = n.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120 && dist > 0) {
+                const force = (120 - dist) / 120 * 0.5;
+                n.vx += (dx / dist) * force;
+                n.vy += (dy / dist) * force;
+            }
+        }
+        drawConstellation();
+        raf = requestAnimationFrame(animateConstellation);
+    }
+
+    canvas.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        mouse.x = -999;
+        mouse.y = -999;
+    });
+
+    // Touch support
+    canvas.addEventListener('touchmove', e => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.touches[0].clientX - rect.left;
+        mouse.y = e.touches[0].clientY - rect.top;
+    });
+    canvas.addEventListener('touchend', () => {
+        mouse.x = -999;
+        mouse.y = -999;
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+        initConstellation();
+    });
+    resizeObserver.observe(canvas.parentElement);
+    initConstellation();
+    animateConstellation();
+    </script>
+</body>
+</html>
