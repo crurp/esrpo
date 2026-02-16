@@ -1,50 +1,155 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seresvoid - Technology</title>
+    <title>Quantum Information Science - Seresvoid</title>
     <link rel="icon" type="image/png" href="/favicon.png">
-    <!-- Add Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="https://seresvoid.com" class="logo">SeresVoid</a>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#logoGradient)" stroke-width="2" fill="none" class="logo-path"/>
+                    <circle cx="20" cy="20" r="8" fill="url(#logoGradient)" class="logo-center"/>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">SeresVoid</span>
+            </a>
             <ul class="nav-links">
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#domains">Domains</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#domains" class="nav-link">Domains</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="menu-toggle" aria-label="Toggle Navigation">☰</div>
-            <div class="menu-close" aria-label="Close Navigation">×</div>
+            <button class="menu-toggle" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </nav>
     </header>
 
-  <section id="quantum-consulting" style="padding: 2rem; text-align: center;">
-    <br><br><br><h1>Quantum Information Science</h1>
-    <img src="quantum.jpg" alt="Quantum Information Image" class="project-img" style="max-width: 100%; height: auto; margin: 1rem 0;">
-    <p>Quantum Information Science is set to underpin the next era of technological innovation. It enables radically new ways to process, transmit, and secure data, forming the core of future advancements in computing and communication.</p>
+    <!-- Service Hero -->
+    <section class="service-hero">
+        <div class="section-container">
+            <div class="service-hero-content">
+                <div class="service-badge">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="badge-icon">
+                        <circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M12 4V2M12 22V20M4 12H2M22 12H20M19.07 19.07L17.66 17.66M6.34 6.34L4.93 4.93M19.07 4.93L17.66 6.34M6.34 17.66L4.93 19.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Quantum Information Science</span>
+                </div>
+                <h1 class="service-title">Unlock the Power of Quantum Computing</h1>
+                <p class="service-description">
+                    Quantum Information Science is set to underpin the next era of technological innovation. 
+                    It enables radically new ways to process, transmit, and secure data, forming the core of 
+                    future advancements in computing and communication.
+                </p>
+            </div>
+        </div>
+    </section>
 
-    <h2>What We Offer:</h2>
-    <ul style="list-style-type: none; padding: 0;">
-        <li>• Strategic Roadmapping for Quantum Integration</li>
-        <li>• Quantum Machine Learning Solutions for data-driven innovation</li>
-        <li>• Quantum-Ready Infrastructure Consulting and Talent Development</li>
-    </ul>
+    <!-- Service Image -->
+    <section class="service-image-section">
+        <div class="section-container">
+            <div class="service-image-wrapper">
+                <img src="quantum.jpg" alt="Quantum Information Science" class="service-image">
+                <div class="service-image-overlay"></div>
+            </div>
+        </div>
+    </section>
 
-    <p>Empower your organization with forward-looking quantum solutions that drive tomorrow’s breakthroughs.</p>
-</section>
+    <!-- Services Offered -->
+    <section class="services-offered">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">What We Offer</span>
+                <h2 class="section-title">Quantum Solutions</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-item">
+                    <div class="service-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Strategic Roadmapping</h3>
+                    <p>Comprehensive planning for quantum integration into your existing technology infrastructure</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Quantum Machine Learning</h3>
+                    <p>Data-driven innovation solutions that accelerate insights beyond classical computational limits</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9 9H15M9 15H15M9 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Infrastructure Consulting</h3>
+                    <p>Quantum-ready infrastructure design and talent development programs for your organization</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <footer>
-        <p>© 2025 Seresvoid. All rights reserved.</p>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="section-container">
+            <div class="cta-content">
+                <h2>Empower Your Organization</h2>
+                <p>Forward-looking quantum solutions that drive tomorrow's breakthroughs</p>
+                <a href="index.html#contact" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#footerLogoGradient)" stroke-width="2" fill="none"/>
+                    <circle cx="20" cy="20" r="8" fill="url(#footerLogoGradient)"/>
+                    <defs>
+                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>SeresVoid</span>
+            </div>
+            <p class="footer-text">© 2025 SeresVoid. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
 </html>
-

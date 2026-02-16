@@ -3,80 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seresvoid - Technology</title>
+    <title>Seresvoid - Shaping Tomorrow's Technology</title>
     <link rel="icon" type="image/png" href="/favicon.png">
-    <!-- Add Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-	<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BP724NMT95"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-BP724NMT95');
 </script>
 <body>
-    <header>
-        <nav>
-            <a href="https://seresvoid.com" class="logo">SeresVoid</a>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="/" class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#logoGradient)" stroke-width="2" fill="none" class="logo-path"/>
+                    <circle cx="20" cy="20" r="8" fill="url(#logoGradient)" class="logo-center"/>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">SeresVoid</span>
+            </a>
             <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#domains">Domains</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#hero" class="nav-link">About</a></li>
+                <li><a href="#domains" class="nav-link">Domains</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="menu-toggle" aria-label="Toggle Navigation">☰</div>
-            <div class="menu-close" aria-label="Close Navigation">×</div>
+            <button class="menu-toggle" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </nav>
     </header>
 
-    <section id="about">
-        <div class="about-content">
-            <h1>Shaping Tommorow's Technology</h1>
-			<p>Deep technical expertise in cutting-edge fields to deliver innovative solutions in emerging technologies.</p>
-			<p>We help organizations lead in a rapidly evolving digital landscape through strategic guidance and advanced technology integration.</p>
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-text">Next-Gen Technology Consulting</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="title-line">Shaping Tomorrow's</span>
+                <span class="title-line gradient-text">Technology</span>
+            </h1>
+            <p class="hero-description">
+                Deep technical expertise in cutting-edge fields to deliver innovative solutions in emerging technologies.
+                We help organizations lead in a rapidly evolving digital landscape through strategic guidance and advanced technology integration.
+            </p>
+            <div class="hero-cta">
+                <a href="#domains" class="btn btn-primary">Explore Services</a>
+                <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="floating-elements">
+                <div class="float-element float-1"></div>
+                <div class="float-element float-2"></div>
+                <div class="float-element float-3"></div>
+            </div>
         </div>
     </section>
 
-   <section id="domains">
-    <h2 style="text-align: center;">Domains</h2>
-    <div class="domains-grid">
-        <!-- Quantum Information Science Card -->
-        <a href="quantum.html" class="project-card">
-            <img src="quantum.jpg" alt="Quantum Information Science" class="project-img">
-            <h3>Quantum Information Science</h3>
-            <p>Unlock innovation with quantum machine learning, accelerating data-driven insights beyond classical limits.</p>
-        </a>
-        
-        <!-- RF and Digital Signal Processing Card -->
-        <a href="rf.html" class="project-card">
-            <img src="rf.jpg" alt="RF and Digital Signal Processing" class="project-img">
-            <h3>RF and Digital Signal Processing</h3>
-            <p>Design the future of communication, delivering precision and performance in wireless communication and signal analysis.</p>
-        </a>
-        
-        <!-- Cybersecurity Card -->
-        <a href="cybersecurity.html" class="project-card">
-            <img src="cybersecurity.jpg" alt="Cybersecurity" class="project-img">
-            <h3>Cybersecurity</h3>
-            <p>Fortify your digital world through Zero Trust Architecture, ensuring network protection through continuous verification.</p>
-        </a>
-    </div>
-</section>
-
-
-
-    <section id="contact">
-        <h2>Contact</h2>
-        <a href="https://twitter.com/seresvoid" target="_blank" class="contact-link">Follow @seresvoid on Twitter</a>
-        <p></p>
-        <a href="https://discord.com/users/seresvoid" target="_blank" class="contact-link">Reach out to @seresvoid on Discord</a>
+    <!-- Domains Section -->
+    <section id="domains" class="domains-section">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Our Expertise</span>
+                <h2 class="section-title">Technology Domains</h2>
+                <p class="section-description">Specialized consulting across cutting-edge technology fields</p>
+            </div>
+            <div class="domains-grid">
+                <a href="quantum.html" class="domain-card" data-domain="quantum">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M12 4V2M12 22V20M4 12H2M22 12H20M19.07 19.07L17.66 17.66M6.34 6.34L4.93 4.93M19.07 4.93L17.66 6.34M6.34 17.66L4.93 19.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="card-image-wrapper">
+                            <img src="quantum.jpg" alt="Quantum Information Science" class="card-image">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">Quantum Information Science</h3>
+                            <p class="card-description">Unlock innovation with quantum machine learning, accelerating data-driven insights beyond classical limits.</p>
+                            <span class="card-link">Learn more →</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="rf.html" class="domain-card" data-domain="rf">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="card-image-wrapper">
+                            <img src="rf.jpg" alt="RF and Digital Signal Processing" class="card-image">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">RF & Digital Signal Processing</h3>
+                            <p class="card-description">Design the future of communication, delivering precision and performance in wireless communication and signal analysis.</p>
+                            <span class="card-link">Learn more →</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="cybersecurity.html" class="domain-card" data-domain="cybersecurity">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="card-image-wrapper">
+                            <img src="cybersecurity.jpg" alt="Cybersecurity" class="card-image">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">Cybersecurity</h3>
+                            <p class="card-description">Fortify your digital world through Zero Trust Architecture, ensuring network protection through continuous verification.</p>
+                            <span class="card-link">Learn more →</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
     </section>
 
-    <footer>
-        <p>© 2025 SeresVoid. All rights reserved.</p>
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="section-container">
+            <div class="contact-content">
+                <div class="contact-header">
+                    <span class="section-label">Get in Touch</span>
+                    <h2 class="section-title">Let's Build the Future Together</h2>
+                    <p class="section-description">Connect with us to explore how we can transform your technology strategy</p>
+                </div>
+                <div class="contact-links">
+                    <a href="https://twitter.com/seresvoid" target="_blank" class="contact-card" rel="noopener noreferrer">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <h3>Twitter</h3>
+                            <p>@seresvoid</p>
+                        </div>
+                        <div class="contact-arrow">→</div>
+                    </a>
+                    <a href="https://discord.com/users/seresvoid" target="_blank" class="contact-card" rel="noopener noreferrer">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <h3>Discord</h3>
+                            <p>@seresvoid</p>
+                        </div>
+                        <div class="contact-arrow">→</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#footerLogoGradient)" stroke-width="2" fill="none"/>
+                    <circle cx="20" cy="20" r="8" fill="url(#footerLogoGradient)"/>
+                    <defs>
+                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>SeresVoid</span>
+            </div>
+            <p class="footer-text">© 2025 SeresVoid. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
