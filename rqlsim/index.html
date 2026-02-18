@@ -723,6 +723,11 @@ body {
     font-size: 1.4rem; font-weight: 700;
     color: var(--primary-light);
 }
+.metric-sublabel {
+    font-size: 0.72rem; color: var(--text-tertiary);
+    margin-top: 0.15rem; font-family: 'JetBrains Mono', monospace;
+    word-break: break-all;
+}
 
 /* Canvas Chart */
 .chart-container {
@@ -982,17 +987,26 @@ body {
                 <div class="sidebar-sub">Reciprocal Quantum Logic</div>
             </div>
             <hr class="sidebar-divider">
+            <div id="progressBar" style="padding:0 1rem;margin-bottom:0.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+                    <span style="font-family:'Space Grotesk',sans-serif;font-size:0.68rem;font-weight:600;color:#52525b;text-transform:uppercase;letter-spacing:0.1em;">Workflow</span>
+                    <span id="progressLabel" style="font-family:'Inter',sans-serif;font-size:0.68rem;color:#52525b;font-weight:500;">Step 1 of 8</span>
+                </div>
+                <div style="height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;">
+                    <div id="progressFill" style="height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:2px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+                </div>
+            </div>
             <div class="nav-items" id="navItems"></div>
             <hr class="sidebar-divider">
             <div class="sidebar-params">
                 <div class="param-header">Parameters</div>
                 <div class="param-group">
                     <label class="param-label">Clock freq (GHz) <span class="param-value" id="clockFreqVal">20</span></label>
-                    <input type="range" class="param-slider" id="clockFreq" min="1" max="50" value="20" step="1">
+                    <input type="range" class="param-slider" id="clockFreq" min="1" max="50" value="20" step="1" title="AC resonant clock frequency driving the RQL chip. RQL gates are powered by a multi-phase sinusoidal AC bias. Typical: 1-50 GHz.">
                 </div>
                 <div class="param-group">
                     <label class="param-label">Clock phases</label>
-                    <select class="param-select" id="clockPhases">
+                    <select class="param-select" id="clockPhases" title="Number of AC clock phases. RQL uses a multi-phase overlapping sinusoidal clock. More phases = finer pipeline granularity.">
                         <option value="2">2</option>
                         <option value="4" selected>4</option>
                         <option value="8">8</option>
@@ -1000,11 +1014,11 @@ body {
                 </div>
                 <div class="param-group">
                     <label class="param-label">Bias ratio (Ibias/Ic) <span class="param-value" id="biasRatioVal">0.70</span></label>
-                    <input type="range" class="param-slider" id="biasRatio" min="30" max="95" value="70" step="1">
+                    <input type="range" class="param-slider" id="biasRatio" min="30" max="95" value="70" step="1" title="Ratio of DC bias current to junction critical current. Too low = no switching. Too high = noise errors. Optimal: 0.65-0.80.">
                 </div>
                 <div class="param-group">
                     <label class="param-label">Temperature (K) <span class="param-value" id="tempVal">4.2</span></label>
-                    <input type="range" class="param-slider" id="temperature" min="0" max="100" value="42" step="1">
+                    <input type="range" class="param-slider" id="temperature" min="0" max="100" value="42" step="1" title="Operating temperature. RQL requires cryogenic cooling, typically 4.2 K (liquid helium). Lower T reduces thermal noise and BER.">
                 </div>
             </div>
             <hr class="sidebar-divider">
@@ -1513,9 +1527,77 @@ function mapAndCompile(vModule, clockFreqGHz, biasRatio, nPhases) {
         instList.push({ name: inst.name, type: cellType, portMap: inst.portMap, clockPhase: 0 });
     }
 
-    // Assign clock phases (simple sequential)
+    // Auto-insert splitters for fan-out > 1
+    const netUsage = {};
+    for (const inst of instList) {
+        const cell = CELL_LIBRARY[inst.type];
+        if (!cell) continue;
+        const inPorts = cell.ports.filter(p => p.d === 'input');
+        for (const ip of inPorts) {
+            const net = inst.portMap[ip.n];
+            if (net) { if (!netUsage[net]) netUsage[net] = []; netUsage[net].push({ inst: inst.name, port: ip.n }); }
+        }
+    }
+    const splitterInserts = [];
+    for (const [net, consumers] of Object.entries(netUsage)) {
+        if (consumers.length > 1) {
+            const splName = `splitter_${net}`;
+            const sp = { name: splName, type: 'SPLITTER', portMap: { in: net, out1: `${net}_s0`, out2: `${net}_s1` }, clockPhase: 0 };
+            splitterInserts.push(sp);
+            consumers[0].inst && (instList.find(i => i.name === consumers[0].inst).portMap[consumers[0].port] = `${net}_s0`);
+            if (consumers[1]) instList.find(i => i.name === consumers[1].inst).portMap[consumers[1].port] = `${net}_s1`;
+        }
+    }
+    instList.push(...splitterInserts);
+
+    // BFS-based clock phase assignment
+    const adjOut = {}; const adjIn = {};
+    for (const inst of instList) {
+        const cell = CELL_LIBRARY[inst.type]; if (!cell) continue;
+        const outPorts = cell.ports.filter(p => p.d === 'output');
+        for (const op of outPorts) {
+            const outNet = inst.portMap[op.n]; if (!outNet) continue;
+            if (!adjOut[inst.name]) adjOut[inst.name] = [];
+            for (const other of instList) {
+                if (other.name === inst.name) continue;
+                const oc = CELL_LIBRARY[other.type]; if (!oc) continue;
+                for (const ip of oc.ports.filter(p => p.d === 'input')) {
+                    if (other.portMap[ip.n] === outNet) { adjOut[inst.name].push(other.name); }
+                }
+            }
+        }
+    }
+    const depth = {}; const queue = [];
+    const inputPorts = Object.entries(vModule.ports).filter(([,d]) => d === 'input').map(([n]) => n);
+    for (const inst of instList) {
+        const cell = CELL_LIBRARY[inst.type]; if (!cell) continue;
+        const inPorts = cell.ports.filter(p => p.d === 'input');
+        let isInput = false;
+        for (const ip of inPorts) { if (inputPorts.includes(inst.portMap[ip.n])) isInput = true; }
+        if (isInput) { depth[inst.name] = 0; queue.push(inst.name); }
+    }
+    while (queue.length) {
+        const cur = queue.shift();
+        for (const nxt of (adjOut[cur] || [])) {
+            if (!(nxt in depth) || depth[nxt] < depth[cur] + 1) {
+                depth[nxt] = depth[cur] + 1;
+                queue.push(nxt);
+            }
+        }
+    }
     instList.forEach((inst, i) => {
-        inst.clockPhase = ((i % nPhases) * (360 / nPhases)) % 360;
+        const d = depth[inst.name] !== undefined ? depth[inst.name] : i;
+        inst.clockPhase = ((d % nPhases) * (360 / nPhases)) % 360;
+    });
+
+    // Placement — position cells on a grid by pipeline depth
+    const PITCH = 30;
+    const phaseColumns = {};
+    instList.forEach(inst => {
+        const d = depth[inst.name] !== undefined ? depth[inst.name] : 0;
+        if (!phaseColumns[d]) phaseColumns[d] = 0;
+        inst.position = { x: d * PITCH, y: phaseColumns[d] * PITCH };
+        phaseColumns[d]++;
     });
 
     // Flatten to circuit
@@ -1824,7 +1906,7 @@ function berPerClock(Ic, R, C, Ibias, fclk, T) {
 // ====================================================================
 const CHART_COLORS = ['#818cf8','#ec4899','#06b6d4','#22c55e','#eab308','#f97316','#a78bfa','#f472b6','#34d399','#fbbf24'];
 
-function drawLineChart(canvasId, datasets, xlabel, ylabel, title) {
+function drawLineChart(canvasId, datasets, xlabel, ylabel, title, fillArea) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -1898,6 +1980,19 @@ function drawLineChart(canvasId, datasets, xlabel, ylabel, title) {
             else ctx.lineTo(px, py);
         }
         ctx.stroke();
+        // Optional area fill
+        if (fillArea) {
+            ctx.lineTo(tx(ds.x[ds.x.length - 1]), ty(yMin));
+            ctx.lineTo(tx(ds.x[0]), ty(yMin));
+            ctx.closePath();
+            const c = CHART_COLORS[di % CHART_COLORS.length];
+            ctx.fillStyle = c.replace(')', ',0.15)').replace('rgb', 'rgba');
+            if (c.startsWith('#')) {
+                const hr = parseInt(c.slice(1,3),16), hg = parseInt(c.slice(3,5),16), hb = parseInt(c.slice(5,7),16);
+                ctx.fillStyle = `rgba(${hr},${hg},${hb},0.15)`;
+            }
+            ctx.fill();
+        }
     });
 
     // Title
@@ -1934,6 +2029,244 @@ function drawLineChart(canvasId, datasets, xlabel, ylabel, title) {
 }
 
 // ====================================================================
+//  POLAR CHART (Clock Phase Distribution)
+// ====================================================================
+function drawPolarChart(canvasId, phaseCounts, nPhases, title) {
+    const canvas = document.getElementById(canvasId); if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const S = Math.min(rect.width - 32, 400);
+    canvas.width = S * dpr; canvas.height = S * dpr;
+    canvas.style.width = S + 'px'; canvas.style.height = S + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cx = S / 2, cy = S / 2, R = S * 0.35;
+    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, S, S);
+    // Grid circles
+    for (let r = 0.25; r <= 1; r += 0.25) {
+        ctx.beginPath(); ctx.arc(cx, cy, R * r, 0, TWO_PI); ctx.strokeStyle = '#222233'; ctx.lineWidth = 0.5; ctx.stroke();
+    }
+    // Grid lines
+    for (let i = 0; i < nPhases; i++) {
+        const a = (i * TWO_PI / nPhases) - Math.PI / 2;
+        ctx.beginPath(); ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+        ctx.strokeStyle = '#333344'; ctx.lineWidth = 0.5; ctx.stroke();
+    }
+    // Data
+    const maxCount = Math.max(...Object.values(phaseCounts), 1);
+    const colors = ['#818cf8', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#a78bfa', '#f472b6'];
+    let pi = 0;
+    for (const [phase, count] of Object.entries(phaseCounts)) {
+        const a = (parseFloat(phase) * Math.PI / 180) - Math.PI / 2;
+        const r = (count / maxCount) * R;
+        const color = colors[pi % colors.length];
+        // Wedge
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        const halfArc = Math.PI / nPhases * 0.7;
+        ctx.arc(cx, cy, r, a - halfArc, a + halfArc);
+        ctx.closePath();
+        ctx.fillStyle = color + '44';
+        ctx.fill();
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+        // Label
+        const lR = R + 20;
+        const lx = cx + Math.cos(a) * lR, ly = cy + Math.sin(a) * lR;
+        ctx.fillStyle = '#a1a1aa'; ctx.font = 'bold 11px "Space Grotesk", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(`${phase}°`, lx, ly);
+        ctx.fillStyle = color; ctx.font = '10px Inter, sans-serif';
+        ctx.fillText(`${count}`, lx, ly + 14);
+        pi++;
+    }
+    ctx.fillStyle = '#a1a1aa'; ctx.font = 'bold 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(title || '', cx, 18);
+}
+
+// ====================================================================
+//  HEATMAP CHART (Bias Margin / Pipeline Occupancy)
+// ====================================================================
+function drawHeatmap(canvasId, data, xlabels, ylabels, title, colorMap) {
+    const canvas = document.getElementById(canvasId); if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const W = rect.width - 32, H = Math.max(200, ylabels.length * 28 + 80);
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const pad = { t: 40, r: 20, b: 30, l: 120 };
+    const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+    const cellW = pw / xlabels.length, cellH = ph / ylabels.length;
+    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+    // Cells
+    for (let r = 0; r < ylabels.length; r++) {
+        for (let c = 0; c < xlabels.length; c++) {
+            const v = data[r]?.[c] || 0;
+            const x = pad.l + c * cellW, y = pad.t + r * cellH;
+            ctx.fillStyle = colorMap ? colorMap(v) : `rgba(99,102,241,${Math.min(v, 1)})`;
+            ctx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+            if (cellW > 20 && v > 0) {
+                ctx.fillStyle = '#fff'; ctx.font = '9px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(typeof v === 'number' && v < 100 ? v.toFixed(1) : '', x + cellW/2, y + cellH/2);
+            }
+        }
+    }
+    // Y labels
+    ctx.fillStyle = '#a1a1aa'; ctx.font = '10px "JetBrains Mono", monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let r = 0; r < ylabels.length; r++) {
+        const lbl = ylabels[r].length > 16 ? ylabels[r].slice(-16) : ylabels[r];
+        ctx.fillText(lbl, pad.l - 8, pad.t + r * cellH + cellH / 2);
+    }
+    // X labels
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let c = 0; c < xlabels.length; c++) {
+        if (c % Math.ceil(xlabels.length / 15) === 0)
+            ctx.fillText(xlabels[c], pad.l + c * cellW + cellW / 2, pad.t + ph + 4);
+    }
+    ctx.fillStyle = '#a1a1aa'; ctx.font = 'bold 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(title || '', W / 2, 16);
+}
+
+// ====================================================================
+//  SCHEMATIC RENDERER (Canvas block diagram)
+// ====================================================================
+function drawSchematic(canvasId, netlist) {
+    const canvas = document.getElementById(canvasId); if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const insts = netlist.instances;
+    const cols = Math.min(insts.length, 6);
+    const rows = Math.ceil(insts.length / cols);
+    const boxW = 110, boxH = 52, gapX = 50, gapY = 40;
+    const W = Math.max(rect.width - 32, cols * (boxW + gapX) + 80);
+    const H = rows * (boxH + gapY) + 100;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+    const phaseColors = ['#818cf8', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#a78bfa', '#f472b6'];
+    const positions = {};
+    const offX = (W - cols * (boxW + gapX) + gapX) / 2;
+    insts.forEach((inst, i) => {
+        const col = i % cols, row = Math.floor(i / cols);
+        const x = offX + col * (boxW + gapX), y = 50 + row * (boxH + gapY);
+        positions[inst.name] = { x: x + boxW / 2, y: y + boxH / 2, left: x, top: y };
+        const phIdx = Math.round(inst.clockPhase / (360 / 4)) % phaseColors.length;
+        const color = phaseColors[phIdx];
+        // Box
+        ctx.fillStyle = '#1a1a24'; ctx.strokeStyle = color;
+        ctx.lineWidth = 2; ctx.beginPath();
+        const r = 8;
+        ctx.roundRect(x, y, boxW, boxH, r);
+        ctx.fill(); ctx.stroke();
+        // Top accent
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.roundRect(x, y, boxW, 3, [r, r, 0, 0]); ctx.fill();
+        // Text
+        ctx.fillStyle = color; ctx.font = 'bold 11px "Space Grotesk", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(inst.type, x + boxW / 2, y + 18);
+        ctx.fillStyle = '#71717a'; ctx.font = '9px "JetBrains Mono", monospace';
+        const shortName = inst.name.length > 14 ? inst.name.slice(0, 14) + '…' : inst.name;
+        ctx.fillText(shortName, x + boxW / 2, y + 34);
+        ctx.fillStyle = '#52525b'; ctx.font = '8px Inter, sans-serif';
+        ctx.fillText(`${inst.clockPhase}°`, x + boxW / 2, y + 46);
+    });
+    // Draw connections
+    ctx.strokeStyle = 'rgba(99,102,241,0.25)'; ctx.lineWidth = 1.5;
+    for (const inst of insts) {
+        const cell = CELL_LIBRARY[inst.type]; if (!cell) continue;
+        const outPorts = cell.ports.filter(p => p.d === 'output');
+        for (const op of outPorts) {
+            const outNet = inst.portMap[op.n]; if (!outNet) continue;
+            for (const other of insts) {
+                if (other.name === inst.name) continue;
+                const oc = CELL_LIBRARY[other.type]; if (!oc) continue;
+                for (const ip of oc.ports.filter(p => p.d === 'input')) {
+                    if (other.portMap[ip.n] === outNet && positions[inst.name] && positions[other.name]) {
+                        const from = positions[inst.name], to = positions[other.name];
+                        ctx.beginPath();
+                        ctx.moveTo(from.left + boxW, from.y);
+                        const midX = (from.left + boxW + to.left) / 2;
+                        ctx.bezierCurveTo(midX, from.y, midX, to.y, to.left, to.y);
+                        ctx.stroke();
+                        // Arrow
+                        ctx.fillStyle = 'rgba(99,102,241,0.4)';
+                        ctx.beginPath();
+                        ctx.moveTo(to.left, to.y);
+                        ctx.lineTo(to.left - 6, to.y - 4);
+                        ctx.lineTo(to.left - 6, to.y + 4);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+    }
+    ctx.fillStyle = '#a1a1aa'; ctx.font = 'bold 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Design Schematic', W / 2, 20);
+}
+
+// ====================================================================
+//  SCATTER CHART (Bias Margin Heatmap on placement grid)
+// ====================================================================
+function drawMarginScatter(canvasId, junctions, margins, title) {
+    const canvas = document.getElementById(canvasId); if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const W = rect.width - 32, H = 300;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+    const pad = { t: 40, r: 30, b: 40, l: 50 };
+    const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+    // Layout junctions in a grid
+    const n = junctions.length;
+    const cols = Math.ceil(Math.sqrt(n * 1.5));
+    const rows = Math.ceil(n / cols);
+    const cellW = pw / cols, cellH = ph / rows;
+    junctions.forEach((jj, i) => {
+        const col = i % cols, row = Math.floor(i / cols);
+        const cx = pad.l + col * cellW + cellW / 2;
+        const cy = pad.t + row * cellH + cellH / 2;
+        const m = margins[i] || 0;
+        const radius = Math.max(8, Math.min(cellW, cellH) * 0.35);
+        const color = m > 40 ? '#22c55e' : m > 20 ? '#eab308' : '#ef4444';
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, TWO_PI);
+        ctx.fillStyle = color + '33'; ctx.fill();
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.font = '9px "JetBrains Mono", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(m.toFixed(0) + '%', cx, cy);
+        ctx.fillStyle = '#71717a'; ctx.font = '8px Inter, sans-serif';
+        const shortName = jj.name.length > 10 ? jj.name.slice(-10) : jj.name;
+        ctx.fillText(shortName, cx, cy + radius + 10);
+    });
+    // Legend
+    const legend = [['> 40%', '#22c55e'], ['20-40%', '#eab308'], ['< 20%', '#ef4444']];
+    let lx = pad.l;
+    legend.forEach(([label, color]) => {
+        ctx.fillStyle = color; ctx.fillRect(lx, H - 18, 10, 10);
+        ctx.fillStyle = '#a1a1aa'; ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText(label, lx + 14, H - 9);
+        lx += 80;
+    });
+    ctx.fillStyle = '#a1a1aa'; ctx.font = 'bold 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(title || '', W / 2, 20);
+}
+
+// ====================================================================
+//  BIAS HEATMAP (chip-level placement view)
+// ====================================================================
+function drawBiasHeatmap(canvasId, marginData) {
+    const canvas = document.getElementById(canvasId); if (!canvas) return;
+    const junctions = appState.flat ? appState.flat.junctions : [];
+    const margins = marginData.map(m => m.total);
+    drawMarginScatter(canvasId, junctions, margins, 'Chip-Level Bias Margin Heatmap');
+}
+
+// ====================================================================
 //  APP STATE
 // ====================================================================
 let appState = {
@@ -1948,7 +2281,7 @@ endmodule`,
     designCells: [],
 };
 
-const PAGES = ['Home', 'Design', 'Simulate', 'Waveforms', 'Clock Phases', 'Bias Margins', 'Reports'];
+const PAGES = ['Home', 'Design', 'Simulate', 'Waveforms', 'Clock Phases', 'Bias Margins', 'Reports', 'Under the Hood'];
 
 // ====================================================================
 //  PARAMS
@@ -1974,13 +2307,22 @@ function initApp() {
 function buildNav() {
     const el = document.getElementById('navItems');
     el.innerHTML = '';
+    const curIdx = PAGES.indexOf(appState.page);
     PAGES.forEach((p, i) => {
         const item = document.createElement('div');
-        item.className = 'nav-item' + (p === appState.page ? ' active' : '');
+        const isActive = p === appState.page;
+        const isVisited = i < curIdx;
+        item.className = 'nav-item' + (isActive ? ' active' : '') + (isVisited ? ' visited' : '');
         item.innerHTML = `<div class="nav-step-num">${i + 1}</div><span class="nav-step-label">${p}</span>`;
         item.onclick = () => navigateTo(p);
         el.appendChild(item);
     });
+    // Update progress bar
+    const pct = (curIdx / Math.max(PAGES.length - 1, 1)) * 100;
+    const fill = document.getElementById('progressFill');
+    const label = document.getElementById('progressLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) label.textContent = `Step ${curIdx + 1} of ${PAGES.length}`;
 }
 
 function navigateTo(page) {
@@ -2012,17 +2354,41 @@ function hideSpinner() {
 function renderPage(page) {
     const main = document.getElementById('appContent');
     switch (page) {
-        case 'Home': main.innerHTML = renderHome(); break;
+        case 'Home': main.innerHTML = renderHome(); setupHomeExpanders(); break;
         case 'Design': main.innerHTML = renderDesign(); setupDesignEvents(); break;
         case 'Simulate': main.innerHTML = renderSimulate(); setupSimulateEvents(); break;
-        case 'Waveforms': main.innerHTML = renderWaveforms(); setupWaveformCharts(); break;
-        case 'Clock Phases': main.innerHTML = renderClockPhases(); setupClockCharts(); break;
+        case 'Waveforms': main.innerHTML = renderWaveforms(); setupWaveformEvents(); break;
+        case 'Clock Phases': main.innerHTML = renderClockPhases(); setupClockEvents(); break;
         case 'Bias Margins': main.innerHTML = renderBiasMargins(); setupBiasCharts(); break;
         case 'Reports': main.innerHTML = renderReports(); setupReportCharts(); break;
+        case 'Under the Hood': main.innerHTML = renderUnderTheHood(); break;
     }
 }
 
 // ── HOME ──
+const ARCH_DATA = [
+    { layer: 'Frontend', func: 'RTL (Verilog) → RQL cell mapping',
+      detail: 'Translates Verilog into RQL-specific cells. Standard gates are re-implemented using Josephson junction circuits. Auto-inserts SPLITTER cells for fan-out.' },
+    { layer: 'Compiler', func: 'Netlist → Josephson junction network',
+      detail: 'Expands each RQL cell into its physical implementation: individual JJs with annotated Ic, R, C, inductors, and mutual inductances. Connects AC clock bias.' },
+    { layer: 'Physics', func: 'RCSJ model, time-domain SPICE solver',
+      detail: 'Solves coupled differential equations for every JJ using the RCSJ model. Captures supercurrent, capacitive displacement, and resistive quasiparticle currents.' },
+    { layer: 'Layout', func: 'Placement & parasitic extraction',
+      detail: 'Positions cells on-chip and extracts parasitic R, L, C from geometry. Stray inductance at femtohenry scale can alter flux quantisation and break timing.' },
+    { layer: 'Metrics', func: 'Timing, BER & power analysis',
+      detail: 'Accept/reject metrics for tape-out: timing margins, bit error rate from thermal noise, and power dissipation vs. cryocooler budget.' },
+];
+const CELL_PHYSICS = {
+    JTL: 'Josephson Transmission Line — propagates an SFQ pulse through a chain of JJ-inductor stages. Each JJ regenerates the pulse.',
+    SPLITTER: 'Duplicates one SFQ pulse into two copies. Essential because JJ circuits have no inherent fan-out.',
+    MERGER: 'Combines two SFQ input lines into one. Fires if either input receives a pulse.',
+    AND: 'Outputs an SFQ pulse only when both inputs fire within the same clock phase.',
+    OR: 'Outputs an SFQ pulse if either input fires.',
+    XOR: 'Outputs an SFQ pulse if exactly one input fires. Critical for arithmetic.',
+    NOT: 'Inverts using AC clock bias. If no input arrives, the bias alone switches the JJ.',
+    DFF: 'Stores one bit as circulating current in a superconducting loop (0 or Φ₀).',
+};
+
 function renderHome() {
     const cells = Object.entries(CELL_LIBRARY);
     const cellCards = cells.map(([name, c]) =>
@@ -2030,6 +2396,18 @@ function renderHome() {
             <div class="cell-name">${name}</div>
             <div class="cell-desc">${c.desc}</div>
             <span class="cell-meta">JJs: ${c.junctions.length} | Ports: ${c.ports.map(p=>p.n).join(', ')}</span>
+            <div class="expander-toggle" data-target="cellDetail_${name}" style="cursor:pointer;margin-top:0.5rem;font-size:0.78rem;color:var(--primary-light);font-weight:500;">▶ Physics Details</div>
+            <div id="cellDetail_${name}" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(99,102,241,0.05);border-radius:8px;">${CELL_PHYSICS[name] || c.desc}</div>
+        </div>`
+    ).join('');
+
+    const archRows = ARCH_DATA.map(a =>
+        `<tr><td>${a.layer}</td><td>${a.func}</td></tr>`
+    ).join('');
+    const archExpanders = ARCH_DATA.map(a =>
+        `<div style="margin-bottom:0.5rem;">
+            <div class="expander-toggle" data-target="archDetail_${a.layer}" style="cursor:pointer;font-size:0.88rem;color:var(--primary-light);font-weight:500;padding:0.5rem 0;">▶ ${a.layer} — why it matters</div>
+            <div id="archDetail_${a.layer}" style="display:none;font-size:0.85rem;color:#a1a1aa;line-height:1.65;padding:0.75rem 1rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;">${a.detail}</div>
         </div>`
     ).join('');
 
@@ -2046,7 +2424,9 @@ function renderHome() {
                 <em>presence</em> or <em>absence</em> of single flux quantum (SFQ) pulses — quantised
                 voltage spikes of area Φ₀ = h/2e ≈ 2.07 mV·ps. Unlike RSFQ, RQL uses AC power
                 delivery through a resonant clock network, eliminating DC bias resistors and achieving
-                orders-of-magnitude lower power dissipation.
+                orders-of-magnitude lower power dissipation. RQL circuits operate at cryogenic
+                temperatures (≈ 4 K) and can reach clock speeds of 10–50 GHz with sub-attojoule
+                energy per operation.
             </div>
         </div>
         <div class="stats-row">
@@ -2058,14 +2438,9 @@ function renderHome() {
         <div class="section-title">Architecture</div>
         <table class="data-table">
             <thead><tr><th>Layer</th><th>Function</th></tr></thead>
-            <tbody>
-                <tr><td>Frontend</td><td>RTL (Verilog) → RQL cell mapping</td></tr>
-                <tr><td>Compiler</td><td>Netlist → Josephson junction network</td></tr>
-                <tr><td>Physics</td><td>RCSJ model, time-domain SPICE solver</td></tr>
-                <tr><td>Layout</td><td>Placement & parasitic extraction</td></tr>
-                <tr><td>Metrics</td><td>Timing, BER & power analysis</td></tr>
-            </tbody>
+            <tbody>${archRows}</tbody>
         </table>
+        ${archExpanders}
         <br>
         <div class="section-title">Quick Start</div>
         <div class="step-row"><div class="step-num">1</div><div class="step-text">Go to <strong>Design</strong> to enter a Verilog design or place cells</div></div>
@@ -2076,6 +2451,7 @@ function renderHome() {
         <div class="section-title">RQL Cell Library</div>
         <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.7;margin-bottom:1.25rem;">
             Each cell is a pre-characterised RQL logic element built from Josephson junctions, inductors, and capacitors.
+            Cells communicate via SFQ pulses: positive pulse = logic '1', absence = logic '0'.
         </p>
         <div class="cell-grid">${cellCards}</div>
         <div class="app-footer">
@@ -2088,6 +2464,18 @@ function renderHome() {
     `;
 }
 
+function setupHomeExpanders() {
+    document.querySelectorAll('.expander-toggle').forEach(btn => {
+        btn.onclick = () => {
+            const target = document.getElementById(btn.dataset.target);
+            if (!target) return;
+            const isOpen = target.style.display !== 'none';
+            target.style.display = isOpen ? 'none' : 'block';
+            btn.textContent = (isOpen ? '▶ ' : '▼ ') + btn.textContent.slice(2);
+        };
+    });
+}
+
 // ── DESIGN ──
 function renderDesign() {
     const placedHTML = appState.designCells.length ?
@@ -2096,10 +2484,33 @@ function renderDesign() {
 
     const summaryHTML = appState.flat ? `
         <div class="summary-grid">
-            <div class="glass-card"><div class="card-title">Netlist Summary</div><pre class="summary-pre">Netlist: ${appState.netlist.name}\n  Top ports:  ${appState.netlist.nPorts}\n  Nets:       ${appState.netlist.nNets}\n  Instances:  ${appState.netlist.instances.length}\n  Cell types: ${JSON.stringify(appState.netlist.instances.reduce((a,c) => { a[c.type]=(a[c.type]||0)+1; return a; }, {}))}</pre></div>
-            <div class="accent-card"><div class="card-title">Flat Circuit Summary</div><pre class="summary-pre">Circuit: ${appState.flat.name}\n  Nodes:      ${appState.flat.nodes.length} (+GND)\n  Junctions:  ${appState.flat.junctions.length}\n  Inductors:  ${appState.flat.inductors.length}\n  Sources:    ${appState.flat.sources.length}</pre></div>
+            <div class="glass-card"><div class="card-title">Netlist Summary</div><pre class="summary-pre">Netlist: ${appState.netlist.name}\n  Top ports:  ${appState.netlist.nPorts}\n  Nets:       ${appState.netlist.nNets}\n  Instances:  ${appState.netlist.instances.length}\n  Cell types: ${JSON.stringify(appState.netlist.instances.reduce((a,c) => { a[c.type]=(a[c.type]||0)+1; return a; }, {}))}</pre>
+                <div class="expander-toggle" data-target="netlistExplain" style="cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:var(--primary-light);font-weight:500;">▶ What do these numbers mean?</div>
+                <div id="netlistExplain" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(99,102,241,0.05);border-radius:8px;">
+                    <strong>Top ports</strong>: I/O pins of your design<br>
+                    <strong>Nets</strong>: Internal SFQ pulse routes<br>
+                    <strong>Instances</strong>: RQL cells placed<br>
+                    <strong>Cell types</strong>: How many of each gate type<br><br>
+                    <em>More instances = larger chip area and more complex clock routing.</em>
+                </div>
+            </div>
+            <div class="accent-card"><div class="card-title">Flat Circuit Summary</div><pre class="summary-pre">Circuit: ${appState.flat.name}\n  Nodes:      ${appState.flat.nodes.length} (+GND)\n  Junctions:  ${appState.flat.junctions.length}\n  Inductors:  ${appState.flat.inductors.length}\n  Sources:    ${appState.flat.sources.length}</pre>
+                <div class="expander-toggle" data-target="flatExplain" style="cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:var(--primary-light);font-weight:500;">▶ What do these numbers mean?</div>
+                <div id="flatExplain" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(99,102,241,0.05);border-radius:8px;">
+                    <strong>Nodes</strong>: Electrical connection points (KCL applied)<br>
+                    <strong>Junctions</strong>: Active switching elements (Ic, R, C)<br>
+                    <strong>Inductors</strong>: Superconducting loop inductors (Φ₀ quantised)<br>
+                    <strong>Sources</strong>: AC bias and stimulus current sources<br><br>
+                    <em>Junction count is the primary metric for RQL chip complexity.</em>
+                </div>
+            </div>
         </div>
         <div class="alert alert-success">Compiled successfully.</div>
+        <div class="section-title" style="font-size:1.2rem;margin-top:1.5rem;">Schematic View</div>
+        <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">
+            RQL cells and their SFQ signal interconnections. Color indicates clock phase assignment.
+        </p>
+        <div class="chart-container"><canvas id="chartSchematic"></canvas></div>
     ` : '';
 
     return `
@@ -2161,6 +2572,7 @@ function switchDesignTab(tab, btn) {
 }
 
 function setupDesignEvents() {
+    setupHomeExpanders();
     const compBtn = document.getElementById('compileVerilogBtn');
     if (compBtn) compBtn.onclick = () => {
         if (!tryCompile()) return;
@@ -2178,6 +2590,9 @@ function setupDesignEvents() {
                 appState.simResult = null;
                 hideSpinner();
                 renderPage('Design');
+                setTimeout(() => {
+                    if (appState.netlist) drawSchematic('chartSchematic', appState.netlist);
+                }, 50);
             } catch (e) {
                 hideSpinner();
                 alert('Compilation error: ' + e.message);
@@ -2222,6 +2637,9 @@ function setupDesignEvents() {
                 appState.simResult = null;
                 hideSpinner();
                 renderPage('Design');
+                setTimeout(() => {
+                    if (appState.netlist) drawSchematic('chartSchematic', appState.netlist);
+                }, 50);
             } catch (e) {
                 hideSpinner();
                 alert('Error: ' + e.message);
@@ -2335,118 +2753,332 @@ function setupSimulateEvents() {
     };
 }
 
-// ── WAVEFORMS ──
+// ── WAVEFORMS (4 tabs: All, Voltages, Phases, SFQ Pulses) ──
 function renderWaveforms() {
     if (!appState.simResult) {
         return `<div class="badge">Waveform Viewer</div><div class="section-title">Waveform Viewer</div>
             <div class="alert alert-warning">No simulation data. Run a simulation first.</div>`;
     }
+    const r = appState.simResult;
+    const jjNames = r.jjVoltages.map(j => j.name);
+    const jjCheckboxes = jjNames.slice(0, 12).map((n, i) =>
+        `<label class="form-checkbox" style="display:inline-flex;margin-right:1rem;margin-bottom:0.4rem;">
+            <input type="checkbox" class="wfJJSelect" value="${i}" ${i < 6 ? 'checked' : ''}> ${n.length > 20 ? '…' + n.slice(-18) : n}
+        </label>`
+    ).join('');
+    const sfqOpts = jjNames.map((n, i) => `<option value="${i}">${n}</option>`).join('');
+
     return `
         <div class="badge">Waveform Viewer</div>
         <div class="section-title">Waveform Viewer</div>
-        <div class="subtitle-text">Inspect SFQ pulses, junction phases, and bias currents.</div>
+        <div class="subtitle-text">Inspect SFQ pulses, junction phases, and bias currents — the primary diagnostic tool for RQL circuit verification.</div>
         <div class="glass-card">
             <div class="card-title">Reading RQL Waveforms</div>
             <div class="card-body">
-                <strong>Voltages:</strong> Sharp spikes = switching events. AC oscillation = clock bias.<br>
-                <strong>Phases:</strong> Each 2π step = one SFQ pulse. Should increase monotonically.
+                Unlike CMOS (voltage levels), in RQL you look for <strong>SFQ pulses</strong> — sharp voltage spikes of area Φ₀ ≈ 2.07 mV·ps.
+                <br><br>
+                <strong>Voltages:</strong> Sharp spikes = switching events. AC oscillation = clock bias (normal).
+                <br><strong>Phases:</strong> Each 2π step = one SFQ pulse. Should increase monotonically.
+                <br><strong>Flat voltage:</strong> Junction never switched — pulse didn't propagate.
             </div>
         </div>
-        <div class="section-title" style="font-size:1.2rem;">Junction Voltages</div>
-        <div class="chart-container"><canvas id="chartJJVolt"></canvas></div>
-        <div class="section-title" style="font-size:1.2rem;">Junction Phases</div>
-        <div class="chart-container"><canvas id="chartJJPhase"></canvas></div>
-        <div class="section-title" style="font-size:1.2rem;">Node Voltages</div>
-        <div class="chart-container"><canvas id="chartNodeVolt"></canvas></div>
+        <div class="tab-bar" id="wfTabBar">
+            <button class="tab-btn active" onclick="switchWfTab('all',this)">All Waveforms</button>
+            <button class="tab-btn" onclick="switchWfTab('voltages',this)">Junction Voltages</button>
+            <button class="tab-btn" onclick="switchWfTab('phases',this)">Junction Phases</button>
+            <button class="tab-btn" onclick="switchWfTab('sfq',this)">SFQ Pulses</button>
+        </div>
+        <div class="tab-panel active" id="wfAll">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">Combined view: voltages (top), phases (bottom).</p>
+            <div class="chart-container"><canvas id="chartWfAllVolt"></canvas></div>
+            <div class="chart-container"><canvas id="chartWfAllPhase"></canvas></div>
+        </div>
+        <div class="tab-panel" id="wfVoltages">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.5rem;">Select junctions to display. SFQ pulse = brief spike of area Φ₀.</p>
+            <div style="margin-bottom:1rem;">${jjCheckboxes}</div>
+            <button class="btn-secondary" id="updateWfVoltBtn" style="margin-bottom:1rem;">Update Chart</button>
+            <div class="chart-container"><canvas id="chartWfVolt"></canvas></div>
+        </div>
+        <div class="tab-panel" id="wfPhases">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">Superconducting phase φ. Every 2π increase = one SFQ pulse transferred.</p>
+            <div class="chart-container"><canvas id="chartWfPhase"></canvas></div>
+        </div>
+        <div class="tab-panel" id="wfSfq">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.5rem;">Detected switching events — 2π phase crossings.</p>
+            <div class="form-group" style="margin-bottom:1rem;max-width:400px;">
+                <label class="form-label">Junction for pulse view</label>
+                <select class="form-select" id="sfqJJSelect">${sfqOpts}</select>
+            </div>
+            <div class="chart-container"><canvas id="chartWfSfq"></canvas></div>
+            <div id="sfqCount" style="margin-top:0.75rem;"></div>
+        </div>
         <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v2.0</div>
     `;
 }
 
-function setupWaveformCharts() {
+function switchWfTab(tab, btn) {
+    document.querySelectorAll('#wfTabBar .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['wfAll', 'wfVoltages', 'wfPhases', 'wfSfq'].forEach(id => {
+        document.getElementById(id).classList.toggle('active', id === 'wf' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    });
+    // Map tab names to panel IDs
+    const map = { all: 'wfAll', voltages: 'wfVoltages', phases: 'wfPhases', sfq: 'wfSfq' };
+    Object.entries(map).forEach(([k, id]) => {
+        document.getElementById(id).classList.toggle('active', k === tab);
+    });
+    setTimeout(() => drawWfTab(tab), 50);
+}
+
+function drawWfTab(tab) {
     if (!appState.simResult) return;
     const r = appState.simResult;
     const tPs = Array.from(r.time).map(t => t * 1e12);
-
-    // Junction voltages (first 6)
-    const jjVDS = r.jjVoltages.slice(0, 6).map(jj => ({
-        x: tPs, y: Array.from(jj.data).map(v => v * 1e3), label: jj.name
-    }));
-    if (jjVDS.length) drawLineChart('chartJJVolt', jjVDS, 'Time (ps)', 'Voltage (mV)', 'Junction Voltages');
-
-    // Junction phases (first 6)
-    const jjPDS = r.jjPhases.slice(0, 6).map(jj => ({
-        x: tPs, y: Array.from(jj.data).map(v => v / TWO_PI), label: jj.name
-    }));
-    if (jjPDS.length) drawLineChart('chartJJPhase', jjPDS, 'Time (ps)', 'Phase (×2π)', 'Junction Phases');
-
-    // Node voltages (first 6)
-    const nVDS = r.nodeVoltages.slice(0, 6).map(n => ({
-        x: tPs, y: Array.from(n.data).map(v => v * 1e3), label: n.name
-    }));
-    if (nVDS.length) drawLineChart('chartNodeVolt', nVDS, 'Time (ps)', 'Voltage (mV)', 'Node Voltages');
+    if (tab === 'all' || tab === 'voltages') {
+        const indices = tab === 'all' ? [...Array(Math.min(6, r.jjVoltages.length)).keys()] :
+            [...document.querySelectorAll('.wfJJSelect:checked')].map(cb => parseInt(cb.value));
+        const canvasId = tab === 'all' ? 'chartWfAllVolt' : 'chartWfVolt';
+        const ds = indices.map(i => ({
+            x: tPs, y: Array.from(r.jjVoltages[i].data).map(v => v * 1e3), label: r.jjVoltages[i].name
+        }));
+        if (ds.length) drawLineChart(canvasId, ds, 'Time (ps)', 'Voltage (mV)', 'Junction Voltages');
+    }
+    if (tab === 'all' || tab === 'phases') {
+        const canvasId = tab === 'all' ? 'chartWfAllPhase' : 'chartWfPhase';
+        const ds = r.jjPhases.slice(0, 6).map(jj => ({
+            x: tPs, y: Array.from(jj.data).map(v => v / TWO_PI), label: jj.name
+        }));
+        if (ds.length) drawLineChart(canvasId, ds, 'Time (ps)', 'Phase (×2π)', 'Junction Phases');
+    }
+    if (tab === 'sfq') {
+        const sel = document.getElementById('sfqJJSelect');
+        const idx = parseInt(sel?.value || 0);
+        const jj = r.jjVoltages[idx];
+        if (jj) {
+            const ds = [{ x: tPs, y: Array.from(jj.data).map(v => v * 1e3), label: jj.name }];
+            drawLineChart('chartWfSfq', ds, 'Time (ps)', 'Voltage (mV)', `SFQ Pulses — ${jj.name}`);
+            const events = r.switchEvents[jj.name] || [];
+            document.getElementById('sfqCount').innerHTML =
+                `<div style="display:inline-block;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);border-radius:50px;padding:0.35rem 1rem;font-size:0.85rem;color:#818cf8;font-weight:600;">${events.length} SFQ pulses detected</div>
+                <div class="expander-toggle" data-target="sfqExplain" style="cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:var(--primary-light);font-weight:500;">▶ Interpreting SFQ pulse count</div>
+                <div id="sfqExplain" style="display:none;margin-top:0.5rem;font-size:0.85rem;color:#a1a1aa;line-height:1.55;padding:0.75rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;">
+                    <strong>${events.length} pulses</strong> on junction <strong>${jj.name}</strong>. Each = one 2π phase advancement.
+                    Clock-driven junctions show periodic pulses. Signal junctions pulse only when logic condition is met.
+                    Extra pulses may indicate timing violations or noise errors.
+                </div>`;
+            setupHomeExpanders();
+        }
+    }
 }
 
-// ── CLOCK PHASES ──
+function setupWaveformEvents() {
+    if (!appState.simResult) return;
+    setTimeout(() => drawWfTab('all'), 50);
+    const updateBtn = document.getElementById('updateWfVoltBtn');
+    if (updateBtn) updateBtn.onclick = () => drawWfTab('voltages');
+    const sfqSel = document.getElementById('sfqJJSelect');
+    if (sfqSel) sfqSel.onchange = () => drawWfTab('sfq');
+}
+
+// ── CLOCK PHASES (3 tabs: Phase Assignment, Clock Waveforms, Pipeline Occupancy) ──
 function renderClockPhases() {
     if (!appState.netlist) {
         return `<div class="badge">Clock Phase Visualiser</div><div class="section-title">Clock Phase Visualiser</div>
             <div class="alert alert-warning">No netlist. Compile a design first.</div>`;
     }
+    const p = getParams();
     const phaseTable = appState.netlist.instances.map(inst =>
         `<tr><td>${inst.name}</td><td>${inst.type}</td><td>${inst.clockPhase}°</td></tr>`
     ).join('');
     return `
         <div class="badge">Clock Phase Visualiser</div>
         <div class="section-title">Clock Phase Visualiser</div>
-        <div class="subtitle-text">Explore the multi-phase AC clock that makes RQL fundamentally different.</div>
+        <div class="subtitle-text">Explore the multi-phase AC clock that makes RQL fundamentally different from RSFQ and CMOS.</div>
         <div class="accent-card">
             <div class="card-title">The RQL Clock Advantage</div>
             <div class="card-body">
-                <strong>Zero static power</strong> — energy dissipated only during switching.
-                <strong>Natural pipelining</strong> — each phase defines a stage.
+                <strong>Zero static power</strong> — energy dissipated only during switching events.<br>
+                <strong>Natural pipelining</strong> — each phase defines a pipeline stage; data flows through like a bucket brigade.<br>
+                <strong>No DC bias</strong> — resonant AC clock eliminates the resistive bias network that dominates RSFQ power.
             </div>
         </div>
-        <div class="section-title" style="font-size:1.2rem;">Phase Assignment</div>
-        <table class="data-table">
-            <thead><tr><th>Instance</th><th>Cell Type</th><th>Clock Phase</th></tr></thead>
-            <tbody>${phaseTable}</tbody>
-        </table>
-        <div class="section-title" style="font-size:1.2rem;">Clock Waveforms</div>
-        <div class="chart-container"><canvas id="chartClock"></canvas></div>
+        <div class="tab-bar" id="cpTabBar">
+            <button class="tab-btn active" onclick="switchCpTab('assign',this)">Phase Assignment</button>
+            <button class="tab-btn" onclick="switchCpTab('waveforms',this)">Clock Waveforms</button>
+            <button class="tab-btn" onclick="switchCpTab('pipeline',this)">Pipeline Occupancy</button>
+        </div>
+        <div class="tab-panel active" id="cpAssign">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">
+                BFS-based clock phase assignment — cells are placed at pipeline depths from the input ports.
+            </p>
+            <div class="chart-container" style="max-width:420px;margin:0 auto 1.5rem auto;"><canvas id="chartPolar"></canvas></div>
+            <table class="data-table">
+                <thead><tr><th>Instance</th><th>Cell Type</th><th>Clock Phase</th></tr></thead>
+                <tbody>${phaseTable}</tbody>
+            </table>
+        </div>
+        <div class="tab-panel" id="cpWaveforms">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">
+                AC sinusoidal bias signals — phases evenly offset by T/n_phases.
+                ${p.nPhases}-phase clock at ${p.clockFreq} GHz. Each phase offset = ${(360 / p.nPhases).toFixed(0)}°.
+            </p>
+            <div class="form-group" style="max-width:250px;margin-bottom:1rem;">
+                <label class="form-label">Clock cycles to show</label>
+                <input type="range" id="clockCyclesSlider" min="1" max="10" value="3" step="1"
+                    style="width:100%;accent-color:var(--primary);">
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-tertiary);">
+                    <span>1</span><span id="clockCyclesVal">3</span><span>10</span>
+                </div>
+            </div>
+            <div class="chart-container"><canvas id="chartClock"></canvas></div>
+        </div>
+        <div class="tab-panel" id="cpPipeline">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">
+                Heatmap shows which pipeline stages contain a fluxon at each clock cycle.
+                ${!appState.simResult ? '<br><em>Run a simulation to see pipeline occupancy.</em>' : ''}
+            </p>
+            <div class="chart-container"><canvas id="chartPipeline"></canvas></div>
+        </div>
         <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v2.0</div>
     `;
 }
 
-function setupClockCharts() {
+function switchCpTab(tab, btn) {
+    document.querySelectorAll('#cpTabBar .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const map = { assign: 'cpAssign', waveforms: 'cpWaveforms', pipeline: 'cpPipeline' };
+    Object.entries(map).forEach(([k, id]) => {
+        document.getElementById(id).classList.toggle('active', k === tab);
+    });
+    setTimeout(() => drawCpTab(tab), 50);
+}
+
+function drawCpTab(tab) {
     if (!appState.netlist) return;
+    const p = getParams();
+    if (tab === 'assign') {
+        // Draw polar chart
+        const phaseCounts = {};
+        appState.netlist.instances.forEach(inst => {
+            const ph = inst.clockPhase;
+            phaseCounts[ph] = (phaseCounts[ph] || 0) + 1;
+        });
+        drawPolarChart('chartPolar', phaseCounts, p.nPhases, 'Cells per Clock Phase');
+    }
+    if (tab === 'waveforms') {
+        const freq = p.clockFreq * 1e9;
+        const period = 1 / freq;
+        const slider = document.getElementById('clockCyclesSlider');
+        const nCyc = slider ? parseInt(slider.value) : 3;
+        const tEnd = period * nCyc;
+        const nPts = 500;
+        const tArr = [];
+        for (let i = 0; i <= nPts; i++) tArr.push(i * tEnd / nPts);
+        const tPs = tArr.map(t => t * 1e12);
+        const datasets = [];
+        for (let ph = 0; ph < p.nPhases; ph++) {
+            const offset = (ph * 360 / p.nPhases) * Math.PI / 180;
+            const yArr = tArr.map(t => Math.sin(TWO_PI * freq * t + offset));
+            datasets.push({ x: tPs, y: yArr, label: `Phase ${ph * (360/p.nPhases)}°` });
+        }
+        drawLineChart('chartClock', datasets, 'Time (ps)', 'Amplitude', `${p.nPhases}-Phase AC Clock at ${p.clockFreq} GHz`);
+    }
+    if (tab === 'pipeline') {
+        drawPipelineOccupancy('chartPipeline');
+    }
+}
+
+function drawPipelineOccupancy(canvasId) {
+    const canvas = document.getElementById(canvasId); if (!canvas) return;
+    if (!appState.simResult || !appState.netlist) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = 400; canvas.height = 120;
+        ctx.fillStyle = '#71717a'; ctx.font = '14px Inter, sans-serif';
+        ctx.textAlign = 'center'; ctx.fillText('Run simulation to see pipeline occupancy', 200, 60);
+        return;
+    }
+    const r = appState.simResult;
     const p = getParams();
     const freq = p.clockFreq * 1e9;
     const period = 1 / freq;
-    const nCyc = 3;
-    const tEnd = period * nCyc;
-    const nPts = 500;
-    const tArr = [];
-    for (let i = 0; i <= nPts; i++) tArr.push(i * tEnd / nPts);
-    const tPs = tArr.map(t => t * 1e12);
-
-    const datasets = [];
-    for (let ph = 0; ph < p.nPhases; ph++) {
-        const offset = (ph * 360 / p.nPhases) * Math.PI / 180;
-        const yArr = tArr.map(t => Math.sin(TWO_PI * freq * t + offset));
-        datasets.push({ x: tPs, y: yArr, label: `Phase ${ph * (360/p.nPhases)}°` });
+    const tEnd = r.metadata.tEnd;
+    const nCycles = Math.max(1, Math.floor(tEnd * freq));
+    const nPhases = p.nPhases;
+    // Build occupancy grid: nPhases rows x nCycles cols
+    const grid = Array.from({ length: nPhases }, () => new Float64Array(nCycles));
+    Object.entries(r.switchEvents).forEach(([jjName, events]) => {
+        // Determine which phase this JJ belongs to
+        let phase = 0;
+        for (const inst of appState.netlist.instances) {
+            if (jjName.includes(inst.name)) { phase = (inst.clockPhase / (360 / nPhases)) % nPhases; break; }
+        }
+        events.forEach(ev => {
+            const cycle = Math.floor(ev.time * freq);
+            if (cycle >= 0 && cycle < nCycles) grid[Math.floor(phase)][cycle]++;
+        });
+    });
+    // Find max for normalization
+    let maxVal = 0;
+    grid.forEach(row => row.forEach(v => { if (v > maxVal) maxVal = v; }));
+    if (maxVal === 0) maxVal = 1;
+    // Draw heatmap
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const cellW = Math.max(4, Math.min(20, Math.floor(600 / nCycles)));
+    const cellH = 32;
+    const marginL = 80, marginT = 30, marginB = 40;
+    const W = marginL + nCycles * cellW + 20;
+    const H = marginT + nPhases * cellH + marginB;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, W, H);
+    // Title
+    ctx.fillStyle = '#e4e4e7'; ctx.font = 'bold 13px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Pipeline Stage Occupancy', W / 2, 18);
+    // Cells
+    for (let row = 0; row < nPhases; row++) {
+        // Label
+        ctx.fillStyle = '#a1a1aa'; ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText(`Phase ${row * (360 / nPhases)}°`, marginL - 8, marginT + row * cellH + cellH / 2 + 4);
+        for (let col = 0; col < nCycles; col++) {
+            const val = grid[row][col] / maxVal;
+            const r = Math.floor(99 + val * 156), g = Math.floor(102 + val * 0), b = Math.floor(241);
+            ctx.fillStyle = val > 0 ? `rgba(${r},${g},${b},${0.15 + val * 0.85})` : 'rgba(255,255,255,0.03)';
+            ctx.fillRect(marginL + col * cellW, marginT + row * cellH, cellW - 1, cellH - 1);
+        }
     }
-    drawLineChart('chartClock', datasets, 'Time (ps)', 'Amplitude', 'AC Clock Phases');
+    // X labels
+    ctx.fillStyle = '#71717a'; ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'center';
+    const step = Math.max(1, Math.floor(nCycles / 10));
+    for (let c = 0; c < nCycles; c += step) {
+        ctx.fillText(c.toString(), marginL + c * cellW + cellW / 2, marginT + nPhases * cellH + 16);
+    }
+    ctx.fillText('Clock Cycle', marginL + nCycles * cellW / 2, marginT + nPhases * cellH + 34);
 }
 
-// ── BIAS MARGINS ──
+function setupClockEvents() {
+    if (!appState.netlist) return;
+    setTimeout(() => drawCpTab('assign'), 50);
+    // Clock cycles slider
+    const slider = document.getElementById('clockCyclesSlider');
+    if (slider) {
+        slider.addEventListener('input', () => {
+            const valSpan = document.getElementById('clockCyclesVal');
+            if (valSpan) valSpan.textContent = slider.value;
+            drawCpTab('waveforms');
+        });
+    }
+}
+
+// ── BIAS MARGINS (with heatmap + BER fill chart) ──
 function renderBiasMargins() {
     if (!appState.flat) {
         return `<div class="badge">Bias Margin Heatmap</div><div class="section-title">Bias Margin Heatmap</div>
             <div class="alert alert-warning">No design compiled. Go to the Design page first.</div>`;
     }
     const p = getParams();
-    const rows = appState.flat.junctions.map(jj => {
-        const Inom = jj.Ic * p.biasRatio;
+    const marginData = appState.flat.junctions.map(jj => {
         let lower = 25, upper = 25;
         for (let d = 0; d < 0.5; d += 0.01) {
             const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * (p.biasRatio - d), p.clockFreq * 1e9, p.temperature);
@@ -2456,11 +3088,18 @@ function renderBiasMargins() {
             const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * (p.biasRatio + d), p.clockFreq * 1e9, p.temperature);
             if (b > 1e-9) { upper = (d * 100 / p.biasRatio); break; }
         }
-        const total = lower + upper;
-        const color = total > 40 ? '#22c55e' : total > 20 ? '#eab308' : '#ef4444';
-        return `<tr><td>${jj.name}</td><td>${lower.toFixed(1)}%</td><td>${upper.toFixed(1)}%</td>
-                <td style="color:${color};font-weight:700;">${total.toFixed(1)}%</td></tr>`;
+        return { name: jj.name, lower, upper, total: lower + upper, jj };
+    });
+    const rows = marginData.map(m => {
+        const color = m.total > 40 ? '#22c55e' : m.total > 20 ? '#eab308' : '#ef4444';
+        return `<tr><td>${m.name}</td><td>${m.lower.toFixed(1)}%</td><td>${m.upper.toFixed(1)}%</td>
+                <td style="color:${color};font-weight:700;">${m.total.toFixed(1)}%</td></tr>`;
     }).join('');
+    const minMargin = marginData.reduce((min, m) => m.total < min.total ? m : min, marginData[0]);
+    const avgMargin = marginData.reduce((s, m) => s + m.total, 0) / marginData.length;
+    const worstColor = minMargin.total > 40 ? '#22c55e' : minMargin.total > 20 ? '#eab308' : '#ef4444';
+
+    const jjOpts = appState.flat.junctions.map((jj, i) => `<option value="${i}">${jj.name}</option>`).join('');
 
     return `
         <div class="badge">Bias Margin Heatmap</div>
@@ -2469,38 +3108,84 @@ function renderBiasMargins() {
         <div class="glass-card">
             <div class="card-title">Understanding Bias Margins</div>
             <div class="card-body">
-                <strong style="color:#22c55e;">Green (> 40%)</strong> — Robust
+                <strong style="color:#22c55e;">Green (&gt; 40%)</strong> — Robust
                 &nbsp; <strong style="color:#eab308;">Yellow (20–40%)</strong> — Marginal
-                &nbsp; <strong style="color:#ef4444;">Red (< 20%)</strong> — Critical
+                &nbsp; <strong style="color:#ef4444;">Red (&lt; 20%)</strong> — Critical
             </div>
         </div>
+        <div class="metrics-row">
+            <div class="metric-box"><div class="metric-label">Worst Margin</div><div class="metric-value" style="color:${worstColor};">${minMargin.total.toFixed(1)}%</div><div class="metric-sublabel">${minMargin.name}</div></div>
+            <div class="metric-box"><div class="metric-label">Average Margin</div><div class="metric-value">${avgMargin.toFixed(1)}%</div></div>
+            <div class="metric-box"><div class="metric-label">Junctions</div><div class="metric-value">${marginData.length}</div></div>
+        </div>
+        <div class="section-title" style="font-size:1.2rem;">Chip-Level Heatmap</div>
+        <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">
+            Each circle = one Josephson junction, positioned by cell placement. Color = total margin.
+        </p>
+        <div class="chart-container"><canvas id="chartBiasHeatmap"></canvas></div>
         <div class="section-title" style="font-size:1.2rem;">Per-Junction Margins</div>
         <table class="data-table">
             <thead><tr><th>Junction</th><th>Lower (%)</th><th>Upper (%)</th><th>Total (%)</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
+        <div class="expander-toggle" data-target="biasMarginExplain" style="cursor:pointer;margin-top:0.75rem;margin-bottom:0.75rem;font-size:0.85rem;color:var(--primary-light);font-weight:500;">▶ Understanding bias margins in RQL</div>
+        <div id="biasMarginExplain" style="display:none;margin-top:0.5rem;font-size:0.85rem;color:#a1a1aa;line-height:1.65;padding:0.75rem 1rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;">
+            In CMOS, voltage margins are 30–50% of VDD. In RQL, the margin depends on the
+            <em>energy barrier</em> of the Josephson junction's washboard potential. The barrier
+            scales as Ic·Φ₀ ≈ 0.5×10⁻¹⁹ J (~300 kT at 4.2 K). As bias approaches Ic,
+            the barrier shrinks <em>exponentially</em> — this extreme sensitivity is why even small
+            Ic variations can catastrophically degrade yield.
+        </div>
         <div class="section-title" style="font-size:1.2rem;">BER vs Bias Ratio</div>
+        <div class="form-group" style="max-width:400px;margin-bottom:1rem;">
+            <label class="form-label">Select junction</label>
+            <select class="form-select" id="berJJSelect">${jjOpts}</select>
+        </div>
         <div class="chart-container"><canvas id="chartBER"></canvas></div>
-        <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v2.0</div>
+        <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v3.0</div>
     `;
 }
 
 function setupBiasCharts() {
     if (!appState.flat || !appState.flat.junctions.length) return;
+    setupHomeExpanders();
+    // Compute margin data for heatmap
     const p = getParams();
-    const jj = appState.flat.junctions[0];
-    const ratios = [];
-    const bers = [];
+    const marginData = appState.flat.junctions.map(jj => {
+        let lower = 25, upper = 25;
+        for (let d = 0; d < 0.5; d += 0.01) {
+            const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * (p.biasRatio - d), p.clockFreq * 1e9, p.temperature);
+            if (b > 1e-9) { lower = (d * 100 / p.biasRatio); break; }
+        }
+        for (let d = 0; d < 0.5; d += 0.01) {
+            const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * (p.biasRatio + d), p.clockFreq * 1e9, p.temperature);
+            if (b > 1e-9) { upper = (d * 100 / p.biasRatio); break; }
+        }
+        return { name: jj.name, total: lower + upper };
+    });
+    // Draw heatmap
+    drawBiasHeatmap('chartBiasHeatmap', marginData);
+    // Draw BER curve
+    drawBERCurve(0);
+    const berSel = document.getElementById('berJJSelect');
+    if (berSel) berSel.onchange = () => drawBERCurve(parseInt(berSel.value));
+}
+
+function drawBERCurve(jjIndex) {
+    if (!appState.flat || !appState.flat.junctions[jjIndex]) return;
+    const p = getParams();
+    const jj = appState.flat.junctions[jjIndex];
+    const ratios = [], bers = [];
     for (let r = 0.30; r <= 0.95; r += 0.005) {
         ratios.push(r);
         const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * r, p.clockFreq * 1e9, p.temperature);
         bers.push(Math.log10(b + 1e-50));
     }
     drawLineChart('chartBER', [{x: ratios, y: bers, label: jj.name}],
-        'Bias ratio (Ibias/Ic)', 'log₁₀(BER)', `BER vs Bias — ${jj.name}`);
+        'Bias ratio (Ibias/Ic)', 'log₁₀(BER)', `BER vs Bias — ${jj.name}`, true);
 }
 
-// ── REPORTS ──
+// ── REPORTS (enhanced: timing latency, BER with fill, full power, tape-out criteria) ──
 function renderReports() {
     if (!appState.simResult || !appState.flat) {
         return `<div class="badge">Analysis Reports</div><div class="section-title">Analysis Reports</div>
@@ -2509,82 +3194,420 @@ function renderReports() {
     const p = getParams();
     const clockPeriod = 1e12 / (p.clockFreq * 1e9);
     const phaseWindow = clockPeriod / (2 * p.nPhases);
+    const r = appState.simResult;
 
-    // Timing
-    const timingHTML = `
-        <div class="metrics-row">
-            <div class="metric-box"><div class="metric-label">Clock Period</div><div class="metric-value">${clockPeriod.toFixed(1)} ps</div></div>
-            <div class="metric-box"><div class="metric-label">Phase Window</div><div class="metric-value">${phaseWindow.toFixed(1)} ps</div></div>
-            <div class="metric-box"><div class="metric-label">Switching Events</div><div class="metric-value">${appState.simResult.totalEvents}</div></div>
-        </div>
-    `;
+    // Timing latency analysis
+    const allEvtTimes = {};
+    Object.entries(r.switchEvents).forEach(([name, evts]) => {
+        if (evts.length > 0) allEvtTimes[name] = evts.map(e => e.time);
+    });
+    const jjNames = Object.keys(allEvtTimes);
+    let firstPulseTime = Infinity, lastPulseTime = 0, firstJJ = '', lastJJ = '';
+    jjNames.forEach(name => {
+        const times = allEvtTimes[name];
+        const minT = Math.min(...times);
+        const maxT = Math.max(...times);
+        if (minT < firstPulseTime) { firstPulseTime = minT; firstJJ = name; }
+        if (maxT > lastPulseTime) { lastPulseTime = maxT; lastJJ = name; }
+    });
+    const propagationDelay = (lastPulseTime - firstPulseTime) * 1e12;
+    const pipelineStages = Math.ceil(propagationDelay / clockPeriod) || 1;
 
-    // BER
-    const berRows = appState.flat.junctions.map(jj => {
+    // Global timing margin
+    let globalMargin = phaseWindow;
+    if (appState.netlist && jjNames.length > 0) {
+        const instPhases = {};
+        appState.netlist.instances.forEach(inst => { instPhases[inst.name] = inst.clockPhase; });
+        let worstSlack = Infinity;
+        jjNames.forEach(name => {
+            const times = allEvtTimes[name];
+            let instPhase = 0;
+            for (const inst of appState.netlist.instances) {
+                if (name.includes(inst.name)) { instPhase = inst.clockPhase; break; }
+            }
+            const expectedPhaseRad = instPhase * Math.PI / 180;
+            const freq = p.clockFreq * 1e9;
+            times.forEach(t => {
+                const cyclePos = (t * freq) % 1;
+                const expectedPos = instPhase / 360;
+                let delta = Math.abs(cyclePos - expectedPos);
+                if (delta > 0.5) delta = 1 - delta;
+                const slackPs = (0.5 / p.nPhases - delta) * clockPeriod;
+                if (slackPs < worstSlack) worstSlack = slackPs;
+            });
+        });
+        if (worstSlack < Infinity) globalMargin = worstSlack;
+    }
+    const marginColor = globalMargin > 5 ? '#22c55e' : globalMargin > 0 ? '#eab308' : '#ef4444';
+
+    // Fluxon latency per stage
+    const stageLatencies = [];
+    if (appState.netlist) {
+        const phaseGroups = {};
+        jjNames.forEach(name => {
+            let phase = 0;
+            for (const inst of appState.netlist.instances) {
+                if (name.includes(inst.name)) { phase = inst.clockPhase; break; }
+            }
+            if (!phaseGroups[phase]) phaseGroups[phase] = [];
+            const times = allEvtTimes[name];
+            if (times.length > 0) phaseGroups[phase].push(Math.min(...times));
+        });
+        const sortedPhases = Object.keys(phaseGroups).map(Number).sort((a, b) => a - b);
+        for (let i = 1; i < sortedPhases.length; i++) {
+            const prevMin = Math.min(...phaseGroups[sortedPhases[i - 1]]);
+            const curMin = Math.min(...phaseGroups[sortedPhases[i]]);
+            stageLatencies.push((curMin - prevMin) * 1e12);
+        }
+    }
+    const stageLatencyRows = stageLatencies.map((l, i) =>
+        `<tr><td>Stage ${i}</td><td>${l.toFixed(1)} ps</td></tr>`
+    ).join('');
+
+    // BER rows
+    const berData = appState.flat.junctions.map(jj => {
         const Ibias = jj.Ic * p.biasRatio;
         const b = berPerClock(jj.Ic, jj.R, jj.C, Ibias, p.clockFreq * 1e9, p.temperature);
         const barrier = barrierHeight(jj.Ic, Ibias);
-        return `<tr><td>${jj.name}</td><td>${(jj.Ic*1e6).toFixed(1)}</td><td>${b.toExponential(2)}</td><td>${(barrier/1.6e-19).toFixed(4)}</td></tr>`;
-    }).join('');
+        return { name: jj.name, Ic: jj.Ic, ber: b, barrier, jj };
+    });
+    const berRows = berData.map(d =>
+        `<tr><td>${d.name}</td><td>${(d.Ic*1e6).toFixed(1)}</td><td>${d.ber.toExponential(2)}</td><td>${(d.barrier/1.6e-19).toFixed(4)}</td></tr>`
+    ).join('');
+    const maxBER = Math.max(...berData.map(d => d.ber));
+    const berStatus = maxBER < 1e-20 ? 'Excellent' : maxBER < 1e-12 ? 'Good' : maxBER < 1e-6 ? 'Marginal' : 'FAIL';
+    const berColor = maxBER < 1e-20 ? '#22c55e' : maxBER < 1e-12 ? '#06b6d4' : maxBER < 1e-6 ? '#eab308' : '#ef4444';
 
-    // Power
+    // Power analysis
     const nJJ = appState.flat.junctions.length;
-    const totalSwitch = appState.simResult.totalEvents;
+    const totalSwitch = r.totalEvents;
     const EPerSwitch = PHI_0 * DEFAULT_IC;
-    const switchPower = totalSwitch * EPerSwitch / (appState.simResult.metadata.tEnd) * 1e9;
+    const tEnd = r.metadata.tEnd;
+    const switchPower = totalSwitch * EPerSwitch / tEnd * 1e9;
     const energyPerOp = totalSwitch > 0 ? (EPerSwitch * 1e18) : 0;
+    const clockPower = nJJ * 0.5 * EPerSwitch * p.clockFreq * 1e9 * 1e9;
+    const totalPower = switchPower + clockPower;
+    const powerPerJJ = nJJ > 0 ? totalPower / nJJ : 0;
+    const rsfqEquiv = nJJ * 125;
+
+    // Static power estimate
+    const avgIc = nJJ > 0 ? appState.flat.junctions.reduce((s, jj) => s + jj.Ic, 0) / nJJ : 0;
+    const quasiparticlePower = nJJ > 0 ? nJJ * (avgIc * avgIc * DEFAULT_R * 0.001) * 1e9 : 0;
+
+    const jjBerOpts = appState.flat.junctions.map((jj, i) => `<option value="${i}">${jj.name}</option>`).join('');
 
     return `
         <div class="badge">Analysis Reports</div>
         <div class="section-title">Analysis Reports</div>
-        <div class="subtitle-text">Accept/reject metrics for tape-out — timing, BER, and power.</div>
-        <div class="tab-bar">
+        <div class="subtitle-text">Accept/reject metrics for tape-out — timing margins, BER, and power within cryocooler budget.</div>
+        <div class="accent-card" style="margin-bottom:1.5rem;">
+            <div class="card-title">Tape-Out Criteria</div>
+            <div class="card-body">
+                Every design must demonstrate: (1) adequate timing margins, (2) sufficiently low BER,
+                and (3) total power within the cryocooler's thermal budget (~1 W at 4 K, costing
+                ~1 kW wall power per watt at 4 K).
+                <br><br>
+                <strong>RQL's advantage:</strong> Sub-nW power per junction, sub-aJ energy per
+                operation — 1000× better than RSFQ, 10⁶× better than CMOS.
+            </div>
+        </div>
+        <div class="tab-bar" id="rptTabBar">
             <button class="tab-btn active" onclick="switchReportTab('timing',this)">Timing</button>
             <button class="tab-btn" onclick="switchReportTab('ber',this)">BER</button>
             <button class="tab-btn" onclick="switchReportTab('power',this)">Power</button>
         </div>
         <div class="tab-panel active" id="reportTiming">
             <div class="section-title" style="font-size:1.2rem;">Timing Analysis</div>
-            ${timingHTML}
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">Does every SFQ pulse arrive within its clock window?</p>
+            <div class="metrics-row">
+                <div class="metric-box"><div class="metric-label">Clock Period</div><div class="metric-value">${clockPeriod.toFixed(1)} ps</div></div>
+                <div class="metric-box"><div class="metric-label">Phase Window</div><div class="metric-value">${phaseWindow.toFixed(1)} ps</div></div>
+                <div class="metric-box"><div class="metric-label">Global Margin</div><div class="metric-value" style="color:${marginColor};">${globalMargin.toFixed(2)} ps</div></div>
+            </div>
+            <div class="section-title" style="font-size:1.1rem;margin-top:1.5rem;">Propagation Latency</div>
+            <div class="metrics-row">
+                <div class="metric-box"><div class="metric-label">Total Delay</div><div class="metric-value">${propagationDelay.toFixed(1)} ps</div></div>
+                <div class="metric-box"><div class="metric-label">Pipeline Stages</div><div class="metric-value">${pipelineStages}</div></div>
+                <div class="metric-box"><div class="metric-label">Throughput</div><div class="metric-value">${(p.clockFreq).toFixed(0)} GHz</div></div>
+            </div>
+            <div class="glass-card" style="margin-top:1rem;">
+                <div class="card-body" style="font-size:0.85rem;">
+                    <strong>First pulse:</strong> ${firstJJ} at ${(firstPulseTime * 1e12).toFixed(1)} ps<br>
+                    <strong>Last pulse:</strong> ${lastJJ} at ${(lastPulseTime * 1e12).toFixed(1)} ps<br>
+                    <em>Latency = ${pipelineStages} pipeline stages × ${clockPeriod.toFixed(1)} ps clock period.</em>
+                </div>
+            </div>
+            ${stageLatencies.length > 0 ? `
+                <div class="section-title" style="font-size:1.1rem;margin-top:1.5rem;">Fluxon Latency per Stage</div>
+                <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">Uniform latencies = well-balanced pipeline.</p>
+                <table class="data-table">
+                    <thead><tr><th>Stage</th><th>Latency</th></tr></thead>
+                    <tbody>${stageLatencyRows}</tbody>
+                </table>
+            ` : ''}
         </div>
         <div class="tab-panel" id="reportBER">
             <div class="section-title" style="font-size:1.2rem;">BER Prediction</div>
-            <table class="data-table">
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">Probability of junction switching incorrectly due to thermal noise.</p>
+            <div class="metrics-row">
+                <div class="metric-box"><div class="metric-label">Worst-Case BER</div><div class="metric-value" style="color:${berColor};">${maxBER.toExponential(2)}</div></div>
+                <div class="metric-box"><div class="metric-label">Status</div><div class="metric-value" style="color:${berColor};">${berStatus}</div></div>
+                <div class="metric-box"><div class="metric-label">Temperature</div><div class="metric-value">${p.temperature.toFixed(1)} K</div></div>
+            </div>
+            <table class="data-table" style="margin-top:1rem;">
                 <thead><tr><th>Junction</th><th>Ic (µA)</th><th>BER/clk</th><th>Barrier (eV)</th></tr></thead>
                 <tbody>${berRows}</tbody>
             </table>
+            <div class="expander-toggle" data-target="berExplain" style="cursor:pointer;margin-top:0.75rem;font-size:0.85rem;color:var(--primary-light);font-weight:500;">▶ Understanding the BER table</div>
+            <div id="berExplain" style="display:none;margin-top:0.5rem;font-size:0.85rem;color:#a1a1aa;line-height:1.55;padding:0.75rem 1rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;">
+                <strong>Ic</strong>: Critical current — higher → larger barrier → lower BER<br>
+                <strong>BER/clk</strong>: Probability of thermal error per cycle. 10⁻²⁰ = one error every ~300 years at 20 GHz<br>
+                <strong>Barrier</strong>: Washboard potential height. At 4.2 K, kT ≈ 0.00036 eV; a barrier of 0.16 eV = ~450 kT — virtually impenetrable
+            </div>
+            <div class="section-title" style="font-size:1.1rem;margin-top:1.5rem;">BER vs Bias Ratio</div>
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.5rem;">The steep cliff near Ibias/Ic ≈ 0.9–0.95 is where reliability collapses.</p>
+            <div class="form-group" style="max-width:400px;margin-bottom:1rem;">
+                <label class="form-label">Select junction</label>
+                <select class="form-select" id="rptBerJJSelect">${jjBerOpts}</select>
+            </div>
+            <div class="chart-container"><canvas id="chartRptBERBias"></canvas></div>
+            <div class="section-title" style="font-size:1.1rem;margin-top:1.5rem;">BER vs Temperature</div>
+            <div class="chart-container"><canvas id="chartBERTemp"></canvas></div>
         </div>
         <div class="tab-panel" id="reportPower">
             <div class="section-title" style="font-size:1.2rem;">Power Analysis</div>
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">RQL's defining advantage: AC resonant clock with zero static power dissipation.</p>
             <div class="metrics-row">
-                <div class="metric-box"><div class="metric-label">Total Power</div><div class="metric-value">${switchPower.toFixed(3)} nW</div></div>
-                <div class="metric-box"><div class="metric-label">Junctions</div><div class="metric-value">${nJJ}</div></div>
-                <div class="metric-box"><div class="metric-label">Energy/op</div><div class="metric-value">${energyPerOp.toFixed(2)} aJ</div></div>
+                <div class="metric-box"><div class="metric-label">Total Power</div><div class="metric-value">${totalPower.toFixed(3)} nW</div></div>
+                <div class="metric-box"><div class="metric-label">Switching Power</div><div class="metric-value">${switchPower.toFixed(3)} nW</div></div>
+                <div class="metric-box"><div class="metric-label">Energy/operation</div><div class="metric-value">${energyPerOp.toFixed(2)} aJ</div></div>
             </div>
-            <div class="glass-card">
+            <div class="section-title" style="font-size:1.1rem;margin-top:1.5rem;">Static Power Estimate</div>
+            <p style="font-size:0.82rem;color:var(--text-tertiary);margin-bottom:0.75rem;">In ideal RQL: zero (no DC bias resistors). Residual from quasiparticle tunnelling.</p>
+            <div class="metrics-row">
+                <div class="metric-box"><div class="metric-label">Junctions</div><div class="metric-value">${nJJ}</div></div>
+                <div class="metric-box"><div class="metric-label">Avg Ic</div><div class="metric-value">${(avgIc * 1e6).toFixed(1)} µA</div></div>
+                <div class="metric-box"><div class="metric-label">Power/JJ</div><div class="metric-value">${powerPerJJ.toFixed(4)} nW</div></div>
+            </div>
+            <div class="glass-card" style="margin-top:1rem;">
                 <div class="card-title">RQL Power Advantage</div>
                 <div class="card-body">
-                    <strong>RSFQ</strong>: ~125 nW/JJ (DC bias resistors, always on).<br>
-                    <strong>RQL</strong>: Sub-nW/JJ — AC resonant clock with zero static power.
-                    Approaching the Landauer limit of kT·ln 2 ≈ 0.017 aJ at 4.2 K.
+                    <strong>RSFQ equivalent</strong>: ~${rsfqEquiv.toFixed(0)} nW (${nJJ} JJs × 125 nW/JJ with DC bias).<br>
+                    <strong>RQL actual</strong>: ${totalPower.toFixed(3)} nW — a <strong>${rsfqEquiv > 0 ? (rsfqEquiv / totalPower).toFixed(0) : '∞'}×</strong> reduction!<br><br>
+                    <strong>Landauer limit</strong>: kT·ln 2 ≈ ${(1.38e-23 * p.temperature * Math.log(2) * 1e18).toFixed(4)} aJ at ${p.temperature} K.
+                    Your energy/switch: ${energyPerOp.toFixed(2)} aJ — ${energyPerOp > 0 ? (energyPerOp / (1.38e-23 * p.temperature * Math.log(2) * 1e18)).toFixed(0) : '∞'}× Landauer.
                 </div>
             </div>
+            <div class="expander-toggle" data-target="powerExplain" style="cursor:pointer;margin-top:0.75rem;font-size:0.85rem;color:var(--primary-light);font-weight:500;">▶ RQL power advantage explained</div>
+            <div id="powerExplain" style="display:none;margin-top:0.5rem;font-size:0.85rem;color:#a1a1aa;line-height:1.65;padding:0.75rem 1rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;">
+                <strong>RSFQ</strong>: Every JJ needs a DC bias resistor (~2 Ω) → ~125 nW/JJ, always on.<br><br>
+                <strong>RQL</strong>: AC resonant clock through lossless superconducting transformers.
+                Energy is exchanged between clock and junction kinetic inductance.
+                Real power only during switching: Ic × Φ₀ ≈ 0.5 aJ/event.<br><br>
+                This makes RQL the most power-efficient digital logic family — approaching
+                the Landauer limit of kT·ln 2 ≈ 0.017 aJ at 4.2 K.
+            </div>
+            <div class="section-title" style="font-size:1.1rem;margin-top:1.5rem;">Power Breakdown Chart</div>
+            <div class="chart-container"><canvas id="chartPowerBreak"></canvas></div>
         </div>
-        <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v2.0 ·
+        <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v3.0 ·
             Developed by <a href="https://esrpo.com" style="color:var(--primary-light);text-decoration:none;">EchoSpark</a>
         </div>
     `;
 }
 
 function switchReportTab(tab, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#rptTabBar .tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('reportTiming').classList.toggle('active', tab === 'timing');
     document.getElementById('reportBER').classList.toggle('active', tab === 'ber');
     document.getElementById('reportPower').classList.toggle('active', tab === 'power');
+    setTimeout(() => drawReportTab(tab), 50);
 }
 
-function setupReportCharts() {}
+function drawReportTab(tab) {
+    if (!appState.simResult || !appState.flat) return;
+    const p = getParams();
+    if (tab === 'ber') {
+        // BER vs Temperature chart with fill
+        const jj = appState.flat.junctions[0];
+        if (!jj) return;
+        const temps = [], bers = [];
+        for (let T = 0.5; T <= 8; T += 0.1) {
+            temps.push(T);
+            const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * p.biasRatio, p.clockFreq * 1e9, T);
+            bers.push(Math.log10(b + 1e-50));
+        }
+        drawLineChart('chartBERTemp', [{ x: temps, y: bers, label: `BER — ${jj.name}` }],
+            'Temperature (K)', 'log₁₀(BER)', 'BER vs Operating Temperature', true);
+        // BER vs Bias chart
+        drawRptBERBias(0);
+    }
+    if (tab === 'power') {
+        // Power breakdown bar chart
+        const r = appState.simResult;
+        const nJJ = appState.flat.junctions.length;
+        const totalSwitch = r.totalEvents;
+        const EPerSwitch = PHI_0 * DEFAULT_IC;
+        const tEnd = r.metadata.tEnd;
+        const switchPower = totalSwitch * EPerSwitch / tEnd * 1e9;
+        const clockPower = nJJ * 0.5 * EPerSwitch * p.clockFreq * 1e9 * 1e9;
+        const rsfqEquiv = nJJ * 125;
+        const canvas = document.getElementById('chartPowerBreak');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const W = canvas.parentElement.getBoundingClientRect().width - 32;
+        const H = 200;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+        const bars = [
+            { label: 'Switching', val: switchPower, color: '#6366f1' },
+            { label: 'Clock', val: clockPower, color: '#8b5cf6' },
+            { label: 'Total RQL', val: switchPower + clockPower, color: '#22c55e' },
+            { label: 'RSFQ Equiv', val: rsfqEquiv, color: '#ef4444' }
+        ];
+        const maxVal = Math.max(...bars.map(b => b.val), 1);
+        const barW = Math.min(80, (W - 100) / bars.length - 20);
+        const startX = (W - bars.length * (barW + 20)) / 2;
+        bars.forEach((b, i) => {
+            const x = startX + i * (barW + 20);
+            const barH = (b.val / maxVal) * 120;
+            ctx.fillStyle = b.color + '88';
+            ctx.fillRect(x, 160 - barH, barW, barH);
+            ctx.strokeStyle = b.color; ctx.lineWidth = 1.5;
+            ctx.strokeRect(x, 160 - barH, barW, barH);
+            ctx.fillStyle = '#e4e4e7'; ctx.font = 'bold 11px Inter, sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(b.val.toFixed(1) + ' nW', x + barW / 2, 155 - barH);
+            ctx.fillStyle = '#a1a1aa'; ctx.font = '10px Inter, sans-serif';
+            ctx.fillText(b.label, x + barW / 2, 178);
+        });
+        ctx.fillStyle = '#a1a1aa'; ctx.font = 'bold 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('Power Comparison: RQL vs RSFQ', W / 2, 18);
+    }
+}
+
+function setupReportCharts() {
+    // Set up expander toggles
+    setupHomeExpanders();
+    // Draw the initially visible timing tab (no canvas needed)
+    // Set up BER junction select
+    const rptBerSel = document.getElementById('rptBerJJSelect');
+    if (rptBerSel) rptBerSel.onchange = () => drawRptBERBias(parseInt(rptBerSel.value));
+}
+
+function drawRptBERBias(jjIndex) {
+    if (!appState.flat || !appState.flat.junctions[jjIndex]) return;
+    const p = getParams();
+    const jj = appState.flat.junctions[jjIndex];
+    const ratios = [], bers = [];
+    for (let r = 0.30; r <= 0.95; r += 0.005) {
+        ratios.push(r);
+        const b = berPerClock(jj.Ic, jj.R, jj.C, jj.Ic * r, p.clockFreq * 1e9, p.temperature);
+        bers.push(Math.log10(b + 1e-50));
+    }
+    drawLineChart('chartRptBERBias', [{x: ratios, y: bers, label: jj.name}],
+        'Bias ratio (Ibias/Ic)', 'log₁₀(BER)', `BER vs Bias — ${jj.name}`, true);
+}
+
+// ── UNDER THE HOOD ──
+function renderUnderTheHood() {
+    const sections = [
+        {
+            title: 'RCSJ Model',
+            icon: '⚡',
+            body: `The <strong>Resistively and Capacitively Shunted Junction (RCSJ)</strong> model treats each Josephson junction as a parallel combination of three current channels:
+            <br><br>
+            <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;font-size:0.85rem;">I = Ic·sin(φ) + V/R + C·dV/dt</code>
+            <br><br>
+            <strong>Supercurrent:</strong> Ic·sin(φ) — the dissipationless Cooper-pair tunneling current.<br>
+            <strong>Resistive:</strong> V/R — quasiparticle tunneling when voltage exceeds the gap.<br>
+            <strong>Capacitive:</strong> C·dV/dt — geometric capacitance of the junction barrier.<br><br>
+            The phase φ and voltage V are related by the Josephson relation: V = (Φ₀/2π)·dφ/dt.
+            A switching event occurs when φ advances by 2π, creating a Single Flux Quantum (SFQ) pulse.`
+        },
+        {
+            title: 'Transient Solver',
+            icon: '📊',
+            body: `The simulator integrates the coupled ODEs for all junctions simultaneously using either:
+            <br><br>
+            <strong>Euler-Maruyama method</strong> — fixed timestep with thermal noise (stochastic integration). Adds Johnson-Nyquist noise current: σ = √(2kT/R·Δt).<br><br>
+            <strong>SciPy adaptive solver</strong> — variable timestep (RK45/BDF) for noiseless, high-accuracy simulation.<br><br>
+            The state vector contains 3 variables per junction (V, φ, and inductor current I_L), yielding a system of 3N coupled ODEs for N junctions.
+            Typical timestep: 0.1 ps for 20 GHz clock.`
+        },
+        {
+            title: 'Verilog Parser → RQL Netlist',
+            icon: '📝',
+            body: `The design entry pipeline:
+            <br><br>
+            <strong>1. Parse:</strong> Regex-based structural Verilog parser extracts modules, ports, assigns, and instances.<br>
+            <strong>2. Map:</strong> CellMapper translates standard logic (AND, OR, XOR, NOT) to RQL cell equivalents.<br>
+            <strong>3. Splitters:</strong> Auto-inserts SPLITTER cells wherever fan-out > 1 (RQL requires explicit fan-out trees).<br>
+            <strong>4. Clock:</strong> BFS from input ports assigns clock phases to each cell based on pipeline depth.<br>
+            <strong>5. Flatten:</strong> NetlistCompiler expands each cell into primitive JJs, inductors, and bias sources with globally unique node names.`
+        },
+        {
+            title: 'Cell Library',
+            icon: '🔧',
+            body: `Standard RQL cells and their junction counts:
+            <br><br>
+            <strong>JTL</strong> (1 JJ) — Josephson Transmission Line: propagates SFQ pulses.<br>
+            <strong>SPLITTER</strong> (2 JJ) — Duplicates a pulse onto two output lines.<br>
+            <strong>MERGER</strong> (2 JJ) — Combines two inputs (OR-type) into one output.<br>
+            <strong>AND</strong> (3 JJ) — Outputs pulse only when both inputs arrive within the clock window.<br>
+            <strong>OR</strong> (2 JJ) — Outputs pulse when either input arrives.<br>
+            <strong>XOR</strong> (4 JJ) — Outputs pulse when exactly one input arrives.<br>
+            <strong>NOT</strong> (2 JJ) — Inverts by subtracting from clock reference.<br>
+            <strong>DFF</strong> (2 JJ) — D Flip-Flop for pipeline synchronization.`
+        },
+        {
+            title: 'BER Prediction',
+            icon: '🎯',
+            body: `Bit Error Rate is estimated using <strong>Kramers' thermal escape rate</strong> from the washboard potential:
+            <br><br>
+            <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;font-size:0.85rem;">Γ = ω_a/(2π) · exp(-ΔU/kT)</code>
+            <br><br>
+            where ΔU is the potential barrier height: ΔU = 2·E_J·[√(1-γ²) - γ·arccos(γ)] with γ = I_bias/Ic.
+            <br><br>
+            The attempt frequency ω_a = ω_p·(1-γ²)^(1/4), where ω_p = √(2πIc/Φ₀C) is the plasma frequency.
+            BER per clock = 1 - exp(-Γ/f_clk). For reliable operation at 20 GHz, BER < 10⁻²⁰ is typical.`
+        },
+        {
+            title: 'Power Analysis',
+            icon: '💡',
+            body: `RQL achieves ultra-low power through three mechanisms:
+            <br><br>
+            <strong>Zero static power:</strong> The AC resonant clock provides bias through mutual inductance — no DC bias resistors (unlike RSFQ's ~125 nW/JJ).<br>
+            <strong>Switching energy:</strong> Each SFQ pulse carries Φ₀·Ic ≈ 0.5 aJ of energy.<br>
+            <strong>Clock delivery:</strong> Resonant LC network with Q > 100, delivering energy only during transitions.<br><br>
+            Total power = switching + clock overhead. For typical designs, RQL achieves 100-1000× lower power than RSFQ, approaching the Landauer limit of kT·ln(2).`
+        }
+    ];
+
+    return `
+        <div class="badge">Under the Hood</div>
+        <div class="section-title">Under the Hood</div>
+        <div class="subtitle-text">Deep dive into the physics and algorithms powering the RQL simulator.</div>
+        ${sections.map((s, i) => `
+            <div class="glass-card" style="margin-bottom:1rem;cursor:pointer;" onclick="this.querySelector('.uth-body').style.display = this.querySelector('.uth-body').style.display === 'none' ? 'block' : 'none'; this.querySelector('.uth-chevron').textContent = this.querySelector('.uth-body').style.display === 'none' ? '▶' : '▼';">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <span style="font-size:1.5rem;">${s.icon}</span>
+                    <div class="card-title" style="margin:0;flex:1;">${s.title}</div>
+                    <span class="uth-chevron" style="color:var(--primary-light);font-size:0.9rem;">${i === 0 ? '▼' : '▶'}</span>
+                </div>
+                <div class="uth-body card-body" style="${i === 0 ? '' : 'display:none;'}margin-top:0.75rem;line-height:1.7;">
+                    ${s.body}
+                </div>
+            </div>
+        `).join('')}
+        <div class="app-footer"><span class="footer-brand">RQL Logic Gate Simulator</span> · v2.0 ·
+            Developed by <a href="https://esrpo.com" style="color:var(--primary-light);text-decoration:none;">EchoSpark</a>
+        </div>
+    `;
+}
 
 // ====================================================================
 //  AUTO-LOGIN ON PAGE LOAD
