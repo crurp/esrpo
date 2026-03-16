@@ -111,9 +111,9 @@ linear-gradient(135deg, #2563eb, #1e40af, #0ea5e9)
 Used on the Products page to differentiate domain categories in the constellation graph, product cards, and filter tabs.
 
 ```css
---category-quantum:       #2563eb;  /* Blue — matches primary */
---category-ai-ml:         #06b6d4;  /* Cyan 500 */
---category-cybersecurity: Sky Blue — matches accent */
+--category-quantum:       #9333ea;  /* Purple 600 */
+--category-ai-ml:         #d97706;  /* Amber 600 (Gold) */
+--category-cybersecurity: #16a34a;  /* Green 600 */
 ```
 
 ### Color Usage Guidelines
@@ -121,7 +121,7 @@ Used on the Products page to differentiate domain categories in the constellatio
 - **Primary:** Main actions, links, highlights
 - **Secondary:** Supporting elements, accents
 - **Accent:** Special emphasis, hover states
-- **Category Colors:** Product domain differentiation (Quantum = Blue, AI/ML = Cyan, Cybersecurity = Pink)
+- **Category Colors:** Product domain differentiation (Quantum = Purple, AI/ML = Gold, Cybersecurity = Green)
 - **Background:** Always use dark theme (no light mode)
 - **Text:** Ensure WCAG AA contrast (4.5:1 minimum)
 
@@ -763,7 +763,7 @@ Products are defined in a JavaScript `PRODUCTS` array for easy addition of new p
 
 **v1.2.0** (February 2026)
 - Added Products page components (cards, filters, constellation graph)
-- Added product category colors (Quantum = Blue, AI/ML = Cyan, Cybersecurity = Pink)
+- Added product category colors (Quantum = Purple, AI/ML = Gold, Cybersecurity = Green)
 - Added data-driven product architecture documentation
 - Updated file structure with all site pages
 

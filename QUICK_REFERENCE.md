@@ -13,9 +13,9 @@ Quick lookup guide for common design decisions.
 
 ### Product Categories
 ```css
---category-quantum:       #2563eb;  /* Indigo */
---category-ai-ml:         #06b6d4;  /* Cyan */
---category-cybersecurity: Sky Blue */
+--category-quantum:       #9333ea;  /* Purple 600 */
+--category-ai-ml:         #d97706;  /* Amber 600 (Gold) */
+--category-cybersecurity: #16a34a;  /* Green 600 */
 ```
 
 ### Backgrounds

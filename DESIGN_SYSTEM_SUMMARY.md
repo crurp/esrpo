@@ -54,9 +54,9 @@ All icons are SVG format (vector, scalable to any size):
 - **Text:** White to Zinc gray scale
 
 ### Product Category Colors
-- **Quantum:** Blue (#2563eb)
-- **AI / ML:** Cyan (#06b6d4)
-- **Cybersecurity:** Sky Blue (#0ea5e9)
+- **Quantum:** Purple (#9333ea)
+- **AI / ML:** Gold (#d97706)
+- **Cybersecurity:** Green (#16a34a)
 
 ### Typography
 - **Body Font:** Inter (Google Fonts)

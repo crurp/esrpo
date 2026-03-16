@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreatPulse - EchoSpark</title>
+    <meta name="description" content="ThreatPulse: Autonomous Security Orchestration — Scan. Reason. Remediate. Closed-loop OODA pipeline powered by pentAGI and a distributed AI intelligence layer.">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* ThreatPulse page-specific styles */
+        /* Green accent palette */
+        :root {
+            --tp-green:       #16a34a;
+            --tp-green-light: #4ade80;
+            --tp-green-dim:   #22c55e;
+            --tp-green-dark:  #166534;
+        }
+
+        .tp-hero {
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-hero-badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .tp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+        .tp-badge-cyber {
+            background: rgba(22, 163, 74, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(22, 163, 74, 0.3);
+        }
+        .tp-badge-ai {
+            background: rgba(37, 99, 235, 0.12);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+        }
+        .tp-badge-local {
+            background: rgba(217, 119, 6, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(217, 119, 6, 0.25);
+        }
+        .tp-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #16a34a, #4ade80, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tp-hero-tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
+            color: #4ade80;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+        .tp-hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 740px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.75;
+        }
+        .tp-hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .tp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tp-btn-primary {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(22, 163, 74, 0.35);
+        }
+        .tp-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(22, 163, 74, 0.5);
+        }
+        .tp-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tp-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Section shared */
+        .tp-section-label {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4ade80;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        .tp-section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .tp-section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 660px;
+            margin: 0 auto;
+            line-height: 1.75;
+        }
+        .tp-text-center { text-align: center; }
+
+        /* Stat strip */
+        .tp-stats {
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-stats-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .tp-stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(22, 163, 74, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .tp-stat-card:hover {
+            border-color: rgba(22, 163, 74, 0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(22, 163, 74, 0.1);
+        }
+        .tp-stat-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #4ade80;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .tp-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Feature cards */
+        .tp-features {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding: 0 2rem;
+        }
+        .tp-feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tp-feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(22, 163, 74, 0.3);
+            box-shadow: 0 12px 40px rgba(22, 163, 74, 0.1);
+        }
+        .tp-feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+        .tp-feature-icon svg { width: 24px; height: 24px; }
+        .tp-feature-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .tp-feature-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* OODA architecture */
+        .tp-ooda {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-ooda-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-ooda-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .tp-ooda-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .tp-ooda-card:hover {
+            border-color: rgba(22, 163, 74, 0.25);
+            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.08);
+        }
+        .tp-ooda-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #16a34a, #4ade80);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .tp-ooda-card:hover::before { opacity: 1; }
+        .tp-ooda-phase {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .tp-ooda-letter {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #4ade80;
+            line-height: 1;
+        }
+        .tp-ooda-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #4ade80;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .tp-ooda-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .tp-ooda-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        .tp-ooda-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tp-ooda-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            background: rgba(22, 163, 74, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(22, 163, 74, 0.2);
+        }
+
+        /* Pipeline flow */
+        .tp-pipeline {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-pipeline-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-pipeline-steps {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .tp-pipeline-step {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 1.5rem;
+            align-items: flex-start;
+            position: relative;
+        }
+        .tp-pipeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 27px;
+            top: 56px;
+            bottom: -1.5rem;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(22, 163, 74, 0.4), rgba(22, 163, 74, 0.05));
+        }
+        .tp-pipeline-num {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(22, 163, 74, 0.1);
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4ade80;
+            flex-shrink: 0;
+        }
+        .tp-pipeline-body {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .tp-pipeline-body:hover {
+            border-color: rgba(22, 163, 74, 0.25);
+        }
+        .tp-pipeline-body h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .tp-pipeline-body p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        /* pentAGI section */
+        .tp-pentagi {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-pentagi-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-pentagi-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(22, 163, 74, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-top: 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .tp-pentagi-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4ade80;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            background: rgba(22, 163, 74, 0.1);
+            border: 1px solid rgba(22, 163, 74, 0.2);
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+        }
+        .tp-pentagi-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .tp-pentagi-card p {
+            font-size: 0.975rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            margin-bottom: 1.25rem;
+        }
+        .tp-pentagi-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tp-tool-chip {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+        .tp-pentagi-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .tp-agent-row {
+            background: var(--bg-tertiary);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .tp-agent-row:hover { border-color: rgba(22, 163, 74, 0.2); }
+        .tp-agent-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .tp-agent-row-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+        .tp-agent-row-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Intelligence layer */
+        .tp-intelligence {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-intelligence-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-intelligence-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .tp-intel-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .tp-intel-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(22, 163, 74, 0.25);
+            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.08);
+        }
+        .tp-intel-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4ade80;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        .tp-intel-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .tp-intel-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .tp-intel-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .tp-intel-list li {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .tp-intel-list li::before {
+            content: '→';
+            color: #4ade80;
+            opacity: 0.6;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Artifacts / outputs */
+        .tp-artifacts {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-artifacts-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-artifact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .tp-artifact-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .tp-artifact-card:hover {
+            border-color: rgba(22, 163, 74, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.1);
+        }
+        .tp-artifact-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+        }
+        .tp-artifact-icon svg { width: 28px; height: 28px; }
+        .tp-artifact-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .tp-artifact-ext {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #4ade80;
+            margin-bottom: 0.75rem;
+            opacity: 0.8;
+        }
+        .tp-artifact-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        /* Memory / infra */
+        .tp-infra {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-infra-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-infra-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .tp-infra-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+        }
+        .tp-infra-card:hover {
+            border-color: rgba(22, 163, 74, 0.2);
+            box-shadow: 0 6px 24px rgba(22, 163, 74, 0.06);
+        }
+        .tp-infra-card h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .tp-infra-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .tp-infra-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 5px;
+            margin-top: 0.75rem;
+            background: rgba(22, 163, 74, 0.08);
+            color: #4ade80;
+            border: 1px solid rgba(22, 163, 74, 0.15);
+        }
+
+        /* Code block */
+        .tp-code {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-code-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-code-block {
+            background: #060d1a;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 2.5rem;
+        }
+        .tp-code-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .tp-code-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .tp-code-dot:nth-child(1) { background: #ff5f57; }
+        .tp-code-dot:nth-child(2) { background: #ffbd2e; }
+        .tp-code-dot:nth-child(3) { background: #28c840; }
+        .tp-code-header span:last-child {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+        .tp-code-body {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        .tp-code-body pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.85;
+            color: #c9d1d9;
+        }
+        .tp-code-body .comment  { color: #6a737d; }
+        .tp-code-body .keyword  { color: #ff7b72; }
+        .tp-code-body .string   { color: #a5d6ff; }
+        .tp-code-body .flag     { color: #4ade80; }
+        .tp-code-body .num      { color: #fbbf24; }
+
+        /* MITRE strip */
+        .tp-mitre {
+            padding: 4rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-mitre-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .tp-mitre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .tp-mitre-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .tp-mitre-card:hover {
+            border-color: rgba(22, 163, 74, 0.25);
+            transform: translateY(-2px);
+        }
+        .tp-mitre-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 0.4rem;
+        }
+        .tp-mitre-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* CTA */
+        .tp-cta {
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .tp-cta h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .tp-cta p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Feedback loop */
+        .tp-feedback-strip {
+            background: rgba(22, 163, 74, 0.05);
+            border: 1px solid rgba(22, 163, 74, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            max-width: 900px;
+            margin: 3rem auto 0;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .tp-feedback-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+            flex-shrink: 0;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+            50% { opacity: 0.5; box-shadow: 0 0 4px rgba(74, 222, 128, 0.2); }
+        }
+        .tp-feedback-text {
+            font-size: 0.925rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .tp-feedback-text strong { color: #4ade80; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .tp-ooda-grid,
+            .tp-intelligence-grid,
+            .tp-artifact-grid,
+            .tp-infra-row { grid-template-columns: 1fr; }
+            .tp-pentagi-card { grid-template-columns: 1fr; gap: 2rem; }
+        }
+        @media (max-width: 640px) {
+            .tp-pipeline-step { grid-template-columns: 40px 1fr; gap: 1rem; }
+            .tp-pipeline-num { width: 40px; height: 40px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BP724NMT95"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BP724NMT95');
+</script>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="/" class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#logoGradient)" stroke-width="2" fill="none" class="logo-path"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#logoGradient)" class="logo-center"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#logoGradient)" class="logo-center"/>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">EchoSpark<span class="logo-sub">RPO</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/about" class="nav-link">About</a></li>
+                <li><a href="/products" class="nav-link">Products</a></li>
+                <li><a href="/#domains" class="nav-link">Domains</a></li>
+                <li><a href="/careers" class="nav-link">Careers</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Toggle Navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="tp-hero">
+        <div class="tp-hero-badges">
+            <span class="tp-badge tp-badge-cyber">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Cybersecurity
+            </span>
+            <span class="tp-badge tp-badge-ai">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                AI-Powered
+            </span>
+            <span class="tp-badge tp-badge-local">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8m-4-4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Fully Local
+            </span>
+        </div>
+        <p class="tp-hero-tagline">Scan &mdash; Reason &mdash; Remediate</p>
+        <h1>ThreatPulse</h1>
+        <p class="tp-hero-subtitle">
+            Autonomous security orchestration that closes the loop between discovery and defense.
+            ThreatPulse scans your network, maps every finding to adversary playbooks,
+            and outputs machine-executable fixes and detection rules — with zero cloud dependency.
+        </p>
+        <div class="tp-hero-actions">
+            <a href="#architecture" class="tp-btn tp-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 3h2m4 0h-2m-2-2v2m0 4v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Explore Architecture
+            </a>
+            <a href="/products" class="tp-btn tp-btn-secondary">
+                All Products
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats strip -->
+    <div class="tp-stats">
+        <div class="tp-stats-inner">
+            <div class="tp-stat-card">
+                <div class="tp-stat-num">20+</div>
+                <div class="tp-stat-label">Offensive tools in the autonomous scanner</div>
+            </div>
+            <div class="tp-stat-card">
+                <div class="tp-stat-num">3</div>
+                <div class="tp-stat-label">Specialized AI nodes in the intelligence layer</div>
+            </div>
+            <div class="tp-stat-card">
+                <div class="tp-stat-num">3</div>
+                <div class="tp-stat-label">Artifact types per critical finding</div>
+            </div>
+            <div class="tp-stat-card">
+                <div class="tp-stat-num">0</div>
+                <div class="tp-stat-label">Cloud dependencies. Fully air-gappable</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problem / features -->
+    <section class="tp-features">
+        <div class="tp-text-center" style="padding: 0 2rem;">
+            <span class="tp-section-label">The Problem</span>
+            <h2 class="tp-section-title">Findings Age. Breaches Don't Wait.</h2>
+            <p class="tp-section-desc">
+                Automated penetration testing produces enormous volumes of raw output.
+                Without a system to translate findings into context, prediction, and action,
+                vulnerabilities go unaddressed — and attackers move faster than analysts.
+            </p>
+        </div>
+        <div class="tp-features-grid">
+            <div class="tp-feature-card">
+                <div class="tp-feature-icon" style="background: rgba(22, 163, 74, 0.1); color: #4ade80;">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <h3>Contextual Threat Intelligence</h3>
+                <p>Every finding is mapped to MITRE ATT&amp;CK tactics and techniques. Not just "CVE found" — but which adversary technique it represents and why it matters in your environment.</p>
+            </div>
+            <div class="tp-feature-card">
+                <div class="tp-feature-icon" style="background: rgba(37, 99, 235, 0.1); color: #60a5fa;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Adversary Behavior Modeling</h3>
+                <p>What would an attacker do next? ThreatPulse predicts lateral movement, privilege escalation, and exfiltration paths using kill-chain logic — before the attacker gets there.</p>
+            </div>
+            <div class="tp-feature-card">
+                <div class="tp-feature-icon" style="background: rgba(217, 119, 6, 0.1); color: #fbbf24;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6m-6 4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <h3>Executable Remediation</h3>
+                <p>Not "patch the server" — an Ansible playbook that does it. Idempotent, targeted, ready to run. Generated automatically for every critical and high finding.</p>
+            </div>
+            <div class="tp-feature-card">
+                <div class="tp-feature-icon" style="background: rgba(147, 51, 234, 0.1); color: #c084fc;">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3>Detection Artifacts</h3>
+                <p>YARA rules and Sigma SIEM rules that catch the exact attack patterns ThreatPulse just demonstrated — generated alongside the fix, so detection keeps pace with remediation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- OODA Architecture -->
+    <section class="tp-ooda" id="architecture">
+        <div class="tp-ooda-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Architecture</span>
+                <h2 class="tp-section-title">The OODA Loop</h2>
+                <p class="tp-section-desc">
+                    ThreatPulse is built on the military decision-making cycle: Observe, Orient, Decide, Act.
+                    Every phase is handled by a dedicated component optimized for that specific task.
+                </p>
+            </div>
+            <div class="tp-ooda-grid">
+                <div class="tp-ooda-card">
+                    <div class="tp-ooda-phase">
+                        <span class="tp-ooda-letter">O</span>
+                        <span class="tp-ooda-name">Observe</span>
+                    </div>
+                    <h3>Autonomous Red Team Scanner</h3>
+                    <p>The scanner layer deploys an autonomous agent system — powered by the open-source <strong style="color: var(--text-primary);">pentAGI</strong> framework — to conduct real penetration tests. It chains tools automatically, from network enumeration through exploitation, in fully isolated containers.</p>
+                    <div class="tp-ooda-tags">
+                        <span class="tp-ooda-tag">nmap</span>
+                        <span class="tp-ooda-tag">metasploit</span>
+                        <span class="tp-ooda-tag">sqlmap</span>
+                        <span class="tp-ooda-tag">nikto</span>
+                        <span class="tp-ooda-tag">hydra</span>
+                        <span class="tp-ooda-tag">nuclei</span>
+                        <span class="tp-ooda-tag">gobuster</span>
+                    </div>
+                </div>
+                <div class="tp-ooda-card">
+                    <div class="tp-ooda-phase">
+                        <span class="tp-ooda-letter">O</span>
+                        <span class="tp-ooda-name">Orient</span>
+                    </div>
+                    <h3>Threat Intelligence &amp; MITRE Mapping</h3>
+                    <p>Raw scanner output is immediately enriched with prior context from the knowledge graph, then every critical and high finding is mapped to MITRE ATT&amp;CK tactics and techniques. Asset-vulnerability-TTP relationships are written to the graph in real time.</p>
+                    <div class="tp-ooda-tags">
+                        <span class="tp-ooda-tag">MITRE ATT&amp;CK</span>
+                        <span class="tp-ooda-tag">RAG context</span>
+                        <span class="tp-ooda-tag">Neo4j graph write</span>
+                    </div>
+                </div>
+                <div class="tp-ooda-card">
+                    <div class="tp-ooda-phase">
+                        <span class="tp-ooda-letter">D</span>
+                        <span class="tp-ooda-name">Decide</span>
+                    </div>
+                    <h3>Adversary Modeling &amp; Prioritization</h3>
+                    <p>A dedicated analysis node assigns CVSS v3.1 scores, models complete attack chains from initial access to exfiltration, and predicts attacker next steps. Quick-win remediations are identified and remediation specs are produced for the executor.</p>
+                    <div class="tp-ooda-tags">
+                        <span class="tp-ooda-tag">CVSS v3.1</span>
+                        <span class="tp-ooda-tag">Kill chain</span>
+                        <span class="tp-ooda-tag">Attack prediction</span>
+                    </div>
+                </div>
+                <div class="tp-ooda-card">
+                    <div class="tp-ooda-phase">
+                        <span class="tp-ooda-letter">A</span>
+                        <span class="tp-ooda-name">Act</span>
+                    </div>
+                    <h3>Automated Remediation Generation</h3>
+                    <p>A code-focused AI node generates three production-ready artifacts per finding: an Ansible playbook that patches the vulnerability, a YARA rule that detects the exploit, and a Sigma rule that catches the behavior in SIEM logs.</p>
+                    <div class="tp-ooda-tags">
+                        <span class="tp-ooda-tag">Ansible playbook</span>
+                        <span class="tp-ooda-tag">YARA rule</span>
+                        <span class="tp-ooda-tag">Sigma rule</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback loop -->
+            <div class="tp-feedback-strip">
+                <div class="tp-feedback-dot"></div>
+                <p class="tp-feedback-text">
+                    <strong>Closed feedback loop:</strong> Generated artifacts are stored back to the knowledge graph.
+                    The next scan automatically knows which TTPs have been remediated and which attack paths are already covered by detection rules — the system learns from every cycle.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- pentAGI section -->
+    <section class="tp-pentagi">
+        <div class="tp-pentagi-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Open Source Core</span>
+                <h2 class="tp-section-title">Built on pentAGI</h2>
+                <p class="tp-section-desc">
+                    ThreatPulse's scanner layer is built on pentAGI — an open-source autonomous
+                    penetration testing agent system. We treat it as a black-box red team engine
+                    and extend it with our intelligence and remediation layer.
+                </p>
+            </div>
+            <div class="tp-pentagi-card">
+                <div>
+                    <div class="tp-pentagi-label">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        Open Source — vxcontrol/pentagi
+                    </div>
+                    <h3>Autonomous Hacking Engine</h3>
+                    <p>
+                        pentAGI is a Go-based autonomous pentest system with a React/TypeScript frontend.
+                        It orchestrates 13 specialized sub-agents — from a primary orchestrator through
+                        dedicated pentesters, coders, refiners, and reporters — all running inside
+                        sandboxed Kali Linux Docker containers.
+                    </p>
+                    <p>
+                        ThreatPulse submits assessment flows to pentAGI via REST API, polls for completion,
+                        and harvests the full tool output. The scanner is never configured or modified —
+                        it operates as an autonomous red team whose findings feed ThreatPulse's
+                        intelligence layer.
+                    </p>
+                    <div class="tp-pentagi-tools">
+                        <span class="tp-tool-chip">nmap</span>
+                        <span class="tp-tool-chip">masscan</span>
+                        <span class="tp-tool-chip">metasploit</span>
+                        <span class="tp-tool-chip">sqlmap</span>
+                        <span class="tp-tool-chip">gobuster</span>
+                        <span class="tp-tool-chip">nikto</span>
+                        <span class="tp-tool-chip">hydra</span>
+                        <span class="tp-tool-chip">john</span>
+                        <span class="tp-tool-chip">hashcat</span>
+                        <span class="tp-tool-chip">nuclei</span>
+                        <span class="tp-tool-chip">subfinder</span>
+                        <span class="tp-tool-chip">amass</span>
+                        <span class="tp-tool-chip">ffuf</span>
+                    </div>
+                </div>
+                <div class="tp-pentagi-visual">
+                    <div class="tp-agent-row">
+                        <div class="tp-agent-dot" style="background: #4ade80;"></div>
+                        <span class="tp-agent-row-label">Primary Orchestrator</span>
+                        <span class="tp-agent-row-sub">decomposes goals</span>
+                    </div>
+                    <div class="tp-agent-row">
+                        <div class="tp-agent-dot" style="background: #60a5fa;"></div>
+                        <span class="tp-agent-row-label">Pentester Agent</span>
+                        <span class="tp-agent-row-sub">runs offensive tools</span>
+                    </div>
+                    <div class="tp-agent-row">
+                        <div class="tp-agent-dot" style="background: #60a5fa;"></div>
+                        <span class="tp-agent-row-label">Coder Agent</span>
+                        <span class="tp-agent-row-sub">writes &amp; executes scripts</span>
+                    </div>
+                    <div class="tp-agent-row">
+                        <div class="tp-agent-dot" style="background: #fbbf24;"></div>
+                        <span class="tp-agent-row-label">Searcher Agent</span>
+                        <span class="tp-agent-row-sub">knowledge base lookup</span>
+                    </div>
+                    <div class="tp-agent-row">
+                        <div class="tp-agent-dot" style="background: #fbbf24;"></div>
+                        <span class="tp-agent-row-label">Memorist Agent</span>
+                        <span class="tp-agent-row-sub">vector memory store/retrieve</span>
+                    </div>
+                    <div class="tp-agent-row">
+                        <div class="tp-agent-dot" style="background: #c084fc;"></div>
+                        <span class="tp-agent-row-label">Reporter Agent</span>
+                        <span class="tp-agent-row-sub">generates findings report</span>
+                    </div>
+                    <div class="tp-agent-row" style="border: 1px dashed rgba(255,255,255,0.1);">
+                        <div class="tp-agent-dot" style="background: #6b7280;"></div>
+                        <span class="tp-agent-row-label" style="color: var(--text-secondary);">+ 7 more specialized agents</span>
+                        <span class="tp-agent-row-sub">reflector, planner, enricher...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intelligence Layer -->
+    <section class="tp-intelligence">
+        <div class="tp-intelligence-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Intelligence Layer</span>
+                <h2 class="tp-section-title">Three Nodes. One Mission.</h2>
+                <p class="tp-section-desc">
+                    Above the scanner sits ThreatPulse's distributed AI cluster — three purpose-built nodes
+                    that each handle one phase of the OODA loop with dedicated models and constraints.
+                </p>
+            </div>
+            <div class="tp-intelligence-grid">
+                <div class="tp-intel-card">
+                    <div class="tp-intel-num">Node 01 — Orient</div>
+                    <h3>Threat Intelligence Analyst</h3>
+                    <p>Ingests raw pentAGI findings, enriches with prior scan context via semantic search, and maps every critical/high vulnerability to MITRE ATT&amp;CK.</p>
+                    <ul class="tp-intel-list">
+                        <li>RAG context from past scans</li>
+                        <li>ATT&amp;CK tactic + technique mapping</li>
+                        <li>Asset-TTP graph writes (Neo4j)</li>
+                        <li>Structured Threat Brief output</li>
+                    </ul>
+                </div>
+                <div class="tp-intel-card">
+                    <div class="tp-intel-num">Node 02 — Decide</div>
+                    <h3>Adversary Modeler</h3>
+                    <p>Scores every finding with CVSS v3.1, models complete attack chains, predicts attacker next steps using kill-chain logic, and produces remediation specifications.</p>
+                    <ul class="tp-intel-list">
+                        <li>CVSS v3.1 scoring with justification</li>
+                        <li>Full attack chain: Initial Access → Exfil</li>
+                        <li>Attacker next-step prediction</li>
+                        <li>Quick-win remediation prioritization</li>
+                    </ul>
+                </div>
+                <div class="tp-intel-card">
+                    <div class="tp-intel-num">Node 03 — Act</div>
+                    <h3>Remediation Architect</h3>
+                    <p>Code-specialized node that generates three production-ready artifacts per finding. Operates on constrained hardware with deterministic, near-zero-temperature output.</p>
+                    <ul class="tp-intel-list">
+                        <li>Ansible playbook per finding</li>
+                        <li>YARA file-level detection rule</li>
+                        <li>Sigma SIEM behavioral rule</li>
+                        <li>Artifacts stored to memory graph</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pipeline -->
+    <section class="tp-pipeline" id="pipeline">
+        <div class="tp-pipeline-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Data Flow</span>
+                <h2 class="tp-section-title">From Scan to Remediation</h2>
+                <p class="tp-section-desc">
+                    A single command launches the full autonomous pipeline.
+                    ThreatPulse handles the rest — no human in the loop required.
+                </p>
+            </div>
+            <div class="tp-pipeline-steps">
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">1</div>
+                    <div class="tp-pipeline-body">
+                        <h4>Assessment Submission</h4>
+                        <p>Operator runs a single command with a target IP and scope. ThreatPulse submits an autonomous flow to the pentAGI scanner via REST API and receives a flow ID.</p>
+                    </div>
+                </div>
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">2</div>
+                    <div class="tp-pipeline-body">
+                        <h4>Autonomous Scanning</h4>
+                        <p>pentAGI's agent system runs a full penetration test — port scanning, service enumeration, vulnerability exploitation, and post-exploitation — entirely autonomously in isolated containers.</p>
+                    </div>
+                </div>
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">3</div>
+                    <div class="tp-pipeline-body">
+                        <h4>Findings Harvest &amp; Memory Write</h4>
+                        <p>On scan completion, ThreatPulse harvests all tool results, writes findings to vector memory (Qdrant) for semantic retrieval, and queries prior context for the target from the knowledge graph (Neo4j).</p>
+                    </div>
+                </div>
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">4</div>
+                    <div class="tp-pipeline-body">
+                        <h4>MITRE Mapping &amp; Threat Brief</h4>
+                        <p>The threat intelligence node maps every critical and high finding to MITRE ATT&amp;CK tactics and techniques, writes TTP nodes and relationships to the knowledge graph, and produces a structured Threat Brief.</p>
+                    </div>
+                </div>
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">5</div>
+                    <div class="tp-pipeline-body">
+                        <h4>Adversary Modeling &amp; Attack Chain</h4>
+                        <p>The analysis node scores findings with CVSS v3.1, models the complete attack chain an adversary would traverse, predicts next attacker steps, and compresses a remediation specification for the executor.</p>
+                    </div>
+                </div>
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">6</div>
+                    <div class="tp-pipeline-body">
+                        <h4>Artifact Generation</h4>
+                        <p>The remediation node generates an Ansible playbook, YARA rule, and Sigma rule for each critical and high finding. Artifacts are saved to disk and written back to the knowledge graph.</p>
+                    </div>
+                </div>
+                <div class="tp-pipeline-step">
+                    <div class="tp-pipeline-num">7</div>
+                    <div class="tp-pipeline-body">
+                        <h4>Report &amp; Feedback Loop Closure</h4>
+                        <p>A complete markdown report is produced with the full MITRE TTP table, adversary prediction, and artifact index. Remediation nodes are linked to TTPs in the graph — informing every future scan on this target.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Output artifacts -->
+    <section class="tp-artifacts">
+        <div class="tp-artifacts-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Outputs</span>
+                <h2 class="tp-section-title">Three Artifacts. Per Finding.</h2>
+                <p class="tp-section-desc">
+                    Every critical and high finding produces a complete remediation and detection package —
+                    ready to apply and deploy without manual translation.
+                </p>
+            </div>
+            <div class="tp-artifact-grid">
+                <div class="tp-artifact-card">
+                    <div class="tp-artifact-icon" style="background: rgba(22, 163, 74, 0.1); color: #4ade80;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.5"/><path d="M9 13h6m-6 4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3>Ansible Playbook</h3>
+                    <div class="tp-artifact-ext">remediation_CVE-XXXX-XXXXX.yml</div>
+                    <p>Idempotent playbook targeting the specific vulnerable host. Includes pre-task health check, the patch or config change, and post-task verification. Safe to re-run.</p>
+                </div>
+                <div class="tp-artifact-card">
+                    <div class="tp-artifact-icon" style="background: rgba(217, 119, 6, 0.1); color: #fbbf24;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>YARA Rule</h3>
+                    <div class="tp-artifact-ext">detect_CVE-XXXX-XXXXX.yar</div>
+                    <p>Pattern-matched to the specific exploit artifacts observed during the scan. Includes meta block with MITRE technique ID, severity, and author attribution. YARA v4.x compatible.</p>
+                </div>
+                <div class="tp-artifact-card">
+                    <div class="tp-artifact-icon" style="background: rgba(37, 99, 235, 0.1); color: #60a5fa;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3-9 4 18 3-9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Sigma Rule</h3>
+                    <div class="tp-artifact-ext">sigma_CVE-XXXX-XXXXX.yml</div>
+                    <p>Behavioral detection rule targeting realistic log sources — syslog, auth.log, web access logs. Includes MITRE ATT&amp;CK tags and compiles to any SIEM via pySigma.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MITRE coverage -->
+    <section class="tp-mitre">
+        <div class="tp-mitre-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">MITRE ATT&amp;CK</span>
+                <h2 class="tp-section-title">Every Finding Mapped to Adversary Behavior</h2>
+                <p class="tp-section-desc">
+                    ThreatPulse maps every critical and high finding to specific ATT&amp;CK tactics and techniques —
+                    then predicts which techniques an attacker would use next.
+                </p>
+            </div>
+            <div class="tp-mitre-grid">
+                <div class="tp-mitre-card">
+                    <div class="tp-mitre-id">TA0001</div>
+                    <p>Initial Access — entry point exploitation, public-facing application vulnerabilities</p>
+                </div>
+                <div class="tp-mitre-card">
+                    <div class="tp-mitre-id">TA0002</div>
+                    <p>Execution — command injection, scripting interpreter abuse, malicious code running</p>
+                </div>
+                <div class="tp-mitre-card">
+                    <div class="tp-mitre-id">TA0003</div>
+                    <p>Persistence — scheduled tasks, account creation, boot/logon autostart entries</p>
+                </div>
+                <div class="tp-mitre-card">
+                    <div class="tp-mitre-id">TA0008</div>
+                    <p>Lateral Movement — SSH abuse, shared credential reuse, internal network pivoting</p>
+                </div>
+                <div class="tp-mitre-card">
+                    <div class="tp-mitre-id">TA0010</div>
+                    <p>Exfiltration — data staging, C2 channel exfil, compression and encoding</p>
+                </div>
+                <div class="tp-mitre-card">
+                    <div class="tp-mitre-id">TA0004</div>
+                    <p>Privilege Escalation — SUID abuse, sudo misconfig, kernel exploits</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hybrid memory stack -->
+    <section class="tp-infra">
+        <div class="tp-infra-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Infrastructure</span>
+                <h2 class="tp-section-title">Hybrid Memory Stack</h2>
+                <p class="tp-section-desc">
+                    ThreatPulse combines three persistence layers to give every node the right kind of memory
+                    for its task — ephemeral coordination, semantic retrieval, and structured graph reasoning.
+                </p>
+            </div>
+            <div class="tp-infra-row">
+                <div class="tp-infra-card">
+                    <h4>Redis</h4>
+                    <p>Task queue, pub/sub events, and ephemeral shared state between nodes. Coordinates the pipeline without shared file systems.</p>
+                    <span class="tp-infra-tag">Coordination bus</span>
+                </div>
+                <div class="tp-infra-card">
+                    <h4>Qdrant</h4>
+                    <p>Vector memory for semantic search across all past findings, threat briefs, and generated artifacts. Powers RAG context injection for the threat analyst node.</p>
+                    <span class="tp-infra-tag">Semantic memory</span>
+                </div>
+                <div class="tp-infra-card">
+                    <h4>Neo4j + Graphiti</h4>
+                    <p>Knowledge graph storing Asset, Vulnerability, TTP, and Remediation nodes with typed relationships. Enables kill-chain queries and temporal attack memory across scans.</p>
+                    <span class="tp-infra-tag">Knowledge graph</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLI quick start -->
+    <section class="tp-code" id="quickstart">
+        <div class="tp-code-inner">
+            <div class="tp-text-center">
+                <span class="tp-section-label">Operation</span>
+                <h2 class="tp-section-title">One Command. Full Pipeline.</h2>
+                <p class="tp-section-desc">
+                    ThreatPulse is a CLI-first platform. A single invocation triggers the complete
+                    autonomous scan-analyze-remediate cycle.
+                </p>
+            </div>
+            <div class="tp-code-block">
+                <div class="tp-code-header">
+                    <span class="tp-code-dot"></span>
+                    <span class="tp-code-dot"></span>
+                    <span class="tp-code-dot"></span>
+                    <span>terminal</span>
+                </div>
+                <div class="tp-code-body">
+<pre><span class="comment"># Run a full assessment against an internal host</span>
+<span class="keyword">python3</span> run_pentest.py \
+    <span class="flag">--target</span> <span class="string">192.168.1.178</span> \
+    <span class="flag">--scope</span> <span class="string">"worker node — full pentest"</span>
+
+<span class="comment"># Re-analyze existing findings with updated TTP mappings</span>
+<span class="keyword">python3</span> run_pentest.py <span class="flag">--mitre-only</span>
+
+<span class="comment"># Regenerate artifacts for an existing report</span>
+<span class="keyword">python3</span> run_pentest.py <span class="flag">--remediate-only</span>
+
+<span class="comment"># Output structure</span>
+<span class="comment"># ./reports/2026-03-16_192-168-1-178_report.md</span>
+<span class="comment"># ./artifacts/2026-03-16_192-168-1-178/</span>
+<span class="comment">#   ├── remediation_CVE-2021-41773.yml   ← Ansible</span>
+<span class="comment">#   ├── detect_CVE-2021-41773.yar        ← YARA</span>
+<span class="comment">#   └── sigma_CVE-2021-41773.yml         ← Sigma</span></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="tp-cta">
+        <h2>Autonomous Security Orchestration</h2>
+        <p>ThreatPulse is not a tool. It is a team — scanning, reasoning, and remediating continuously, fully local, with no cloud dependency.</p>
+        <div class="tp-hero-actions">
+            <a href="/#contact" class="tp-btn tp-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Get in Touch
+            </a>
+            <a href="/cybersecurity" class="tp-btn tp-btn-secondary">
+                Cybersecurity Domain
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 5L35 12V28L20 35L5 28V12L20 5Z" stroke="url(#footerLogoGradient)" stroke-width="2" fill="none"/>
+                    <path d="M20 9L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M20 31L22 20L18 20Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M31 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M9 20L20 18L20 22Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 13L21.5 21.5L18.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M27 27L21.5 18.5L18.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 27L18.5 18.5L21.5 21.5Z" fill="url(#footerLogoGradient)"/>
+                    <path d="M13 13L18.5 21.5L21.5 18.5Z" fill="url(#footerLogoGradient)"/>
+                    <circle cx="20" cy="20" r="1.5" fill="url(#footerLogoGradient)"/>
+                    <defs>
+                        <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>EchoSpark<span class="logo-sub">RPO</span></span>
+            </div>
+            <p class="footer-text">&copy; <span id="current-year">2026</span> EchoSpark. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-button" id="chatButton" aria-label="Open Chat">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="chat-header-text">
+                        <h3>EchoSpark Support</h3>
+                        <p>We're here to help</p>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose" aria-label="Close Chat">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-content">
+                        <p>Hello! I'm here to help answer questions about EchoSpark's services. How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." autocomplete="off">
+                <button class="chat-send" id="chatSend" aria-label="Send Message">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
