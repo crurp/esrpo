@@ -48,13 +48,13 @@ All icons are SVG format (vector, scalable to any size):
 ## Design System Highlights
 
 ### Color Palette
-- **Primary:** Indigo (#6366f1) to Violet (#8b5cf6) gradient
+- **Primary:** Blue (#2563eb) to Violet (#1e40af) gradient
 - **Accent:** Pink (#ec4899)
-- **Background:** Deep dark theme (#0a0a0f)
+- **Background:** Deep navy-black theme (#060d1a)
 - **Text:** White to Zinc gray scale
 
 ### Product Category Colors
-- **Quantum:** Indigo (#6366f1)
+- **Quantum:** Blue (#2563eb)
 - **AI / ML:** Cyan (#06b6d4)
 - **Cybersecurity:** Pink (#ec4899)
 
@@ -139,10 +139,10 @@ echospark/
 
 ## Version Information
 
-- **Version:** 1.2.0
+- **Version:** 1.3.0
 - **Created:** January 2025
 - **Status:** Active
-- **Last Updated:** February 2026
+- **Last Updated:** March 2026
 
 ## Maintenance
 

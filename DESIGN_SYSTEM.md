@@ -1,7 +1,7 @@
 # EchoSpark Design System
 
-**Version:** 1.2.0  
-**Last Updated:** February 2026  
+**Version:** 1.3.0  
+**Last Updated:** March 2026  
 **Status:** Active
 
 ---
@@ -40,7 +40,7 @@ The EchoSpark logo consists of a geometric hexagon with a central compass rose c
 - Always maintain aspect ratio
 
 **Logo Colors:**
-- Primary: Indigo to Purple gradient (#6366f1 → #8b5cf6)
+- Primary: Dark blue gradient (#2563eb → #1e40af)
 - Dark backgrounds: Full color gradient
 - Light backgrounds: Full color gradient (with dark text)
 
@@ -58,19 +58,19 @@ The EchoSpark logo consists of a geometric hexagon with a central compass rose c
 ### Primary Palette
 
 ```css
---primary: #6366f1;           /* Indigo 500 */
---primary-dark: #4f46e5;      /* Indigo 600 */
---primary-light: #818cf8;     /* Indigo 400 */
---secondary: #8b5cf6;         /* Violet 500 */
+--primary: #2563eb;           /* Blue 600 */
+--primary-dark: #1d4ed8;      /* Blue 700 */
+--primary-light: #60a5fa;     /* Blue 400 */
+--secondary: #1e40af;         /* Blue 800 */
 --accent: #ec4899;            /* Pink 500 */
 ```
 
 ### Background Colors
 
 ```css
---bg-primary: #0a0a0f;        /* Deep dark background */
---bg-secondary: #111118;      /* Secondary dark */
---bg-tertiary: #1a1a24;       /* Tertiary dark */
+--bg-primary: #060d1a;        /* Deep dark background */
+--bg-secondary: #0a1428;      /* Secondary dark */
+--bg-tertiary: #0d1d35;       /* Tertiary dark */
 ```
 
 ### Text Colors
@@ -93,17 +93,17 @@ The EchoSpark logo consists of a geometric hexagon with a central compass rose c
 
 **Primary Gradient (Logo & Headings):**
 ```css
-linear-gradient(135deg, #6366f1, #8b5cf6)
+linear-gradient(135deg, #2563eb, #1e40af)
 ```
 
 **Accent Gradient (Interactive Elements):**
 ```css
-linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)
+linear-gradient(135deg, #2563eb, #1e40af, #ec4899)
 ```
 
 **Background Gradients:**
-- Orb 1: Radial gradient from `#6366f1` (primary)
-- Orb 2: Radial gradient from `#8b5cf6` (secondary)
+- Orb 1: Radial gradient from `#2563eb` (primary)
+- Orb 2: Radial gradient from `#1e40af` (secondary)
 - Orb 3: Radial gradient from `#ec4899` (accent)
 
 ### Product Category Colors
@@ -111,7 +111,7 @@ linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)
 Used on the Products page to differentiate domain categories in the constellation graph, product cards, and filter tabs.
 
 ```css
---category-quantum:       #6366f1;  /* Indigo — matches primary */
+--category-quantum:       #2563eb;  /* Blue — matches primary */
 --category-ai-ml:         #06b6d4;  /* Cyan 500 */
 --category-cybersecurity: #ec4899;  /* Pink — matches accent */
 ```
@@ -121,7 +121,7 @@ Used on the Products page to differentiate domain categories in the constellatio
 - **Primary:** Main actions, links, highlights
 - **Secondary:** Supporting elements, accents
 - **Accent:** Special emphasis, hover states
-- **Category Colors:** Product domain differentiation (Quantum = Indigo, AI/ML = Cyan, Cybersecurity = Pink)
+- **Category Colors:** Product domain differentiation (Quantum = Blue, AI/ML = Cyan, Cybersecurity = Pink)
 - **Background:** Always use dark theme (no light mode)
 - **Text:** Ensure WCAG AA contrast (4.5:1 minimum)
 
@@ -763,7 +763,7 @@ Products are defined in a JavaScript `PRODUCTS` array for easy addition of new p
 
 **v1.2.0** (February 2026)
 - Added Products page components (cards, filters, constellation graph)
-- Added product category colors (Quantum = Indigo, AI/ML = Cyan, Cybersecurity = Pink)
+- Added product category colors (Quantum = Blue, AI/ML = Cyan, Cybersecurity = Pink)
 - Added data-driven product architecture documentation
 - Updated file structure with all site pages
 

@@ -6,23 +6,23 @@ Quick lookup guide for common design decisions.
 
 ### Primary
 ```css
---primary: #6366f1;        /* Indigo 500 */
---secondary: #8b5cf6;      /* Violet 500 */
+--primary: #2563eb;        /* Blue 600 */
+--secondary: #1e40af;      /* Blue 800 */
 --accent: #ec4899;         /* Pink 500 */
 ```
 
 ### Product Categories
 ```css
---category-quantum:       #6366f1;  /* Indigo */
+--category-quantum:       #2563eb;  /* Indigo */
 --category-ai-ml:         #06b6d4;  /* Cyan */
 --category-cybersecurity: #ec4899;  /* Pink */
 ```
 
 ### Backgrounds
 ```css
---bg-primary: #0a0a0f;     /* Deep dark */
---bg-secondary: #111118;   /* Secondary dark */
---bg-tertiary: #1a1a24;    /* Tertiary dark */
+--bg-primary: #060d1a;     /* Deep dark */
+--bg-secondary: #0a1428;   /* Secondary dark */
+--bg-tertiary: #0d1d35;    /* Tertiary dark */
 ```
 
 ### Text
@@ -57,7 +57,7 @@ Quick lookup guide for common design decisions.
 
 ### Button Primary
 ```css
-background: linear-gradient(135deg, #6366f1, #8b5cf6);
+background: linear-gradient(135deg, #2563eb, #1e40af);
 padding: 1rem 2rem;
 border-radius: 12px;
 ```
@@ -100,7 +100,7 @@ padding: 2rem;
 ```
 
 ## Product Statuses
-- `development` → purple badge (`.status-dev`)
+- `development` → dark blue badge (`.status-dev`)
 - `beta` → yellow badge (`.status-beta`)
 - `coming-soon` → gray badge (`.status-coming`)
 

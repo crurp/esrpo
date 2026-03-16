@@ -12,10 +12,10 @@
 /*  CSS VARIABLES — EchoSpark Design System                        */
 /* ============================================================== */
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary: #8b5cf6;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #60a5fa;
+    --secondary: #1e40af;
     --accent: #ec4899;
     --bg-primary: #0a0a0f;
     --bg-secondary: #111118;
@@ -26,8 +26,8 @@
     --border: rgba(255, 255, 255, 0.1);
     --glass: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
-    --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
-    --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+    --gradient-primary: linear-gradient(135deg, #2563eb, #1e40af);
+    --gradient-accent: linear-gradient(135deg, #2563eb, #1e40af, #ec4899);
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -56,8 +56,8 @@ body {
     position: absolute; border-radius: 50%; filter: blur(80px);
     animation: float 20s ease-in-out infinite;
 }
-.orb-1 { width: 600px; height: 600px; background: rgba(99,102,241,0.08); top: -200px; left: -100px; }
-.orb-2 { width: 500px; height: 500px; background: rgba(139,92,246,0.06); top: 50%; right: -150px; animation-delay: -7s; }
+.orb-1 { width: 600px; height: 600px; background: rgba(37,99,235,0.08); top: -200px; left: -100px; }
+.orb-2 { width: 500px; height: 500px; background: rgba(30,64,175,0.06); top: 50%; right: -150px; animation-delay: -7s; }
 .orb-3 { width: 400px; height: 400px; background: rgba(236,72,153,0.04); bottom: -100px; left: 30%; animation-delay: -14s; }
 @keyframes float {
     0%, 100% { transform: translate(0, 0) scale(1); }
@@ -168,7 +168,7 @@ body {
     width: 64px; height: 64px;
     background: var(--gradient-primary);
     border-radius: 18px;
-    box-shadow: 0 4px 24px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 24px rgba(37,99,235,0.4);
     margin-bottom: 1.5rem;
 }
 .wall-logo span {
@@ -206,7 +206,7 @@ body {
 }
 .wall-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
 }
 .wall-input.error {
     border-color: #ef4444;
@@ -231,11 +231,11 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
 }
 .wall-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    box-shadow: 0 8px 30px rgba(37,99,235,0.5);
 }
 .wall-btn:active { transform: scale(0.98); }
 .wall-error {
@@ -287,7 +287,7 @@ body {
     width: 52px; height: 52px;
     background: var(--gradient-primary);
     border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
     margin-bottom: 0.5rem;
 }
 .sidebar-logo span {
@@ -325,11 +325,11 @@ body {
     margin-bottom: 2px;
 }
 .nav-item:hover {
-    background: rgba(99,102,241,0.04);
-    border-left-color: rgba(99,102,241,0.25);
+    background: rgba(37,99,235,0.04);
+    border-left-color: rgba(37,99,235,0.25);
 }
 .nav-item.active {
-    background: rgba(99,102,241,0.08);
+    background: rgba(37,99,235,0.08);
     border-left-color: var(--primary);
 }
 .nav-step-num {
@@ -347,11 +347,11 @@ body {
     background: var(--gradient-primary);
     border-color: transparent;
     color: white;
-    box-shadow: 0 0 12px rgba(99,102,241,0.35);
+    box-shadow: 0 0 12px rgba(37,99,235,0.35);
 }
 .nav-item.visited .nav-step-num {
-    background: rgba(99,102,241,0.15);
-    border-color: rgba(99,102,241,0.3);
+    background: rgba(37,99,235,0.15);
+    border-color: rgba(37,99,235,0.3);
     color: #a5b4fc;
 }
 .nav-step-label {
@@ -393,7 +393,7 @@ body {
     width: 16px; height: 16px; border-radius: 50%;
     background: var(--gradient-primary);
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+    box-shadow: 0 2px 8px rgba(37,99,235,0.4);
 }
 .param-value {
     font-family: 'JetBrains Mono', monospace;
@@ -475,8 +475,8 @@ body {
     display: inline-block;
     font-size: 0.78rem; font-weight: 600;
     color: var(--primary-light);
-    background: rgba(99,102,241,0.12);
-    border: 1px solid rgba(99,102,241,0.25);
+    background: rgba(37,99,235,0.12);
+    border: 1px solid rgba(37,99,235,0.25);
     border-radius: 50px;
     padding: 0.35rem 1rem;
     letter-spacing: 0.04em;
@@ -501,7 +501,7 @@ body {
 .glass-card:hover {
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99,102,241,0.1);
+    box-shadow: 0 8px 25px rgba(37,99,235,0.1);
 }
 .accent-card {
     background: var(--bg-secondary);
@@ -515,7 +515,7 @@ body {
 .accent-card::before {
     content: ''; position: absolute;
     top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    background: linear-gradient(135deg, #ec4899, #1e40af);
 }
 
 .card-title {
@@ -572,7 +572,7 @@ body {
 .cell-card:hover {
     border-color: var(--primary);
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(99,102,241,0.1);
+    box-shadow: 0 8px 25px rgba(37,99,235,0.1);
 }
 .cell-name {
     font-family: 'Space Grotesk', sans-serif;
@@ -586,7 +586,7 @@ body {
 .cell-meta {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem; color: var(--text-tertiary);
-    background: rgba(99,102,241,0.08);
+    background: rgba(37,99,235,0.08);
     border-radius: 6px;
     padding: 0.2rem 0.5rem;
     display: inline-block;
@@ -601,11 +601,11 @@ body {
     color: white; font-family: 'Inter', sans-serif;
     font-size: 0.95rem; font-weight: 600;
     cursor: pointer; transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4);
 }
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    box-shadow: 0 8px 30px rgba(37,99,235,0.5);
 }
 .btn-primary:active { transform: scale(0.98); }
 .btn-primary:disabled {
@@ -623,7 +623,7 @@ body {
     cursor: pointer; transition: var(--transition);
 }
 .btn-secondary:hover {
-    background: rgba(99,102,241,0.15);
+    background: rgba(37,99,235,0.15);
     border-color: var(--primary);
     transform: translateY(-2px);
 }
@@ -646,7 +646,7 @@ body {
 }
 .code-editor:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
 }
 
 /* Summary Boxes */
@@ -681,11 +681,11 @@ body {
     cursor: pointer;
     transition: var(--transition);
 }
-.tab-btn:hover { background: rgba(99,102,241,0.1); color: var(--text-primary); }
+.tab-btn:hover { background: rgba(37,99,235,0.1); color: var(--text-primary); }
 .tab-btn.active {
     background: var(--gradient-primary);
     color: white;
-    box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+    box-shadow: 0 4px 15px rgba(37,99,235,0.3);
 }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
@@ -711,7 +711,7 @@ body {
 .metric-box:hover {
     border-color: var(--primary);
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(99,102,241,0.15);
+    box-shadow: 0 8px 30px rgba(37,99,235,0.15);
 }
 .metric-label {
     font-size: 0.78rem; font-weight: 500;
@@ -755,7 +755,7 @@ body {
 }
 .form-select:focus, .form-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
 }
 
 .form-row {
@@ -794,7 +794,7 @@ body {
     border-bottom: 1px solid var(--border);
 }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: rgba(99,102,241,0.05); }
+.data-table tr:hover td { background: rgba(37,99,235,0.05); }
 .data-table td:first-child { font-weight: 600; color: var(--primary-light); }
 
 /* Footer */
@@ -849,8 +849,8 @@ body {
 }
 .placed-cell {
     display: inline-block;
-    background: rgba(99,102,241,0.1);
-    border: 1px solid rgba(99,102,241,0.25);
+    background: rgba(37,99,235,0.1);
+    border: 1px solid rgba(37,99,235,0.25);
     border-radius: 8px; padding: 0.3rem 0.75rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem; color: var(--primary-light);
@@ -993,7 +993,7 @@ body {
                     <span id="progressLabel" style="font-family:'Inter',sans-serif;font-size:0.68rem;color:#52525b;font-weight:500;">Step 1 of 8</span>
                 </div>
                 <div style="height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;">
-                    <div id="progressFill" style="height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:2px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+                    <div id="progressFill" style="height:100%;background:linear-gradient(90deg,#2563eb,#1e40af);border-radius:2px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
                 </div>
             </div>
             <div class="nav-items" id="navItems"></div>
@@ -1904,7 +1904,7 @@ function berPerClock(Ic, R, C, Ibias, fclk, T) {
 // ====================================================================
 //  CANVAS CHART DRAWING
 // ====================================================================
-const CHART_COLORS = ['#818cf8','#ec4899','#06b6d4','#22c55e','#eab308','#f97316','#a78bfa','#f472b6','#34d399','#fbbf24'];
+const CHART_COLORS = ['#60a5fa','#ec4899','#06b6d4','#22c55e','#eab308','#f97316','#93c5fd','#f472b6','#34d399','#fbbf24'];
 
 function drawLineChart(canvasId, datasets, xlabel, ylabel, title, fillArea) {
     const canvas = document.getElementById(canvasId);
@@ -2055,7 +2055,7 @@ function drawPolarChart(canvasId, phaseCounts, nPhases, title) {
     }
     // Data
     const maxCount = Math.max(...Object.values(phaseCounts), 1);
-    const colors = ['#818cf8', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#a78bfa', '#f472b6'];
+    const colors = ['#60a5fa', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#93c5fd', '#f472b6'];
     let pi = 0;
     for (const [phase, count] of Object.entries(phaseCounts)) {
         const a = (parseFloat(phase) * Math.PI / 180) - Math.PI / 2;
@@ -2104,7 +2104,7 @@ function drawHeatmap(canvasId, data, xlabels, ylabels, title, colorMap) {
         for (let c = 0; c < xlabels.length; c++) {
             const v = data[r]?.[c] || 0;
             const x = pad.l + c * cellW, y = pad.t + r * cellH;
-            ctx.fillStyle = colorMap ? colorMap(v) : `rgba(99,102,241,${Math.min(v, 1)})`;
+            ctx.fillStyle = colorMap ? colorMap(v) : `rgba(37,99,235,${Math.min(v, 1)})`;
             ctx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
             if (cellW > 20 && v > 0) {
                 ctx.fillStyle = '#fff'; ctx.font = '9px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -2146,7 +2146,7 @@ function drawSchematic(canvasId, netlist) {
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
-    const phaseColors = ['#818cf8', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#a78bfa', '#f472b6'];
+    const phaseColors = ['#60a5fa', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#93c5fd', '#f472b6'];
     const positions = {};
     const offX = (W - cols * (boxW + gapX) + gapX) / 2;
     insts.forEach((inst, i) => {
@@ -2174,7 +2174,7 @@ function drawSchematic(canvasId, netlist) {
         ctx.fillText(`${inst.clockPhase}°`, x + boxW / 2, y + 46);
     });
     // Draw connections
-    ctx.strokeStyle = 'rgba(99,102,241,0.25)'; ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(37,99,235,0.25)'; ctx.lineWidth = 1.5;
     for (const inst of insts) {
         const cell = CELL_LIBRARY[inst.type]; if (!cell) continue;
         const outPorts = cell.ports.filter(p => p.d === 'output');
@@ -2192,7 +2192,7 @@ function drawSchematic(canvasId, netlist) {
                         ctx.bezierCurveTo(midX, from.y, midX, to.y, to.left, to.y);
                         ctx.stroke();
                         // Arrow
-                        ctx.fillStyle = 'rgba(99,102,241,0.4)';
+                        ctx.fillStyle = 'rgba(37,99,235,0.4)';
                         ctx.beginPath();
                         ctx.moveTo(to.left, to.y);
                         ctx.lineTo(to.left - 6, to.y - 4);
@@ -2397,7 +2397,7 @@ function renderHome() {
             <div class="cell-desc">${c.desc}</div>
             <span class="cell-meta">JJs: ${c.junctions.length} | Ports: ${c.ports.map(p=>p.n).join(', ')}</span>
             <div class="expander-toggle" data-target="cellDetail_${name}" style="cursor:pointer;margin-top:0.5rem;font-size:0.78rem;color:var(--primary-light);font-weight:500;">▶ Physics Details</div>
-            <div id="cellDetail_${name}" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(99,102,241,0.05);border-radius:8px;">${CELL_PHYSICS[name] || c.desc}</div>
+            <div id="cellDetail_${name}" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(37,99,235,0.05);border-radius:8px;">${CELL_PHYSICS[name] || c.desc}</div>
         </div>`
     ).join('');
 
@@ -2486,7 +2486,7 @@ function renderDesign() {
         <div class="summary-grid">
             <div class="glass-card"><div class="card-title">Netlist Summary</div><pre class="summary-pre">Netlist: ${appState.netlist.name}\n  Top ports:  ${appState.netlist.nPorts}\n  Nets:       ${appState.netlist.nNets}\n  Instances:  ${appState.netlist.instances.length}\n  Cell types: ${JSON.stringify(appState.netlist.instances.reduce((a,c) => { a[c.type]=(a[c.type]||0)+1; return a; }, {}))}</pre>
                 <div class="expander-toggle" data-target="netlistExplain" style="cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:var(--primary-light);font-weight:500;">▶ What do these numbers mean?</div>
-                <div id="netlistExplain" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(99,102,241,0.05);border-radius:8px;">
+                <div id="netlistExplain" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(37,99,235,0.05);border-radius:8px;">
                     <strong>Top ports</strong>: I/O pins of your design<br>
                     <strong>Nets</strong>: Internal SFQ pulse routes<br>
                     <strong>Instances</strong>: RQL cells placed<br>
@@ -2496,7 +2496,7 @@ function renderDesign() {
             </div>
             <div class="accent-card"><div class="card-title">Flat Circuit Summary</div><pre class="summary-pre">Circuit: ${appState.flat.name}\n  Nodes:      ${appState.flat.nodes.length} (+GND)\n  Junctions:  ${appState.flat.junctions.length}\n  Inductors:  ${appState.flat.inductors.length}\n  Sources:    ${appState.flat.sources.length}</pre>
                 <div class="expander-toggle" data-target="flatExplain" style="cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:var(--primary-light);font-weight:500;">▶ What do these numbers mean?</div>
-                <div id="flatExplain" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(99,102,241,0.05);border-radius:8px;">
+                <div id="flatExplain" style="display:none;margin-top:0.5rem;font-size:0.82rem;color:#a1a1aa;line-height:1.55;padding:0.5rem;background:rgba(37,99,235,0.05);border-radius:8px;">
                     <strong>Nodes</strong>: Electrical connection points (KCL applied)<br>
                     <strong>Junctions</strong>: Active switching elements (Ic, R, C)<br>
                     <strong>Inductors</strong>: Superconducting loop inductors (Φ₀ quantised)<br>
@@ -2859,7 +2859,7 @@ function drawWfTab(tab) {
             drawLineChart('chartWfSfq', ds, 'Time (ps)', 'Voltage (mV)', `SFQ Pulses: ${jj.name}`);
             const events = r.switchEvents[jj.name] || [];
             document.getElementById('sfqCount').innerHTML =
-                `<div style="display:inline-block;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);border-radius:50px;padding:0.35rem 1rem;font-size:0.85rem;color:#818cf8;font-weight:600;">${events.length} SFQ pulses detected</div>
+                `<div style="display:inline-block;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:0.35rem 1rem;font-size:0.85rem;color:#60a5fa;font-weight:600;">${events.length} SFQ pulses detected</div>
                 <div class="expander-toggle" data-target="sfqExplain" style="cursor:pointer;margin-top:0.5rem;font-size:0.82rem;color:var(--primary-light);font-weight:500;">▶ Interpreting SFQ pulse count</div>
                 <div id="sfqExplain" style="display:none;margin-top:0.5rem;font-size:0.85rem;color:#a1a1aa;line-height:1.55;padding:0.75rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;">
                     <strong>${events.length} pulses</strong> on junction <strong>${jj.name}</strong>. Each = one 2π phase advancement.
@@ -3464,8 +3464,8 @@ function drawReportTab(tab) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
         const bars = [
-            { label: 'Switching', val: switchPower, color: '#6366f1' },
-            { label: 'Clock', val: clockPower, color: '#8b5cf6' },
+            { label: 'Switching', val: switchPower, color: '#2563eb' },
+            { label: 'Clock', val: clockPower, color: '#1e40af' },
             { label: 'Total RQL', val: switchPower + clockPower, color: '#22c55e' },
             { label: 'RSFQ Equiv', val: rsfqEquiv, color: '#ef4444' }
         ];

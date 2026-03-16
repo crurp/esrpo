@@ -25,8 +25,8 @@ This directory contains the EchoSpark logo in PNG format at various sizes, all a
 ## Usage
 
 All PNG files are ready to use and optimized for their respective sizes. The files maintain the gradient colors from the original SVG:
-- Primary: #6366f1 (Indigo)
-- Secondary: #8b5cf6 (Violet)
+- Primary: #2563eb (Blue)
+- Secondary: #1e40af (Dark Blue)
 
 ## Regeneration
 

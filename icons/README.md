@@ -21,7 +21,7 @@ All icons are provided in SVG format (vector, scalable) and maintain the same de
 
 - **Format:** SVG (Scalable Vector Graphics)
 - **ViewBox:** 0 0 40 40 (maintains aspect ratio)
-- **Colors:** Gradient from #6366f1 (Indigo) to #8b5cf6 (Violet)
+- **Colors:** Gradient from #2563eb (Blue) to #1e40af (Dark Blue)
 - **Structure:** Hexagon outline with central compass rose cross (8-pointed: 4 cardinal + 4 intercardinal, center circle)
 
 ## Usage Guidelines
@@ -72,11 +72,11 @@ convert logo-16.svg logo-32.svg logo-48.svg favicon.ico
 ## Color Values
 
 **Primary Gradient:**
-- Start: `#6366f1` (Indigo 500)
-- End: `#8b5cf6` (Violet 500)
+- Start: `#2563eb` (Blue 600)
+- End: `#1e40af` (Blue 800)
 
 **For Print/One Color:**
-- Use solid `#6366f1` (Indigo 500)
+- Use solid `#2563eb` (Blue 600)
 
 ## File Structure
 

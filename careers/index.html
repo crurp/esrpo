@@ -96,8 +96,8 @@
                     <circle cx="20" cy="20" r="1.5" fill="url(#logoGradient)" class="logo-center"/>
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
                         </linearGradient>
                     </defs>
                 </svg>
@@ -205,8 +205,8 @@
                     <circle cx="20" cy="20" r="1.5" fill="url(#footerLogoGradient)"/>
                     <defs>
                         <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
                         </linearGradient>
                     </defs>
                 </svg>
@@ -291,7 +291,7 @@
         var lastMX = 0, lastMY = 0;
 
         var dotColors = [
-            '#f472b6', '#a78bfa', '#818cf8', '#6ee7b7', '#fbbf24',
+            '#f472b6', '#93c5fd', '#60a5fa', '#6ee7b7', '#fbbf24',
             '#f87171', '#f472b6', '#67e8f9', '#34d399', '#fcd34d',
             '#c084fc', '#fb923c', '#60a5fa', '#c084fc', '#e879f9'
         ];
@@ -379,20 +379,20 @@
             ctx.fillRect(0, 0, w, h);
 
             // Draw wireframe circles
-            drawCircle3D(64, 1, 'xy', '#6366f1', 0.12);
-            drawCircle3D(64, 1, 'xz', '#6366f1', 0.08);
-            drawCircle3D(64, 1, 'yz', '#6366f1', 0.08);
+            drawCircle3D(64, 1, 'xy', '#2563eb', 0.12);
+            drawCircle3D(64, 1, 'xz', '#2563eb', 0.08);
+            drawCircle3D(64, 1, 'yz', '#2563eb', 0.08);
 
             // Draw axes
             drawLine(0, -1.3, 0, 0, 1.3, 0, '#ffffff', 0.35);   // Z (|0⟩ to |1⟩)
-            drawLine(-1.3, 0, 0, 1.3, 0, 0, '#6366f1', 0.3);    // X
-            drawLine(0, 0, -1.3, 0, 0, 1.3, '#8b5cf6', 0.3);    // Y
+            drawLine(-1.3, 0, 0, 1.3, 0, 0, '#2563eb', 0.3);    // X
+            drawLine(0, 0, -1.3, 0, 0, 1.3, '#1e40af', 0.3);    // Y
 
             // Axis labels
             drawText('|0⟩', 0, 1.5, 0, '#ffffff', 14);
             drawText('|1⟩', 0, -1.5, 0, '#ffffff', 14);
-            drawText('+X', 1.5, 0, 0, '#6366f1', 11);
-            drawText('+Y', 0, 0, 1.5, '#8b5cf6', 11);
+            drawText('+X', 1.5, 0, 0, '#2563eb', 11);
+            drawText('+Y', 0, 0, 1.5, '#1e40af', 11);
 
             // Pole dots
             var p0 = project(0, 1, 0);

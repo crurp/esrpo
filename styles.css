@@ -1,12 +1,12 @@
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary: #8b5cf6;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #60a5fa;
+    --secondary: #1e40af;
     --accent: #ec4899;
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #111118;
-    --bg-tertiary: #1a1a24;
+    --bg-primary: #060d1a;
+    --bg-secondary: #0a1428;
+    --bg-tertiary: #0d1d35;
     --text-primary: #ffffff;
     --text-secondary: #a1a1aa;
     --text-tertiary: #71717a;
@@ -104,13 +104,13 @@ body {
     padding: 1.5rem 0;
     transition: all 0.3s ease;
     backdrop-filter: blur(20px);
-    background: rgba(10, 10, 15, 0.8);
+    background: rgba(6, 13, 26, 0.8);
     border-bottom: 1px solid var(--border);
 }
 
 .header.scrolled {
     padding: 1rem 0;
-    background: rgba(10, 10, 15, 0.95);
+    background: rgba(6, 13, 26, 0.95);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -336,12 +336,12 @@ body {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: var(--text-primary);
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.6);
 }
 
 .btn-secondary {
@@ -508,7 +508,7 @@ body {
 .domain-card:hover {
     transform: translateY(-10px);
     border-color: var(--primary);
-    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 20px 60px rgba(37, 99, 235, 0.3);
 }
 
 .domain-card:hover::before {
@@ -576,7 +576,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, transparent, rgba(10, 10, 15, 0.8));
+    background: linear-gradient(to bottom, transparent, rgba(6, 13, 26, 0.8));
 }
 
 .card-info {
@@ -655,7 +655,7 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
     transition: left 0.5s ease;
 }
 
@@ -666,7 +666,7 @@ body {
 .contact-card:hover {
     transform: translateY(-5px);
     border-color: var(--primary);
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 10px 40px rgba(37, 99, 235, 0.2);
 }
 
 .contact-icon {
@@ -912,7 +912,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(30, 64, 175, 0.1));
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: 1;
@@ -920,7 +920,7 @@ body {
 }
 
 .service-image-wrapper:hover {
-    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 20px 60px rgba(37, 99, 235, 0.4);
     transform: translateY(-5px);
 }
 
@@ -950,7 +950,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, transparent, rgba(10, 10, 15, 0.3));
+    background: linear-gradient(to bottom, transparent, rgba(6, 13, 26, 0.3));
     pointer-events: none;
     transition: all 0.4s ease;
     z-index: 2;
@@ -958,7 +958,7 @@ body {
 
 .service-image-wrapper:hover .service-image-overlay {
     opacity: 0.6;
-    background: linear-gradient(to bottom, transparent 60%, rgba(99, 102, 241, 0.15) 100%);
+    background: linear-gradient(to bottom, transparent 60%, rgba(37, 99, 235, 0.15) 100%);
 }
 
 .services-offered {
@@ -1000,7 +1000,7 @@ body {
 .service-item:hover {
     transform: translateY(-5px);
     border-color: var(--primary);
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 10px 40px rgba(37, 99, 235, 0.2);
 }
 
 .service-item:hover::before {
@@ -1214,7 +1214,7 @@ body {
 .acronym-item:hover {
     border-color: var(--primary);
     transform: translateX(8px);
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
 }
 
 .acronym-letter {
@@ -1256,7 +1256,7 @@ body {
 .rpo-pillar:hover {
     transform: translateY(-5px);
     border-color: var(--primary);
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 10px 40px rgba(37, 99, 235, 0.2);
 }
 
 .rpo-pillar-icon {
@@ -1323,7 +1323,7 @@ body {
 .rpo-practice-item:hover {
     transform: translateY(-5px);
     border-color: var(--primary);
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 10px 40px rgba(37, 99, 235, 0.2);
 }
 
 .rpo-practice-item:hover::before {
@@ -1407,7 +1407,7 @@ body {
 .expertise-card:hover {
     transform: translateY(-8px);
     border-color: var(--primary);
-    box-shadow: 0 15px 50px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 15px 50px rgba(37, 99, 235, 0.25);
 }
 
 .expertise-card-accent {
@@ -1524,13 +1524,13 @@ body {
 
 .terminal-block {
     background: #0d1117;
-    border: 1px solid rgba(99, 102, 241, 0.25);
+    border: 1px solid rgba(37, 99, 235, 0.25);
     border-radius: 12px;
     overflow: hidden;
     text-align: left;
     max-width: 680px;
     margin: 0 auto 2.5rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(99, 102, 241, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(37, 99, 235, 0.06);
     animation: fadeInUp 0.8s ease 0.6s both;
 }
 
@@ -1662,8 +1662,8 @@ body {
     line-height: 1.8;
     margin-bottom: 2.5rem;
     padding: 1.5rem;
-    background: rgba(99, 102, 241, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    background: rgba(37, 99, 235, 0.05);
+    border: 1px solid rgba(37, 99, 235, 0.15);
     border-radius: 12px;
     border-left: 3px solid var(--primary);
 }
@@ -1678,7 +1678,7 @@ body {
     height: 450px;
     min-height: 450px;
     border-radius: 16px;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.2);
     background: #0a0a0f;
     overflow: hidden;
     position: relative;
@@ -1711,8 +1711,8 @@ body {
 .quantum-table-wrapper {
     overflow-x: auto;
     border-radius: 12px;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    background: rgba(10, 10, 15, 0.6);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    background: rgba(6, 13, 26, 0.6);
 }
 
 .quantum-table {
@@ -1723,7 +1723,7 @@ body {
 }
 
 .quantum-table thead {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(37, 99, 235, 0.1);
 }
 
 .quantum-table th {
@@ -1734,7 +1734,7 @@ body {
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    border-bottom: 1px solid rgba(37, 99, 235, 0.15);
     white-space: nowrap;
 }
 
@@ -1746,7 +1746,7 @@ body {
 }
 
 .quantum-table tbody tr:hover {
-    background: rgba(99, 102, 241, 0.06);
+    background: rgba(37, 99, 235, 0.06);
 }
 
 .quantum-table tbody tr:last-child td {
@@ -1817,7 +1817,7 @@ body {
 .principle-chip:hover {
     border-color: var(--primary);
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.15);
 }
 
 .principle-chip svg {
@@ -1855,10 +1855,10 @@ body {
     width: 100%;
     height: 480px;
     border-radius: 20px;
-    background: radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.06) 0%, rgba(10, 10, 15, 0.7) 70%);
-    border: 1px solid rgba(99, 102, 241, 0.12);
+    background: radial-gradient(ellipse at 50% 50%, rgba(37, 99, 235, 0.06) 0%, rgba(6, 13, 26, 0.7) 70%);
+    border: 1px solid rgba(37, 99, 235, 0.12);
     cursor: crosshair;
-    box-shadow: 0 0 60px rgba(99, 102, 241, 0.05), inset 0 0 80px rgba(10, 10, 15, 0.3);
+    box-shadow: 0 0 60px rgba(37, 99, 235, 0.05), inset 0 0 80px rgba(6, 13, 26, 0.3);
 }
 
 /* Products Section */
@@ -1894,14 +1894,14 @@ body {
 .filter-btn:hover {
     color: var(--text-primary);
     border-color: var(--primary);
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(37, 99, 235, 0.1);
 }
 
 .filter-btn.active {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: #fff;
     border-color: transparent;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
 }
 
 /* Product Grid */
@@ -1927,7 +1927,7 @@ body {
 .product-card:hover {
     transform: translateY(-8px);
     border-color: var(--primary);
-    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
 }
 
 .product-card-accent {
@@ -1994,9 +1994,9 @@ body {
 }
 
 .status-dev {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(37, 99, 235, 0.3);
 }
 
 .status-beta {
@@ -2006,9 +2006,9 @@ body {
 }
 
 .status-coming {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(37, 99, 235, 0.3);
 }
 
 .product-name {
@@ -2101,14 +2101,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
     transition: all 0.3s ease;
     color: white;
 }
 
 .chat-button:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 6px 30px rgba(37, 99, 235, 0.6);
 }
 
 .chat-button svg {
@@ -2131,7 +2131,7 @@ body {
     display: none;
     flex-direction: column;
     overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.2);
     animation: slideUp 0.3s ease;
 }
 
@@ -2233,12 +2233,12 @@ body {
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.5);
+    background: rgba(37, 99, 235, 0.5);
     border-radius: 3px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.7);
+    background: rgba(37, 99, 235, 0.7);
 }
 
 .chat-message {
@@ -2280,10 +2280,10 @@ body {
 }
 
 .bot-message .message-content {
-    background: rgba(99, 102, 241, 0.15);
+    background: rgba(37, 99, 235, 0.15);
     color: var(--text-primary);
     border-bottom-left-radius: 4px;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.2);
 }
 
 .message-content p {
@@ -2292,7 +2292,7 @@ body {
 
 .chat-input-container {
     padding: 1rem;
-    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    border-top: 1px solid rgba(37, 99, 235, 0.2);
     display: flex;
     gap: 0.75rem;
     background: rgba(15, 23, 42, 0.5);
@@ -2300,8 +2300,8 @@ body {
 
 .chat-input {
     flex: 1;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.3);
     border-radius: 12px;
     padding: 0.75rem 1rem;
     color: var(--text-primary);
@@ -2313,7 +2313,7 @@ body {
 
 .chat-input:focus {
     border-color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.15);
+    background: rgba(37, 99, 235, 0.15);
 }
 
 .chat-input::placeholder {
@@ -2337,7 +2337,7 @@ body {
 
 .chat-send:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
 }
 
 .chat-send:active {
