@@ -59,7 +59,7 @@ All icons are SVG format (vector, scalable to any size):
 - **Cybersecurity:** Green (#16a34a)
 
 ### Typography
-- **Universal Font:** Inter (Google Fonts) — used for all text, headings, and UI elements
+- **Universal Font:** Ubuntu (Google Fonts) — used for all text, headings, and UI elements
 - **Scale:** Responsive clamp() functions for fluid typography
 
 ### Components

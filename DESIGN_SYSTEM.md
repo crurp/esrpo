@@ -131,10 +131,10 @@ Used on the Products page to differentiate domain categories in the constellatio
 
 ### Font Families
 
-**Universal Font:** `Inter`
-- Weights: 300, 400, 500, 600, 700, 800
+**Universal Font:** `Ubuntu`
+- Weights: 300, 400, 500, 700
 - Usage: All text — body, headings, UI elements, logo text, hero titles
-- Character: Clean, geometric, highly legible
+- Character: Clean, humanist, highly legible
 - Fallback: `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
 
 ### Type Scale
@@ -160,35 +160,35 @@ Used on the Products page to differentiate domain categories in the constellatio
 ### Typography Hierarchy
 
 **H1 (Hero Title):**
-- Font: Inter
+- Font: Ubuntu
 - Size: `clamp(3rem, 8vw, 6rem)`
 - Weight: 800
 - Line Height: 1.1
 - Color: Gradient (primary → secondary → accent)
 
 **H2 (Section Title):**
-- Font: Inter
+- Font: Ubuntu
 - Size: `clamp(2.5rem, 5vw, 4rem)`
 - Weight: 700
 - Line Height: 1.2
 - Color: Gradient (text-primary → text-secondary)
 
 **H3 (Card/Item Title):**
-- Font: Inter
+- Font: Ubuntu
 - Size: 1.5rem
 - Weight: 700
 - Line Height: 1.3
 - Color: text-primary
 
 **Body Text:**
-- Font: Inter
+- Font: Ubuntu
 - Size: `clamp(1rem, 2vw, 1.25rem)`
 - Weight: 400
 - Line Height: 1.8
 - Color: text-secondary
 
 **Small Text:**
-- Font: Inter
+- Font: Ubuntu
 - Size: 0.875rem
 - Weight: 500
 - Line Height: 1.6
@@ -205,7 +205,7 @@ background-clip: text;
 ```
 
 **Badge Text:**
-- Font: Inter
+- Font: Ubuntu
 - Size: 0.875rem
 - Weight: 500
 - Padding: 0.5rem 1.25rem
@@ -280,7 +280,7 @@ gap: 1.5rem;
 - Background: linear-gradient(135deg, primary, secondary)
 - Padding: 1rem 2rem
 - Border Radius: 12px
-- Font: Inter, 600, 1rem
+- Font: Ubuntu, 600, 1rem
 - Color: text-primary
 - Shadow: 0 4px 20px rgba(99, 102, 241, 0.4)
 - Hover: translateY(-2px), shadow increase
@@ -292,7 +292,7 @@ gap: 1.5rem;
 - Border: glass-border
 - Padding: 1rem 2rem
 - Border Radius: 12px
-- Font: Inter, 600, 1rem
+- Font: Ubuntu, 600, 1rem
 - Color: text-primary
 - Hover: background opacity increase, translateY(-2px)
 ```
@@ -342,7 +342,7 @@ gap: 1.5rem;
 
 **Nav Links:**
 ```css
-- Font: Inter, 500, 0.95rem
+- Font: Ubuntu, 500, 0.95rem
 - Color: text-secondary
 - Hover: text-primary, underline gradient animation
 - Gap: 2.5rem
@@ -405,7 +405,7 @@ gap: 1.5rem;
 - **Icon:** 48px container, category-colored, glass background
 - **Category label:** 0.75rem, uppercase, category-colored
 - **Status badge:** 0.7rem, semi-transparent background with matching border
-- **Product name:** Inter, 1.3rem, weight 700
+- **Product name:** Ubuntu, 1.3rem, weight 700
 - **Tagline:** 0.95rem, primary-light color
 - **Description:** 0.9rem, text-secondary, line-height 1.7
 - **CTA link:** category-colored with arrow, hover translateX(4px)
@@ -417,7 +417,7 @@ gap: 1.5rem;
 - Border: glass-border (1px solid)
 - Border Radius: 10px
 - Padding: 0.6rem 1.3rem
-- Font: Inter, 500, 0.85rem
+- Font: Ubuntu, 500, 0.85rem
 - Active: primary gradient background, white text
 - Hover: background opacity increase
 ```
@@ -449,7 +449,7 @@ gap: 1.5rem;
 - Mouse proximity lines: `rgba(139, 92, 246, alpha)` (max 200px)
 - Spring physics: nodes drift and return to base position
 - Mouse repulsion: nodes push away within 120px radius
-- Labels: Inter, 11px, `rgba(255,255,255,0.6)`
+- Labels: Ubuntu, 11px, `rgba(255,255,255,0.6)`
 - Canvas height: 320px, responsive width via ResizeObserver
 
 **RPO Principles Strip:**
@@ -458,7 +458,7 @@ gap: 1.5rem;
 - Gap: 1.5rem
 - Chip: glass background, glass-border, border-radius 16px, padding 1.5rem
 - Icon: 24px, primary-light color
-- Title: Inter, 600, 0.95rem
+- Title: Ubuntu, 600, 0.95rem
 - Description: 0.85rem, text-secondary
 - Hover: background opacity increase, translateY(-2px), border-color primary
 ```
@@ -758,8 +758,8 @@ Products are defined in a JavaScript `PRODUCTS` array for easy addition of new p
 ## Version History
 
 **v1.4.0** (March 2026)
-- Consolidated to single font: Inter (replaced Space Grotesk and Syne)
-- All headings, body, and UI elements now use Inter
+- Consolidated to single font: Ubuntu (replaced Space Grotesk and Syne)
+- All headings, body, and UI elements now use Ubuntu
 - Updated all typography hierarchy references, component specs, and resources
 
 **v1.3.0** (March 2026)
@@ -792,8 +792,7 @@ Products are defined in a JavaScript `PRODUCTS` array for easy addition of new p
 ## Resources
 
 **Fonts:**
-- Inter: https://fonts.google.com/specimen/Inter
-- Inter: https://fonts.google.com/specimen/Inter
+- Ubuntu: https://fonts.google.com/specimen/Ubuntu
 
 **Tools:**
 - Color Contrast Checker: https://webaim.org/resources/contrastchecker/

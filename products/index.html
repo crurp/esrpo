@@ -6,7 +6,7 @@
     <title>Products - EchoSpark</title>
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
     <link rel="icon" type="image/png" href="/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
 </head>
 <!-- Google tag (gtag.js) -->
@@ -748,7 +748,7 @@
                 const product = PRODUCTS.find(pp => pp.name === n.name);
                 if (product) {
                     ctx.fillStyle = 'rgba(255,255,255,0.35)';
-                    ctx.font = '10px "Inter", sans-serif';
+                    ctx.font = '10px "Ubuntu", sans-serif';
                     ctx.fillText(product.tagline, n.x, n.y + 44);
                 }
             }

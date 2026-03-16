@@ -35,7 +35,7 @@ Quick lookup guide for common design decisions.
 ## Typography
 
 ### Fonts
-- **All text:** Inter (300, 400, 500, 600, 700, 800)
+- **All text:** Ubuntu (300, 400, 500, 700)
 
 ### Sizes
 - **Hero:** `clamp(3rem, 8vw, 6rem)`
