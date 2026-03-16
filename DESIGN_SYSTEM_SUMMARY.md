@@ -59,8 +59,7 @@ All icons are SVG format (vector, scalable to any size):
 - **Cybersecurity:** Green (#16a34a)
 
 ### Typography
-- **Body Font:** Inter (Google Fonts)
-- **Display Font:** Space Grotesk (Google Fonts)
+- **Universal Font:** Inter (Google Fonts) — used for all text, headings, and UI elements
 - **Scale:** Responsive clamp() functions for fluid typography
 
 ### Components
@@ -139,7 +138,7 @@ echospark/
 
 ## Version Information
 
-- **Version:** 1.3.0
+- **Version:** 1.4.0
 - **Created:** January 2025
 - **Status:** Active
 - **Last Updated:** March 2026

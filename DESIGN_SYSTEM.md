@@ -1,6 +1,6 @@
 # EchoSpark Design System
 
-**Version:** 1.3.0  
+**Version:** 1.4.0
 **Last Updated:** March 2026  
 **Status:** Active
 
@@ -131,15 +131,11 @@ Used on the Products page to differentiate domain categories in the constellatio
 
 ### Font Families
 
-**Primary Font (Body):** `Inter`
+**Universal Font:** `Inter`
 - Weights: 300, 400, 500, 600, 700, 800
-- Usage: Body text, descriptions, UI elements
+- Usage: All text — body, headings, UI elements, logo text, hero titles
+- Character: Clean, geometric, highly legible
 - Fallback: `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
-
-**Display Font (Headings):** `Space Grotesk`
-- Weights: 400, 500, 600, 700
-- Usage: Headings, logo text, hero titles
-- Character: Modern, geometric, tech-forward
 
 ### Type Scale
 
@@ -164,21 +160,21 @@ Used on the Products page to differentiate domain categories in the constellatio
 ### Typography Hierarchy
 
 **H1 (Hero Title):**
-- Font: Space Grotesk
+- Font: Inter
 - Size: `clamp(3rem, 8vw, 6rem)`
 - Weight: 800
 - Line Height: 1.1
 - Color: Gradient (primary → secondary → accent)
 
 **H2 (Section Title):**
-- Font: Space Grotesk
+- Font: Inter
 - Size: `clamp(2.5rem, 5vw, 4rem)`
 - Weight: 700
 - Line Height: 1.2
 - Color: Gradient (text-primary → text-secondary)
 
 **H3 (Card/Item Title):**
-- Font: Space Grotesk
+- Font: Inter
 - Size: 1.5rem
 - Weight: 700
 - Line Height: 1.3
@@ -409,7 +405,7 @@ gap: 1.5rem;
 - **Icon:** 48px container, category-colored, glass background
 - **Category label:** 0.75rem, uppercase, category-colored
 - **Status badge:** 0.7rem, semi-transparent background with matching border
-- **Product name:** Space Grotesk, 1.3rem, weight 700
+- **Product name:** Inter, 1.3rem, weight 700
 - **Tagline:** 0.95rem, primary-light color
 - **Description:** 0.9rem, text-secondary, line-height 1.7
 - **CTA link:** category-colored with arrow, hover translateX(4px)
@@ -453,7 +449,7 @@ gap: 1.5rem;
 - Mouse proximity lines: `rgba(139, 92, 246, alpha)` (max 200px)
 - Spring physics: nodes drift and return to base position
 - Mouse repulsion: nodes push away within 120px radius
-- Labels: Space Grotesk, 11px, `rgba(255,255,255,0.6)`
+- Labels: Inter, 11px, `rgba(255,255,255,0.6)`
 - Canvas height: 320px, responsive width via ResizeObserver
 
 **RPO Principles Strip:**
@@ -761,6 +757,16 @@ Products are defined in a JavaScript `PRODUCTS` array for easy addition of new p
 
 ## Version History
 
+**v1.4.0** (March 2026)
+- Consolidated to single font: Inter (replaced Space Grotesk and Syne)
+- All headings, body, and UI elements now use Inter
+- Updated all typography hierarchy references, component specs, and resources
+
+**v1.3.0** (March 2026)
+- Added ThreatPulse product page documentation
+- Updated product category colors (Quantum = Purple, AI/ML = Gold, Cybersecurity = Green)
+- Full color rebrand from purple/indigo to dark blue
+
 **v1.2.0** (February 2026)
 - Added Products page components (cards, filters, constellation graph)
 - Added product category colors (Quantum = Purple, AI/ML = Gold, Cybersecurity = Green)
@@ -787,7 +793,7 @@ Products are defined in a JavaScript `PRODUCTS` array for easy addition of new p
 
 **Fonts:**
 - Inter: https://fonts.google.com/specimen/Inter
-- Space Grotesk: https://fonts.google.com/specimen/Space+Grotesk
+- Inter: https://fonts.google.com/specimen/Inter
 
 **Tools:**
 - Color Contrast Checker: https://webaim.org/resources/contrastchecker/

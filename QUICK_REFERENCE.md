@@ -35,8 +35,7 @@ Quick lookup guide for common design decisions.
 ## Typography
 
 ### Fonts
-- **Body:** Inter (400, 500, 600)
-- **Headings:** Space Grotesk (600, 700, 800)
+- **All text:** Inter (300, 400, 500, 600, 700, 800)
 
 ### Sizes
 - **Hero:** `clamp(3rem, 8vw, 6rem)`
