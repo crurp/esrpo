@@ -16,10 +16,10 @@
     --primary-dark: #1d4ed8;
     --primary-light: #60a5fa;
     --secondary: #1e40af;
-    --accent: #ec4899;
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #111118;
-    --bg-tertiary: #1a1a24;
+    --accent: #0ea5e9;
+    --bg-primary: #060d1a;
+    --bg-secondary: #0a1428;
+    --bg-tertiary: #0d1d35;
     --text-primary: #ffffff;
     --text-secondary: #a1a1aa;
     --text-tertiary: #71717a;
@@ -27,7 +27,7 @@
     --glass: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
     --gradient-primary: linear-gradient(135deg, #2563eb, #1e40af);
-    --gradient-accent: linear-gradient(135deg, #2563eb, #1e40af, #ec4899);
+    --gradient-accent: linear-gradient(135deg, #2563eb, #1e40af, #0ea5e9);
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -58,7 +58,7 @@ body {
 }
 .orb-1 { width: 600px; height: 600px; background: rgba(37,99,235,0.08); top: -200px; left: -100px; }
 .orb-2 { width: 500px; height: 500px; background: rgba(30,64,175,0.06); top: 50%; right: -150px; animation-delay: -7s; }
-.orb-3 { width: 400px; height: 400px; background: rgba(236,72,153,0.04); bottom: -100px; left: 30%; animation-delay: -14s; }
+.orb-3 { width: 400px; height: 400px; background: rgba(14,165,233,0.04); bottom: -100px; left: 30%; animation-delay: -14s; }
 @keyframes float {
     0%, 100% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(30px, -30px) scale(1.05); }
@@ -264,7 +264,7 @@ body {
 .app-sidebar {
     width: 260px;
     min-height: 100vh;
-    background: linear-gradient(180deg, #0d0d14 0%, #0a0a0f 50%, #0f0f18 100%);
+    background: linear-gradient(180deg, #060d1a 0%, #060d1a 50%, #080e1e 100%);
     border-right: 1px solid var(--border);
     position: fixed;
     top: 0; left: 0; bottom: 0;
@@ -515,7 +515,7 @@ body {
 .accent-card::before {
     content: ''; position: absolute;
     top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(135deg, #ec4899, #1e40af);
+    background: linear-gradient(135deg, #0ea5e9, #1e40af);
 }
 
 .card-title {
@@ -1904,7 +1904,7 @@ function berPerClock(Ic, R, C, Ibias, fclk, T) {
 // ====================================================================
 //  CANVAS CHART DRAWING
 // ====================================================================
-const CHART_COLORS = ['#60a5fa','#ec4899','#06b6d4','#22c55e','#eab308','#f97316','#93c5fd','#f472b6','#34d399','#fbbf24'];
+const CHART_COLORS = ['#60a5fa','#0ea5e9','#06b6d4','#22c55e','#eab308','#f97316','#93c5fd','#38bdf8','#34d399','#fbbf24'];
 
 function drawLineChart(canvasId, datasets, xlabel, ylabel, title, fillArea) {
     const canvas = document.getElementById(canvasId);
@@ -1925,7 +1925,7 @@ function drawLineChart(canvasId, datasets, xlabel, ylabel, title, fillArea) {
     const ph = H - pad.t - pad.b;
 
     // Background
-    ctx.fillStyle = '#111118';
+    ctx.fillStyle = '#0a1428';
     ctx.fillRect(0, 0, W, H);
 
     // Find ranges
@@ -2041,7 +2041,7 @@ function drawPolarChart(canvasId, phaseCounts, nPhases, title) {
     canvas.style.width = S + 'px'; canvas.style.height = S + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const cx = S / 2, cy = S / 2, R = S * 0.35;
-    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, S, S);
+    ctx.fillStyle = '#0a1428'; ctx.fillRect(0, 0, S, S);
     // Grid circles
     for (let r = 0.25; r <= 1; r += 0.25) {
         ctx.beginPath(); ctx.arc(cx, cy, R * r, 0, TWO_PI); ctx.strokeStyle = '#222233'; ctx.lineWidth = 0.5; ctx.stroke();
@@ -2055,7 +2055,7 @@ function drawPolarChart(canvasId, phaseCounts, nPhases, title) {
     }
     // Data
     const maxCount = Math.max(...Object.values(phaseCounts), 1);
-    const colors = ['#60a5fa', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#93c5fd', '#f472b6'];
+    const colors = ['#60a5fa', '#0ea5e9', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#93c5fd', '#38bdf8'];
     let pi = 0;
     for (const [phase, count] of Object.entries(phaseCounts)) {
         const a = (parseFloat(phase) * Math.PI / 180) - Math.PI / 2;
@@ -2098,7 +2098,7 @@ function drawHeatmap(canvasId, data, xlabels, ylabels, title, colorMap) {
     const pad = { t: 40, r: 20, b: 30, l: 120 };
     const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
     const cellW = pw / xlabels.length, cellH = ph / ylabels.length;
-    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#0a1428'; ctx.fillRect(0, 0, W, H);
     // Cells
     for (let r = 0; r < ylabels.length; r++) {
         for (let c = 0; c < xlabels.length; c++) {
@@ -2145,8 +2145,8 @@ function drawSchematic(canvasId, netlist) {
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
-    const phaseColors = ['#60a5fa', '#ec4899', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#93c5fd', '#f472b6'];
+    ctx.fillStyle = '#0a1428'; ctx.fillRect(0, 0, W, H);
+    const phaseColors = ['#60a5fa', '#0ea5e9', '#06b6d4', '#22c55e', '#eab308', '#f97316', '#93c5fd', '#38bdf8'];
     const positions = {};
     const offX = (W - cols * (boxW + gapX) + gapX) / 2;
     insts.forEach((inst, i) => {
@@ -2156,7 +2156,7 @@ function drawSchematic(canvasId, netlist) {
         const phIdx = Math.round(inst.clockPhase / (360 / 4)) % phaseColors.length;
         const color = phaseColors[phIdx];
         // Box
-        ctx.fillStyle = '#1a1a24'; ctx.strokeStyle = color;
+        ctx.fillStyle = '#0d1d35'; ctx.strokeStyle = color;
         ctx.lineWidth = 2; ctx.beginPath();
         const r = 8;
         ctx.roundRect(x, y, boxW, boxH, r);
@@ -2219,7 +2219,7 @@ function drawMarginScatter(canvasId, junctions, margins, title) {
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#0a1428'; ctx.fillRect(0, 0, W, H);
     const pad = { t: 40, r: 30, b: 40, l: 50 };
     const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
     // Layout junctions in a grid
@@ -3032,7 +3032,7 @@ function drawPipelineOccupancy(canvasId) {
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#060d1a'; ctx.fillRect(0, 0, W, H);
     // Title
     ctx.fillStyle = '#e4e4e7'; ctx.font = 'bold 13px Inter, sans-serif'; ctx.textAlign = 'center';
     ctx.fillText('Pipeline Stage Occupancy', W / 2, 18);
@@ -3462,7 +3462,7 @@ function drawReportTab(tab) {
         canvas.width = W * dpr; canvas.height = H * dpr;
         canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.fillStyle = '#111118'; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#0a1428'; ctx.fillRect(0, 0, W, H);
         const bars = [
             { label: 'Switching', val: switchPower, color: '#2563eb' },
             { label: 'Clock', val: clockPower, color: '#1e40af' },

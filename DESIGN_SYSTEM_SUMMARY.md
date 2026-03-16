@@ -49,14 +49,14 @@ All icons are SVG format (vector, scalable to any size):
 
 ### Color Palette
 - **Primary:** Blue (#2563eb) to Violet (#1e40af) gradient
-- **Accent:** Pink (#ec4899)
+- **Accent:** Sky Blue (#0ea5e9)
 - **Background:** Deep navy-black theme (#060d1a)
 - **Text:** White to Zinc gray scale
 
 ### Product Category Colors
 - **Quantum:** Blue (#2563eb)
 - **AI / ML:** Cyan (#06b6d4)
-- **Cybersecurity:** Pink (#ec4899)
+- **Cybersecurity:** Sky Blue (#0ea5e9)
 
 ### Typography
 - **Body Font:** Inter (Google Fonts)

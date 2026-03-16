@@ -8,14 +8,14 @@ Quick lookup guide for common design decisions.
 ```css
 --primary: #2563eb;        /* Blue 600 */
 --secondary: #1e40af;      /* Blue 800 */
---accent: #ec4899;         /* Pink 500 */
+--accent: #0ea5e9;         /* Sky 500 */
 ```
 
 ### Product Categories
 ```css
 --category-quantum:       #2563eb;  /* Indigo */
 --category-ai-ml:         #06b6d4;  /* Cyan */
---category-cybersecurity: #ec4899;  /* Pink */
+--category-cybersecurity: Sky Blue */
 ```
 
 ### Backgrounds

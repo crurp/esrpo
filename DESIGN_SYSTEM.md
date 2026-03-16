@@ -62,7 +62,7 @@ The EchoSpark logo consists of a geometric hexagon with a central compass rose c
 --primary-dark: #1d4ed8;      /* Blue 700 */
 --primary-light: #60a5fa;     /* Blue 400 */
 --secondary: #1e40af;         /* Blue 800 */
---accent: #ec4899;            /* Pink 500 */
+--accent: #0ea5e9;            /* Sky 500 */
 ```
 
 ### Background Colors
@@ -98,13 +98,13 @@ linear-gradient(135deg, #2563eb, #1e40af)
 
 **Accent Gradient (Interactive Elements):**
 ```css
-linear-gradient(135deg, #2563eb, #1e40af, #ec4899)
+linear-gradient(135deg, #2563eb, #1e40af, #0ea5e9)
 ```
 
 **Background Gradients:**
 - Orb 1: Radial gradient from `#2563eb` (primary)
 - Orb 2: Radial gradient from `#1e40af` (secondary)
-- Orb 3: Radial gradient from `#ec4899` (accent)
+- Orb 3: Radial gradient from `#0ea5e9` (accent)
 
 ### Product Category Colors
 
@@ -113,7 +113,7 @@ Used on the Products page to differentiate domain categories in the constellatio
 ```css
 --category-quantum:       #2563eb;  /* Blue — matches primary */
 --category-ai-ml:         #06b6d4;  /* Cyan 500 */
---category-cybersecurity: #ec4899;  /* Pink — matches accent */
+--category-cybersecurity: Sky Blue — matches accent */
 ```
 
 ### Color Usage Guidelines
@@ -430,7 +430,7 @@ gap: 1.5rem;
 ```css
 .status-dev {
     background: rgba(139, 92, 246, 0.15);
-    color: #c084fc;
+    color: #60a5fa;
     border: 1px solid rgba(139, 92, 246, 0.3);
 }
 .status-beta {
