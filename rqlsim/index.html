@@ -68,67 +68,6 @@ body {
 /* ============================================================== */
 /*  COMPILATION TRACKER (RED BAR)                                  */
 /* ============================================================== */
-#compilationTracker {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
-    background: rgba(20, 0, 0, 0.95);
-    border-bottom: 2px solid #ef4444;
-    padding: 8px 24px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
-#compilationTracker.visible { display: flex; }
-.tracker-label {
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #fca5a5;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-.tracker-pips {
-    display: flex; gap: 6px;
-}
-.tracker-pip {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 2px solid #ef4444;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 0.65rem; font-weight: 700;
-    transition: all 0.3s ease;
-}
-.tracker-pip.used {
-    background: #ef4444; color: white;
-}
-.tracker-pip.available {
-    background: transparent; color: #ef4444;
-}
-.tracker-count {
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #ef4444;
-}
-.tracker-logout {
-    background: transparent;
-    border: 1px solid rgba(239,68,68,0.4);
-    color: #fca5a5;
-    padding: 4px 14px;
-    border-radius: 6px;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-left: 8px;
-}
-.tracker-logout:hover {
-    background: rgba(239,68,68,0.15);
-    border-color: #ef4444;
-}
 
 /* ============================================================== */
 /*  ACCESS WALL                                                    */
@@ -939,14 +878,6 @@ body {
         <div class="gradient-orb orb-3"></div>
     </div>
 
-    <!-- Compilation Tracker -->
-    <div id="compilationTracker">
-        <span class="tracker-label">Compilations Remaining</span>
-        <div class="tracker-pips" id="trackerPips"></div>
-        <span class="tracker-count" id="trackerCount">5/5</span>
-        <button class="tracker-logout" onclick="logout()">Logout</button>
-    </div>
-
     <!-- Access Wall -->
     <div id="accessWall" class="hidden">
         <div class="wall-card">
@@ -1220,8 +1151,6 @@ function validateCode() {
 function showApp() {
     document.getElementById('accessWall').classList.add('hidden');
     document.getElementById('mainApp').classList.add('visible');
-    document.getElementById('compilationTracker').classList.add('visible');
-    updateTracker();
     initApp();
 }
 
@@ -1229,9 +1158,6 @@ function logout() {
     sessionStorage.removeItem(_$AK);
     document.getElementById('accessWall').classList.remove('hidden');
     document.getElementById('mainApp').classList.remove('visible');
-    document.getElementById('compilationTracker').classList.remove('visible');
-    document.getElementById('codeInput').value = '';
-    document.getElementById('wallError').textContent = '';
 }
 
 function updateTracker() {
