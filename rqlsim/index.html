@@ -948,7 +948,7 @@ body {
     </div>
 
     <!-- Access Wall -->
-    <div id="accessWall">
+    <div id="accessWall" class="hidden">
         <div class="wall-card">
             <div class="wall-logo"><span>RQL</span></div>
             <h1 class="wall-title">RQL Simulator</h1>
@@ -3610,14 +3610,9 @@ function renderUnderTheHood() {
 }
 
 // ====================================================================
-//  AUTO-LOGIN ON PAGE LOAD
+//  AUTO-LAUNCH ON PAGE LOAD (no gate)
 // ====================================================================
-(function() {
-    const hash = getActiveCode();
-    if (hash && (_$c.includes(hash) || hash === _$m) && getRemainingCompilations(hash) > 0) {
-        showApp();
-    }
-})();
+showApp();
 </script>
 </body>
 </html>
